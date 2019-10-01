@@ -1,5 +1,9 @@
 import React, { useRef } from "react";
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
   Box,
   Heading,
   Text,
@@ -7,15 +11,14 @@ import {
   Input,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   FormHelperText,
   Button,
   Stack
 } from "@chakra-ui/core";
-import useAuth from "./useAuth";
+import useAuth, { REFUSED, PENDING } from "./useAuth";
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, authState } = useAuth();
   const emailInput = useRef(null);
   const passwordInput = useRef(null);
 
@@ -43,6 +46,16 @@ const Login = () => {
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={8}>
+          {authState === REFUSED && (
+            <Alert status="error" variant="left-accent">
+              <AlertIcon />
+              <AlertTitle mr={2}>Email / mot de passe non reconnus.</AlertTitle>
+              <AlertDescription>
+                Le couple email / mot de passe ne correspond pas à un compte
+                connu. Veuillez vérifiez les données transmises.
+              </AlertDescription>
+            </Alert>
+          )}
           <FormControl isRequired>
             <FormLabel htmlFor="email">Adresse email</FormLabel>
             <Input
@@ -77,7 +90,13 @@ const Login = () => {
             </FormHelperText>
           </FormControl>
 
-          <Button type="submit">Se connecter</Button>
+          <Button
+            type="submit"
+            isLoading={authState === PENDING}
+            loadingText="Connexion en cours"
+          >
+            Se connecter
+          </Button>
         </Stack>
       </form>
     </Box>

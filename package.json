@@ -7,9 +7,12 @@
     "@emotion/core": "^10.0.17",
     "@emotion/styled": "^10.0.17",
     "emotion-theming": "^10.0.19",
+    "graphql": "^14.5.8",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.2",
+    "react-use": "^12.2.2",
+    "urql": "^1.5.1",
     "webfontloader": "^1.6.28"
   },
   "scripts": {

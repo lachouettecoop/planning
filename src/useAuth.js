@@ -1,41 +1,88 @@
 import React from "react";
+import { useMutation } from "urql";
+import { useSessionStorage } from "react-use";
 import SplashScreen from "./SplashScreen";
+
+export const TOKEN_STORAGE_KEY = "token";
+
+// Auth states
+export const INITIALIZING = "initializing";
+export const LOGGED_OUT = "loggedOut";
+export const PENDING = "pending";
+export const REFUSED = "refused";
+export const LOGGED_IN = "loggedIn";
+
+const LOGIN = `
+  mutation Login($email: String!, $password: String!) {
+    loginChouettos(input: {
+      email: $email
+      password: $password
+    }) {
+      token
+    }
+  }
+`;
+
+const getToken = () =>
+  window &&
+  window.sessionStorage &&
+  window.sessionStorage.getItem(TOKEN_STORAGE_KEY);
 
 const AuthContext = React.createContext();
 
 const AuthProvider = props => {
-  const [user, setUser] = React.useState();
+  const [token, setToken] = useSessionStorage(TOKEN_STORAGE_KEY, "", true);
+  const [authState, setAuthState] = React.useState(INITIALIZING);
+  const [response, executeLoginMutation] = useMutation(LOGIN);
 
-  React.useEffect(() => setTimeout(() => setUser({}), 1000), []);
-  // code for pre-loading the user's information if we have their token in
+  React.useEffect(
+    () => {
+      setAuthState(state => {
+        if (state !== LOGGED_IN && token) {
+          return LOGGED_IN;
+        }
+        if ((state === LOGGED_IN || state === INITIALIZING) && !token) {
+          return LOGGED_OUT;
+        }
+        return state;
+      });
+    },
+    [token]
+  );
 
-  // localStorage goes here
+  React.useEffect(
+    () => {
+      if (!response.fetching && authState !== PENDING) {
+        return;
+      }
 
-  // 🚨 this is the important bit.
+      if (response.fetching) {
+        setAuthState(PENDING);
+      } else if (response.data && response.data.loginChouettos.token) {
+        setToken(response.data.loginChouettos.token);
+      } else {
+        setAuthState(REFUSED);
+      }
+    },
+    [response, authState, setToken]
+  );
 
-  // Normally your provider components render the context provider with a value.
-
-  // But we post-pone rendering any of the children until after we've determined
-
-  // whether or not we have a user token and if we do, then we render a spinner
-
-  // while we go retrieve that user's information.
-
-  if (!user) {
+  if (authState === INITIALIZING) {
     return <SplashScreen />;
   }
 
   const login = ({ email, password }) => {
-    setTimeout(() => setUser({ email, name: "toto" }), 1200);
-  }; // make a login request
+    executeLoginMutation({
+      email,
+      password
+    });
+  };
 
-  const register = () => {}; // register the user
-
-  const logout = () => {}; // clear the token in localStorage and the user data
+  const logout = () => setToken("");
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, register }}
+      value={{ authState, token, login, logout }}
       {...props}
     />
   );
@@ -44,4 +91,4 @@ const AuthProvider = props => {
 const useAuth = () => React.useContext(AuthContext);
 
 export default useAuth;
-export { AuthProvider };
+export { AuthProvider, getToken };
