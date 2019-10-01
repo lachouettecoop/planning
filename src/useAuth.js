@@ -1,6 +1,7 @@
 import React from "react";
 import { useMutation } from "urql";
 import { useSessionStorage } from "react-use";
+import jwtDecode from "jwt-decode";
 import SplashScreen from "./SplashScreen";
 
 export const TOKEN_STORAGE_KEY = "token";
@@ -46,8 +47,19 @@ const AuthProvider = props => {
         }
         return state;
       });
+
+      if (!token) {
+        return;
+      }
+
+      const decodedToken = jwtDecode(token);
+      const expirationTimer = setTimeout(
+        () => setToken(""),
+        Math.max(1, decodedToken.exp * 1000 - Date.now())
+      );
+      return () => clearTimeout(expirationTimer);
     },
-    [token]
+    [token, setToken]
   );
 
   React.useEffect(
