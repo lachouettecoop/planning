@@ -17,6 +17,16 @@ import {
 } from "@chakra-ui/core";
 import useAuth, { REFUSED, PENDING } from "./useAuth";
 
+const ResetPasswordLink = props => (
+  <Link
+    isExternal
+    href="https://adminchouettos.lachouettecoop.fr/resetting/request"
+    {...props}
+  >
+    {props.children || "réinitialiser votre mot de passe"}
+  </Link>
+);
+
 const Login = () => {
   const { login, authState } = useAuth();
   const emailInput = useRef(null);
@@ -53,10 +63,12 @@ const Login = () => {
           {authState === REFUSED && (
             <Alert status="error" variant="left-accent">
               <AlertIcon />
-              <AlertTitle mr={2}>Email / mot de passe non reconnus.</AlertTitle>
+              <AlertTitle mr={2}>
+                Couple email / mot de passe non reconnu.
+              </AlertTitle>
               <AlertDescription>
-                Le couple email / mot de passe ne correspond pas à un compte
-                connu. Veuillez vérifiez les données transmises.
+                Veuillez vérifiez les données transmises ou{" "}
+                <ResetPasswordLink />.
               </AlertDescription>
             </Alert>
           )}
@@ -86,14 +98,7 @@ const Login = () => {
             <FormHelperText id="password-helper-text">
               Identique à celui utilisé sur les autres outils de La Chouette
               Coop. En cas d’oubli, vous pouvez{" "}
-              <Link
-                isExternal
-                href="https://adminchouettos.lachouettecoop.fr/resetting/request"
-                tabIndex={4}
-              >
-                réinitialiser votre mot de passe
-              </Link>
-              .
+              <ResetPasswordLink tabIndex={4} />.
             </FormHelperText>
           </FormControl>
 
