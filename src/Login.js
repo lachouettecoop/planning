@@ -1,5 +1,9 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
   Box,
   Heading,
   Text,
@@ -7,17 +11,30 @@ import {
   Input,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   FormHelperText,
   Button,
   Stack
 } from "@chakra-ui/core";
-import useAuth from "./useAuth";
+import useAuth, { REFUSED, PENDING } from "./useAuth";
+
+const ResetPasswordLink = props => (
+  <Link
+    isExternal
+    href="https://adminchouettos.lachouettecoop.fr/resetting/request"
+    {...props}
+  >
+    {props.children || "réinitialiser votre mot de passe"}
+  </Link>
+);
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, authState } = useAuth();
   const emailInput = useRef(null);
   const passwordInput = useRef(null);
+
+  useEffect(() => {
+    emailInput.current.focus();
+  }, []);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -43,6 +60,18 @@ const Login = () => {
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={8}>
+          {authState === REFUSED && (
+            <Alert status="error" variant="left-accent">
+              <AlertIcon />
+              <AlertTitle mr={2}>
+                Couple email / mot de passe non reconnu.
+              </AlertTitle>
+              <AlertDescription>
+                Veuillez vérifiez les données transmises ou{" "}
+                <ResetPasswordLink />.
+              </AlertDescription>
+            </Alert>
+          )}
           <FormControl isRequired>
             <FormLabel htmlFor="email">Adresse email</FormLabel>
             <Input
@@ -50,6 +79,7 @@ const Login = () => {
               id="email"
               aria-describedby="email-helper-text"
               ref={emailInput}
+              tabIndex={1}
             />
             <FormHelperText id="email-helper-text">
               L’adresse email fournie lors de votre inscription.
@@ -63,21 +93,23 @@ const Login = () => {
               id="password"
               aria-describedby="password-helper-text"
               ref={passwordInput}
+              tabIndex={2}
             />
             <FormHelperText id="password-helper-text">
               Identique à celui utilisé sur les autres outils de La Chouette
               Coop. En cas d’oubli, vous pouvez{" "}
-              <Link
-                isExternal
-                href="https://adminchouettos.lachouettecoop.fr/resetting/request"
-              >
-                réinitialiser votre mot de passe
-              </Link>
-              .
+              <ResetPasswordLink tabIndex={4} />.
             </FormHelperText>
           </FormControl>
 
-          <Button type="submit">Se connecter</Button>
+          <Button
+            type="submit"
+            isLoading={authState === PENDING}
+            tabIndex={3}
+            loadingText="Connexion en cours"
+          >
+            Se connecter
+          </Button>
         </Stack>
       </form>
     </Box>

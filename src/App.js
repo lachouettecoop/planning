@@ -1,13 +1,12 @@
 import React from "react";
-import { Text, Box, Link, Image } from "@chakra-ui/core";
-import useAuth from "./useAuth";
+import useAuth, { LOGGED_IN } from "./useAuth";
 import Routes from "./Routes";
 import Login from "./Login";
 
 const App = () => {
-  const { user } = useAuth();
+  const { authState } = useAuth();
 
-  return user.name ? <Routes /> : <Login />;
+  return authState === LOGGED_IN ? <Routes /> : <Login />;
 };
 
 export default App;
