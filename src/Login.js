@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import {
   Alert,
   AlertIcon,
@@ -21,6 +21,10 @@ const Login = () => {
   const { login, authState } = useAuth();
   const emailInput = useRef(null);
   const passwordInput = useRef(null);
+
+  useEffect(() => {
+    emailInput.current.focus();
+  }, []);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -63,6 +67,7 @@ const Login = () => {
               id="email"
               aria-describedby="email-helper-text"
               ref={emailInput}
+              tabIndex={1}
             />
             <FormHelperText id="email-helper-text">
               L’adresse email fournie lors de votre inscription.
@@ -76,6 +81,7 @@ const Login = () => {
               id="password"
               aria-describedby="password-helper-text"
               ref={passwordInput}
+              tabIndex={2}
             />
             <FormHelperText id="password-helper-text">
               Identique à celui utilisé sur les autres outils de La Chouette
@@ -83,6 +89,7 @@ const Login = () => {
               <Link
                 isExternal
                 href="https://adminchouettos.lachouettecoop.fr/resetting/request"
+                tabIndex={4}
               >
                 réinitialiser votre mot de passe
               </Link>
@@ -93,6 +100,7 @@ const Login = () => {
           <Button
             type="submit"
             isLoading={authState === PENDING}
+            tabIndex={3}
             loadingText="Connexion en cours"
           >
             Se connecter
