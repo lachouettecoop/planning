@@ -1,12 +1,16 @@
 import React from "react";
-import { Text, Box, Link, Button } from "@chakra-ui/core";
+import { Flex, Text, Box, Button } from "@chakra-ui/core";
 import { useQuery } from "urql";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import useAuth from "./useAuth";
 import SplashScreen from "./SplashScreen";
 
+const Planning = React.lazy(() => import("./Planning"));
+const DetailJour = React.lazy(() => import("./DetailJour"));
+
 const Routes = () => {
   const { logout } = useAuth();
-  const [res] = useQuery({
+  const [response] = useQuery({
     query: `{
       me {
         prenom
@@ -14,32 +18,46 @@ const Routes = () => {
     }`
   });
 
-  if (res.fetching) {
+  if (response.fetching) {
     return <SplashScreen />;
-  } else if (res.error) {
+  } else if (response.error) {
     return "Oops, une erreur est survenue. Contactez les personnes en charge SVP.";
   }
 
   return (
-    <Box>
-      <Box as="header" bg="primary">
-        <Text fontSize="xl" color="white">
-          Bienvenue {res.data.me.prenom} !
-        </Text>
-        <Link
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-          isExternal
+    <React.Suspense fallback={<SplashScreen />}>
+      <Box>
+        <Flex
+          as="header"
+          bg="primary"
+          py={2}
+          px={4}
+          mb={4}
+          justifyContent="space-between"
         >
-          Learn React
-        </Link>
+          <Text fontSize="xl" color="white">
+            Bienvenue {response.data.me.prenom} !
+          </Text>
 
-        <Text>API {res.data.version}</Text>
+          <Button onClick={logout} size="sm">
+            Se déconnecter
+          </Button>
+        </Flex>
+
+        <Router>
+          <Box px={4}>
+            <Switch>
+              <Route path="/" exact>
+                <Planning />
+              </Route>
+              <Route path="/planning/:date">
+                <DetailJour />
+              </Route>
+            </Switch>
+          </Box>
+        </Router>
       </Box>
-
-      <Button onClick={logout}>Se déconnecter</Button>
-    </Box>
+    </React.Suspense>
   );
 };
 

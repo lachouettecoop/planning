@@ -9,8 +9,9 @@ const SplashScreen = () => (
     flexDirection="column"
     justifyContent="center"
     alignItems="center"
+    px={4}
   >
-    <Logo border="2px solid white" size="70vw" objectFit="cover" mb={10} />
+    <Logo border="2px solid white" objectFit="cover" mb={10} />
     <Spinner size="xl" color="white" />
   </Flex>
 );
