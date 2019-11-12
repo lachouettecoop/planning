@@ -12,7 +12,9 @@ import {
   Button,
   Collapse,
   Icon,
-  Tooltip
+  Tooltip,
+  IconButton,
+  Spinner
 } from "@chakra-ui/core";
 import { Link } from "react-router-dom";
 import {
@@ -20,10 +22,12 @@ import {
   startOfWeek,
   endOfWeek,
   endOfMonth,
-  isThisMonth,
   format,
   parse,
-  isToday
+  isToday,
+  addMonths,
+  isSameMonth,
+  subMonths
 } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -177,10 +181,14 @@ const CreneauxPreview = ({ creneaux, ...rest }) => {
   ));
 };
 
-const Jour = ({ jour: { date, labOuvert, creneaux }, ...rest }) => {
+const Jour = ({
+  jour: { date, labOuvert, creneaux },
+  currentMois,
+  ...rest
+}) => {
   const dateObj = parse(date, dateFormat, new Date());
   const commonStyleProps = {
-    opacity: isThisMonth(dateObj) ? 1 : 0.5,
+    opacity: isSameMonth(dateObj, currentMois) ? 1 : 0.5,
     ...(isToday(dateObj)
       ? {
           bg: "black"
@@ -218,19 +226,25 @@ const Jour = ({ jour: { date, labOuvert, creneaux }, ...rest }) => {
   );
 };
 
-const Semaine = ({ label, days, ...rest }) => (
+const Semaine = ({ label, days, currentMois, ...rest }) => (
   <Box {...rest}>
     <Badge fontWeight="bold">S{label}</Badge>
     <Stack isInline spacing={0} align="stretch">
       {days.map(jour => (
-        <Jour key={jour.date} jour={jour} flex={1} p={2} />
+        <Jour
+          key={jour.date}
+          currentMois={currentMois}
+          jour={jour}
+          flex={1}
+          p={2}
+        />
       ))}
     </Stack>
   </Box>
 );
 
 const Planning = () => {
-  const [mois] = useState(startOfMonth(new Date()));
+  const [mois, setMois] = useState(startOfMonth(new Date()));
   const [response] = useQuery({
     query: PLANNING,
     variables: {
@@ -240,7 +254,12 @@ const Planning = () => {
   });
 
   if (response.fetching) {
-    return "Récupération des informations du planning…";
+    return (
+      <Box textAlign="center">
+        <Spinner />
+        <Box>Récupération des informations du planning…</Box>
+      </Box>
+    );
   } else if (response.error) {
     return <span>{response.error.message}</span>;
   }
@@ -249,16 +268,31 @@ const Planning = () => {
     ...response.data.planning.reduce(perWeek, new Map()).values()
   ];
 
+  const handleNavigateMonth = adder => () =>
+    setMois(current => adder(current, 1));
+
   return (
     <Box>
-      <Heading size="2xl">
-        {format(mois, "LLLL", new Date(), dateOptions)}
-      </Heading>
+      <Flex justifyContent="space-between" alignItems="center">
+        <IconButton
+          icon="arrow-left"
+          aria-label="Voir le mois précédent"
+          onClick={handleNavigateMonth(subMonths)}
+        />
+        <Heading size="2xl">
+          {format(mois, "LLLL", new Date(), dateOptions)}
+        </Heading>
+        <IconButton
+          icon="arrow-right"
+          aria-label="Voir le mois suivant"
+          onClick={handleNavigateMonth(addMonths)}
+        />
+      </Flex>
 
       <Legende mt={4} />
       <Stack spacing={2} align="stretch">
         {semaines.map(semaine => (
-          <Semaine key={semaine.label} mt={4} {...semaine} />
+          <Semaine key={semaine.label} mt={4} currentMois={mois} {...semaine} />
         ))}
       </Stack>
     </Box>
