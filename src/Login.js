@@ -104,6 +104,8 @@ const Login = () => {
 
           <Button
             type="submit"
+            variantColor="green"
+            size="lg"
             isLoading={authState === PENDING}
             tabIndex={3}
             loadingText="Connexion en cours"
