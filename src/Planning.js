@@ -7,6 +7,7 @@ import {
   Text,
   Heading,
   Badge,
+  Link,
   List,
   ListItem,
   Button,
@@ -16,7 +17,7 @@ import {
   IconButton,
   Spinner
 } from "@chakra-ui/core";
-import { Link } from "react-router-dom";
+import { Link as ReactRouterLink } from "react-router-dom";
 import {
   startOfMonth,
   startOfWeek,
@@ -27,7 +28,9 @@ import {
   isToday,
   addMonths,
   isSameMonth,
-  subMonths
+  subMonths,
+  max,
+  min
 } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -41,7 +44,10 @@ const PLANNING = `
          nom
          postes {
            nom
-           horaires
+           horaires {
+             debut
+             fin
+           }
            piaffeur {
              nom
              prenom
@@ -126,7 +132,7 @@ const Poste = ({ nom, piaffeur, ...rest }) => {
       <Box
         w={4}
         h={4}
-        bg={rempli ? "green.500" : "red.500"}
+        bg={rempli ? "cyan.600" : "cyan.200"}
         borderRadius="lg"
         {...styles}
         {...rest}
@@ -154,8 +160,8 @@ const Legende = props => {
       </Button>
       <Collapse isOpen={isOpen} mt={2} bg="primary" p={2} color="white">
         <List>
-          {noms.map(nom => (
-            <ListItem>
+          {noms.map((nom, id) => (
+            <ListItem key={id}>
               <Stack isInline spacing={1}>
                 <Poste nom={nom} piaffeur={piaffeur} />
                 <Poste nom={nom} piaffeur={pasDePiaffeur} />
@@ -217,7 +223,7 @@ const Jour = ({
       color="white"
       {...commonStyleProps}
       flexGrow={3}
-      as={Link}
+      as={ReactRouterLink}
       to={`/planning/${date}`}
     >
       {label}
@@ -226,22 +232,30 @@ const Jour = ({
   );
 };
 
-const Semaine = ({ label, days, currentMois, ...rest }) => (
-  <Box {...rest}>
-    <Badge fontWeight="bold">S{label}</Badge>
-    <Stack isInline spacing={0} align="stretch">
-      {days.map(jour => (
-        <Jour
-          key={jour.date}
-          currentMois={currentMois}
-          jour={jour}
-          flex={1}
-          p={2}
-        />
-      ))}
-    </Stack>
-  </Box>
-);
+const Semaine = ({ label, days, currentMois, ...rest }) => {
+  const dates = days.map(day => parse(day.date, "yyyy-MM-dd", new Date()));
+
+  const debut = format(min(dates), "dd/MM");
+  const fin = format(max(dates), "dd/MM   ");
+  return (
+    <Box {...rest}>
+      <Badge fontWeight="bold">
+        S{label} — Semaine du {debut} au {fin}
+      </Badge>
+      <Stack isInline spacing={0} align="stretch">
+        {days.map(jour => (
+          <Jour
+            key={jour.date}
+            currentMois={currentMois}
+            jour={jour}
+            flex={1}
+            p={2}
+          />
+        ))}
+      </Stack>
+    </Box>
+  );
+};
 
 const Planning = () => {
   const [mois, setMois] = useState(startOfMonth(new Date()));
@@ -288,6 +302,10 @@ const Planning = () => {
           onClick={handleNavigateMonth(addMonths)}
         />
       </Flex>
+      <Link as={ReactRouterLink} to="/">
+        <Icon name="arrow-back" mr={2} />
+        Retourner à l'accueil
+      </Link>
 
       <Legende mt={4} />
       <Stack spacing={2} align="stretch">

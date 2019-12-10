@@ -4,6 +4,7 @@ import { useQuery } from "urql";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import useAuth from "./useAuth";
 import SplashScreen from "./SplashScreen";
+import Accueil from "./Accueil";
 
 const Planning = React.lazy(() => import("./Planning"));
 const DetailJour = React.lazy(() => import("./DetailJour"));
@@ -48,6 +49,9 @@ const Routes = () => {
           <Box px={4}>
             <Switch>
               <Route path="/" exact>
+                <Accueil />
+              </Route>
+              <Route path="/planning" exact>
                 <Planning />
               </Route>
               <Route path="/planning/:date">
