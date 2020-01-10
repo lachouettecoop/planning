@@ -6,6 +6,7 @@ import useAuth from "./useAuth";
 import SplashScreen from "./SplashScreen";
 import Accueil from "./Accueil";
 
+const MePositionner = React.lazy(() => import("./MePositionner"));
 const Planning = React.lazy(() => import("./Planning"));
 const DetailJour = React.lazy(() => import("./DetailJour"));
 
@@ -50,6 +51,9 @@ const Routes = () => {
             <Switch>
               <Route path="/" exact>
                 <Accueil />
+              </Route>
+              <Route path="/me-positionner" exact>
+                <MePositionner />
               </Route>
               <Route path="/planning" exact>
                 <Planning />
