@@ -1,6 +1,6 @@
 {
-  "short_name": "La Chouette Coop",
-  "name": "La Chouette Coop - Planning",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#445448",
-  "background_color": "#f5eeae"
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
 }
