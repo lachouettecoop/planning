@@ -9,6 +9,7 @@ Web app for [La Chouette Coop](https://lachouettecoop.fr/), bootstrapped with [C
 
 ## Setup
 
+    cp {example,}.env
     yarn
 
 ## [Commands](https://create-react-app.dev/docs/available-scripts/)
