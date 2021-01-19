@@ -27,6 +27,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/standard-http-error": "^2.0.0",
+    "graphql": "^15.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",

@@ -1,20 +1,22 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
 
+import { getStoredUser } from "src/providers/user"
+
 const link = createHttpLink({
-  uri: process.env.REACT_APP_API + "/api/graphql",
+  uri: `${process.env.REACT_APP_API}/api/graphql`,
 })
 
 const authLink = setContext((_, previous) => {
-  const token = localStorage.getItem("token")
-  if (!token) {
+  const user = getStoredUser()
+  if (!user) {
     return previous
   }
   return {
     ...previous,
     headers: {
       ...previous.headers,
-      "X-Auth-Token": token,
+      "X-Auth-Token": user.token,
     },
   }
 })

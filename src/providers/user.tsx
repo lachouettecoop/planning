@@ -15,7 +15,7 @@ const UserContext = createContext<IUserContext>({} as IUserContext)
 
 const STORAGE_KEY = "user"
 
-const init = () => {
+export const getStoredUser = () => {
   const stored = localStorage.getItem(STORAGE_KEY)
   if (!stored) {
     return null
@@ -24,7 +24,7 @@ const init = () => {
 }
 
 export const UserProvider: FC = ({ children }) => {
-  const [user, setUser] = useState<User | null>(init)
+  const [user, setUser] = useState<User | null>(getStoredUser)
 
   const login = (newUser: User) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser))
