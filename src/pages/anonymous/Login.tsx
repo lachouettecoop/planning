@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react"
 import { Container, TextField, Button } from "@material-ui/core"
 
 import { post } from "src/helpers/request"
-import { User, useUser } from "src/providers/user"
+import { useUser, AuthUser } from "src/providers/user"
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false)
@@ -14,7 +14,7 @@ const LoginPage = () => {
     setLoading(true)
     try {
       const data = await post("login_api", body)
-      const user: User = {
+      const user: AuthUser = {
         email: body.get("username") as string,
         token: data.token,
       }

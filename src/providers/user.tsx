@@ -1,13 +1,13 @@
 import { createContext, useContext, useState, FC } from "react"
 
-export interface User {
+export interface AuthUser {
   email: string
   token: string
 }
 
 export interface IUserContext {
-  user: User | null
-  login: (user: User) => void
+  user: AuthUser | null
+  login: (user: AuthUser) => void
   logout: () => void
 }
 
@@ -20,15 +20,15 @@ export const getStoredUser = () => {
   if (!stored) {
     return null
   }
-  return JSON.parse(stored) as User
+  return JSON.parse(stored) as AuthUser
 }
 
 export const UserProvider: FC = ({ children }) => {
-  const [user, setUser] = useState<User | null>(getStoredUser)
+  const [user, setUser] = useState<AuthUser | null>(getStoredUser)
 
-  const login = (newUser: User) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser))
-    setUser(newUser)
+  const login = (data: AuthUser) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    setUser(data)
   }
 
   const logout = () => {
@@ -42,7 +42,7 @@ export const UserProvider: FC = ({ children }) => {
 export const useUser = () => useContext(UserContext) as IUserContext
 
 export interface IAuthenticated extends IUserContext {
-  user: User
+  user: AuthUser
 }
 
 export const useAuthenticatedUser = () => useContext(UserContext) as IAuthenticated

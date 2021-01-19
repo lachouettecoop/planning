@@ -27,3 +27,19 @@ const client = new ApolloClient({
 })
 
 export default client
+
+export interface Edge<T> {
+  node: T
+  cursor: string
+}
+
+export interface List<T> {
+  edges: Edge<T>[]
+  pageInfo: {
+    startCursor: string
+    endCursor: string
+    hasNextPage: boolean
+    hasPreviousPage: boolean
+  }
+  totalCount: number
+}

@@ -2,7 +2,8 @@ import { useState } from "react"
 import { gql } from "@apollo/client"
 import { Button } from "@material-ui/core"
 
-import apollo from "src/helpers/apollo"
+import apollo, { List } from "src/helpers/apollo"
+import type { PIAF } from "src/types/model"
 
 const TEST_QUERY = gql`
   query {
@@ -29,15 +30,17 @@ const TEST_QUERY = gql`
   }
 `
 
+type Result = { piafs: List<PIAF> }
+
 const HomePage = () => {
   const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState()
+  const [result, setResult] = useState<Result>()
 
   const handleTest = async () => {
     setLoading(true)
     try {
-      const response = await apollo.query({ query: TEST_QUERY })
-      setResult(response.data)
+      const { data } = await apollo.query<Result>({ query: TEST_QUERY })
+      setResult(data)
     } catch (error) {
       alert(error)
     }

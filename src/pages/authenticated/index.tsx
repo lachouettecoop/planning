@@ -1,7 +1,7 @@
 import { Redirect, Route, Switch } from "react-router-dom"
 import { styled, Container, Button, AppBar, Toolbar, Typography, Box } from "@material-ui/core"
 
-import { useAuthenticatedUser } from "src/providers/user"
+import { useUser } from "src/providers/user"
 
 import HomePage from "src/pages/authenticated/Home"
 
@@ -13,7 +13,7 @@ const Content = styled(Container)(({ theme }) => ({
 }))
 
 const Authenticated = () => {
-  const { logout } = useAuthenticatedUser()
+  const { logout } = useUser()
 
   return (
     <>
