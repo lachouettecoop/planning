@@ -1,4 +1,4 @@
-import { ApolloClient, createHttpLink, InMemoryCache, NormalizedCacheObject } from "@apollo/client"
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
 
 const link = createHttpLink({
@@ -19,7 +19,7 @@ const authLink = setContext((_, previous) => {
   }
 })
 
-const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
+const client = new ApolloClient({
   link: authLink.concat(link),
   cache: new InMemoryCache(),
 })
