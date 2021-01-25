@@ -1,39 +1,30 @@
 import { Redirect, Route, Switch } from "react-router-dom"
-import { styled, Container, Button, AppBar, Toolbar, Typography, Box } from "@material-ui/core"
-
-import { useUser } from "src/providers/user"
-
+import { styled, Container, Toolbar } from "@material-ui/core"
 import HomePage from "src/pages/authenticated/Home"
+import Planning from "src/pages/authenticated/Planning"
+import Menu from "src/components/menu"
+import MenuBottom from "src/components/menuBottom"
 
-const Spacer = styled(Box)({
-  flexGrow: 1,
-})
 const Content = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(3),
 }))
 
 const Authenticated = () => {
-  const { logout } = useUser()
-
   return (
     <>
-      <AppBar>
-        <Toolbar>
-          <Typography variant="h6">Planning</Typography>
-          <Spacer />
-          <Button onClick={logout} color="inherit">
-            Déconnexion
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <Toolbar />
       <Content>
+        <Toolbar />
+        <Menu />
         <Switch>
           <Route path="/home">
             <HomePage />
           </Route>
+          <Route path="/planning">
+            <Planning />
+          </Route>
           <Redirect to="/home" />
         </Switch>
+        <MenuBottom />
       </Content>
     </>
   )

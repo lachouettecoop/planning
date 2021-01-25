@@ -15,6 +15,7 @@ const LoginPage = () => {
     try {
       const data = await post("login_api", body)
       const user: AuthUser = {
+        id: data.userId,
         email: body.get("username") as string,
         token: data.token,
       }
