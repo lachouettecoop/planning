@@ -8,7 +8,17 @@ import Authenticated from "src/pages/authenticated"
 const App = () => {
   const { user } = useUser()
 
-  return <BrowserRouter>{user ? <Authenticated /> : <Anonymous />}</BrowserRouter>
+  return (
+    <BrowserRouter>
+      {user ? (
+        <div>
+          <Authenticated />
+        </div>
+      ) : (
+        <Anonymous />
+      )}
+    </BrowserRouter>
+  )
 }
 
 export default App

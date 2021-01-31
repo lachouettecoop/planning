@@ -3,6 +3,7 @@ import { createContext, useContext, useState, FC } from "react"
 export interface AuthUser {
   email: string
   token: string
+  id: string
 }
 
 export interface IUserContext {
