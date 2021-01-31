@@ -1,4 +1,6 @@
 import React from "react"
+import { useState } from "react"
+import useMediaQuery from "@material-ui/core/useMediaQuery"
 import clsx from "clsx"
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles"
 import Drawer from "@material-ui/core/Drawer"
@@ -9,27 +11,27 @@ import CssBaseline from "@material-ui/core/CssBaseline"
 import Typography from "@material-ui/core/Typography"
 import Divider from "@material-ui/core/Divider"
 import IconButton from "@material-ui/core/IconButton"
-import MenuIcon from "@material-ui/icons/Menu"
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
-import ChevronRightIcon from "@material-ui/icons/ChevronRight"
+import {
+  Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Group as GroupIcon,
+  Person as PersonIcon,
+  Replay as ReplayIcon,
+  ArrowBack as ArrowBackIcon,
+  Home as HomeIcon,
+  Event as EventIcon,
+} from "@material-ui/icons"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
-import GroupIcon from "@material-ui/icons/Group"
-import PersonIcon from "@material-ui/icons/Person"
-import ReplayIcon from "@material-ui/icons/Replay"
-import ArrowBackIcon from "@material-ui/icons/ArrowBack"
-import HomeIcon from "@material-ui/icons/Home"
-import EventIcon from "@material-ui/icons/Event"
 import { styled, Button, Box } from "@material-ui/core"
 import { useUser } from "src/providers/user"
 import { Link } from "react-router-dom"
-import { LOGGED_IN_USER } from "../graphql/queries"
+import { LOGGED_IN_USER } from "src/graphql/queries"
 import apollo from "src/helpers/apollo"
-import { getStoredUser } from "src/providers/user"
 import { User } from "src/types/model"
-import { useState, useEffect } from "react"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
+import { useQuery } from "@apollo/client"
 
 const drawerWidth = 240
 
@@ -101,26 +103,26 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+type Result = { user: User }
+const items = [
+  { title: "home", href: "/", icon: <HomeIcon /> },
+  { title: "planning", href: "/planning", icon: <EventIcon /> },
+  { title: "reserve", href: "/reserve", icon: <GroupIcon /> },
+  {
+    title: "resAuto",
+    href: "/reserveAutomatique",
+    icon: <ReplayIcon />,
+  },
+  { title: "profile", href: "/profile", icon: <PersonIcon /> },
+  { title: "memberArea", href: "/memberArea", icon: <ArrowBackIcon /> },
+]
+
 const Menu = () => {
   const classes = useStyles()
-  const { logout } = useUser()
+  const { user, logout } = useUser()
   const theme = useTheme()
-  const [open, setOpen] = React.useState(false)
-  type Result = { user: User }
-  const [user, setUser] = useState<Result>()
+  const [open, setOpen] = useState(false)
   const matches = useMediaQuery(theme.breakpoints.up("sm"))
-  const items = [
-    { title: "home", href: "/", icon: <HomeIcon /> },
-    { title: "planning", href: "/planning", icon: <EventIcon /> },
-    { title: "reserve", href: "/reserve", icon: <GroupIcon /> },
-    {
-      title: "resAuto",
-      href: "/reserveAutomatique",
-      icon: <ReplayIcon />,
-    },
-    { title: "profile", href: "/profile", icon: <PersonIcon /> },
-    { title: "memberArea", href: "/memberArea", icon: <ArrowBackIcon /> },
-  ]
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -130,95 +132,85 @@ const Menu = () => {
     setOpen(false)
   }
 
-  const getUser = async () => {
-    try {
-      const storedUser = getStoredUser()
-      const { data } = await apollo.query<Result>({
-        query: LOGGED_IN_USER,
-        variables: { id: `/api/users/${storedUser?.id}` },
-      })
-      setUser(data)
-    } catch (error) {
-      alert(error)
-    }
-  }
-
-  useEffect(() => {
-    getUser()
+  const { data } = useQuery<Result>(LOGGED_IN_USER, {
+    variables: { id: `/api/users/${user?.id}` },
+    client: apollo,
   })
 
-  if (matches) {
-    return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, {
-                [classes.hide]: open,
-              })}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              Planning
-            </Typography>
-            <Spacer />
-            <Button onClick={logout} color="inherit">
-              Déconnexion
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          variant="permanent"
-          className={clsx(classes.drawer, {
+  if (!matches) {
+    return null
+  }
+
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, {
+              [classes.hide]: open,
+            })}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            Planning
+          </Typography>
+          <Spacer />
+          <Button onClick={logout} color="inherit">
+            Déconnexion
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: open,
+          [classes.drawerClose]: !open,
+        })}
+        classes={{
+          paper: clsx({
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          })}
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-            }),
-          }}
-        >
-          <div className={classes.toolbar}>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
-          </div>
-          <Divider />
-          <ListItem button>
-            <ListItemIcon>
-              {" "}
-              <PersonIcon />
-            </ListItemIcon>
-            <ListItemText primary={`${user?.user.prenom} ${user?.user.nom}`} />
-          </ListItem>
-          <Divider />
-          <List>
-            {items.map((item) => (
-              <Link to={`${item.href}`} key={item.title}>
-                <ListItem button>
-                  <ListItemIcon> {item.icon}</ListItemIcon>
-                  <ListItemText primary={item.title} />
-                </ListItem>
-              </Link>
-            ))}
-          </List>
-        </Drawer>
-      </div>
-    )
-  } else return <></>
+          }),
+        }}
+      >
+        <div className={classes.toolbar}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </div>
+        <Divider />
+        <ListItem button>
+          <ListItemIcon>
+            {" "}
+            <PersonIcon />
+          </ListItemIcon>
+          {data && <ListItemText primary={`${data.user.prenom} ${data.user.nom}`} />}
+        </ListItem>
+        <Divider />
+        <List>
+          {items.map((item) => (
+            <Link to={`${item.href}`} key={item.title}>
+              <ListItem button>
+                <ListItemIcon> {item.icon}</ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItem>
+            </Link>
+          ))}
+        </List>
+      </Drawer>
+    </div>
+  )
 }
 
 export default Menu

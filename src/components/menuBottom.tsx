@@ -1,23 +1,21 @@
-import React from "react"
+import React, { useState, Fragment } from "react"
 import { createStyles, useTheme, Theme, makeStyles } from "@material-ui/core/styles"
+import { Menu, MenuItem, ListItem, ListItemText, ListItemIcon } from "@material-ui/core"
+import useMediaQuery from "@material-ui/core/useMediaQuery"
 import AppBar from "@material-ui/core/AppBar"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import Toolbar from "@material-ui/core/Toolbar"
 import IconButton from "@material-ui/core/IconButton"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemText from "@material-ui/core/ListItemText"
-import MoreIcon from "@material-ui/icons/MoreVert"
-import GroupIcon from "@material-ui/icons/Group"
-import PersonIcon from "@material-ui/icons/Person"
-import ReplayIcon from "@material-ui/icons/Replay"
-import ArrowBackIcon from "@material-ui/icons/ArrowBack"
-import HomeIcon from "@material-ui/icons/Home"
-import EventIcon from "@material-ui/icons/Event"
+import {
+  MoreVert as MoreIcon,
+  Group as GroupIcon,
+  Person as PersonIcon,
+  Replay as ReplayIcon,
+  ArrowBack as ArrowBackIcon,
+  Home as HomeIcon,
+  Event as EventIcon,
+} from "@material-ui/icons"
 import { Link } from "react-router-dom"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import Menu from "@material-ui/core/Menu"
-import MenuItem from "@material-ui/core/MenuItem"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,21 +49,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+const items = [
+  { title: "home", href: "/", icon: <HomeIcon /> },
+  { title: "planning", href: "/planning", icon: <EventIcon /> },
+  { title: "reserve", href: "/reserve", icon: <GroupIcon /> },
+  {
+    title: "resAuto",
+    href: "/reserveAutomatique",
+    icon: <ReplayIcon />,
+  },
+  { title: "profile", href: "/profile", icon: <PersonIcon /> },
+  { title: "memberArea", href: "/memberArea", icon: <ArrowBackIcon /> },
+]
+
 export default function BottomAppBar() {
   const classes = useStyles()
-  const items = [
-    { title: "home", href: "/", icon: <HomeIcon /> },
-    { title: "planning", href: "/planning", icon: <EventIcon /> },
-    { title: "reserve", href: "/reserve", icon: <GroupIcon /> },
-    {
-      title: "resAuto",
-      href: "/reserveAutomatique",
-      icon: <ReplayIcon />,
-    },
-    { title: "profile", href: "/profile", icon: <PersonIcon /> },
-    { title: "memberArea", href: "/memberArea", icon: <ArrowBackIcon /> },
-  ]
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.down("xs"))
 
@@ -79,7 +78,7 @@ export default function BottomAppBar() {
 
   if (matches) {
     return (
-      <React.Fragment>
+      <Fragment>
         <CssBaseline />
         <AppBar position="fixed" color="primary" className={classes.appBar}>
           <Toolbar className={classes.toolbar}>
@@ -111,7 +110,7 @@ export default function BottomAppBar() {
             </IconButton>
           </Toolbar>
         </AppBar>
-      </React.Fragment>
+      </Fragment>
     )
   } else return <></>
 }
