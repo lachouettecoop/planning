@@ -1,23 +1,28 @@
 import React, { useState, Fragment } from "react"
-import { createStyles, useTheme, Theme, makeStyles } from "@material-ui/core/styles"
-import { Menu, MenuItem, ListItem, ListItemText, ListItemIcon } from "@material-ui/core"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
-import AppBar from "@material-ui/core/AppBar"
-import CssBaseline from "@material-ui/core/CssBaseline"
-import Toolbar from "@material-ui/core/Toolbar"
-import IconButton from "@material-ui/core/IconButton"
+import { Link } from "react-router-dom"
+import { createStyles, useTheme, makeStyles } from "@material-ui/core/styles"
+import {
+  useMediaQuery,
+  Menu,
+  MenuItem,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  AppBar,
+  Toolbar,
+  IconButton,
+} from "@material-ui/core"
 import {
   MoreVert as MoreIcon,
   Group as GroupIcon,
   Person as PersonIcon,
   Replay as ReplayIcon,
   ArrowBack as ArrowBackIcon,
-  Home as HomeIcon,
   Event as EventIcon,
+  // Home as HomeIcon,
 } from "@material-ui/icons"
-import { Link } from "react-router-dom"
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme) =>
   createStyles({
     text: {
       padding: theme.spacing(2, 2, 0),
@@ -42,6 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
     textMenu: {
       textDecoration: "none",
       color: "white",
+      backgroundColor: theme.palette.primary.main, //TODO
     },
     icon: {
       justifyContent: "center",
@@ -49,17 +55,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const items = [
-  { title: "home", href: "/", icon: <HomeIcon /> },
-  { title: "planning", href: "/planning", icon: <EventIcon /> },
-  { title: "reserve", href: "/reserve", icon: <GroupIcon /> },
-  {
-    title: "resAuto",
-    href: "/reserveAutomatique",
-    icon: <ReplayIcon />,
-  },
-  { title: "profile", href: "/profile", icon: <PersonIcon /> },
-  { title: "memberArea", href: "/memberArea", icon: <ArrowBackIcon /> },
+const MAIN_ITEMS = [
+  { title: "Planning", href: "/planning", Icon: EventIcon },
+  { title: "Réserve", href: "/reserve", Icon: GroupIcon },
+  { title: "Auto", href: "/auto", Icon: ReplayIcon },
+]
+const EXTRA_ITEMS = [
+  // { title: "home", href: "/", Icon: HomeIcon },
+  { title: "Mon profil", href: "/profile", Icon: PersonIcon },
+  { title: "Espace membre", href: "/member", Icon: ArrowBackIcon },
 ]
 
 export default function BottomAppBar() {
@@ -76,41 +80,38 @@ export default function BottomAppBar() {
     setAnchorEl(null)
   }
 
-  if (matches) {
-    return (
-      <Fragment>
-        <CssBaseline />
-        <AppBar position="fixed" color="primary" className={classes.appBar}>
-          <Toolbar className={classes.toolbar}>
-            {items.map((item) => (
-              <Link to={`${item.href}`} key={item.title}>
-                <ListItem button className={classes.label}>
-                  <ListItemIcon className={classes.icon}> {item.icon}</ListItemIcon>
-                  <ListItemText className={classes.textMenu} primary={item.title} />
-                </ListItem>
+  if (!matches) {
+    return null
+  }
+
+  return (
+    <Fragment>
+      <AppBar position="fixed" color="primary" className={classes.appBar}>
+        <Toolbar className={classes.toolbar}>
+          {MAIN_ITEMS.map(({ href, title, Icon }) => (
+            <Link to={href} key={title}>
+              <ListItem button className={classes.label}>
+                <ListItemIcon className={classes.icon}>
+                  <Icon />
+                </ListItemIcon>
+                <ListItemText className={classes.textMenu} primary={title} />
+              </ListItem>
+            </Link>
+          ))}
+          <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+            {EXTRA_ITEMS.map((item) => (
+              <Link to={item.href} key={item.title}>
+                <MenuItem className={classes.textMenu} onClick={handleClose}>
+                  {item.title}
+                </MenuItem>
               </Link>
             ))}
-            <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-              {items.map((item) => (
-                <Link to={`${item.href}`} key={item.title}>
-                  <MenuItem className={classes.textMenu} onClick={handleClose}>
-                    {item.title}{" "}
-                  </MenuItem>
-                </Link>
-              ))}
-            </Menu>
-            <IconButton
-              aria-controls="simple-menu"
-              aria-haspopup="true"
-              onClick={handleClick}
-              edge="end"
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-      </Fragment>
-    )
-  } else return <></>
+          </Menu>
+          <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} edge="end" color="inherit">
+            <MoreIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+    </Fragment>
+  )
 }

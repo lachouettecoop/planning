@@ -1,16 +1,24 @@
-import React from "react"
 import { useState } from "react"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
+import { Link } from "react-router-dom"
+import { useQuery } from "@apollo/client"
 import clsx from "clsx"
-import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles"
-import Drawer from "@material-ui/core/Drawer"
-import AppBar from "@material-ui/core/AppBar"
-import Toolbar from "@material-ui/core/Toolbar"
-import List from "@material-ui/core/List"
-import CssBaseline from "@material-ui/core/CssBaseline"
-import Typography from "@material-ui/core/Typography"
-import Divider from "@material-ui/core/Divider"
-import IconButton from "@material-ui/core/IconButton"
+import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles"
+import {
+  styled,
+  useMediaQuery,
+  Drawer,
+  AppBar,
+  Toolbar,
+  List,
+  Typography,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Button,
+  Box,
+} from "@material-ui/core"
 import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
@@ -22,24 +30,19 @@ import {
   Home as HomeIcon,
   Event as EventIcon,
 } from "@material-ui/icons"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import ListItemText from "@material-ui/core/ListItemText"
-import { styled, Button, Box } from "@material-ui/core"
+
 import { useUser } from "src/providers/user"
-import { Link } from "react-router-dom"
 import { LOGGED_IN_USER } from "src/graphql/queries"
 import apollo from "src/helpers/apollo"
 import { User } from "src/types/model"
-import { useQuery } from "@apollo/client"
 
-const drawerWidth = 240
+const DRAWER_WIDTH = 240
 
 const Spacer = styled(Box)({
   flexGrow: 1,
 })
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
       display: "flex",
@@ -52,8 +55,8 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
     },
     appBarShift: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: DRAWER_WIDTH,
+      width: `calc(100% - ${DRAWER_WIDTH}px)`,
       transition: theme.transitions.create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -66,12 +69,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "none",
     },
     drawer: {
-      width: drawerWidth,
+      width: DRAWER_WIDTH,
       flexShrink: 0,
       whiteSpace: "nowrap",
     },
     drawerOpen: {
-      width: drawerWidth,
+      width: DRAWER_WIDTH,
       transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -104,17 +107,18 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 type Result = { user: User }
-const items = [
-  { title: "home", href: "/", icon: <HomeIcon /> },
-  { title: "planning", href: "/planning", icon: <EventIcon /> },
-  { title: "reserve", href: "/reserve", icon: <GroupIcon /> },
+
+const ITEMS = [
+  { title: "Accueil", href: "/", Icon: HomeIcon },
+  { title: "Planning", href: "/planning", Icon: EventIcon },
+  { title: "Réserve", href: "/reserve", Icon: GroupIcon },
   {
-    title: "resAuto",
-    href: "/reserveAutomatique",
-    icon: <ReplayIcon />,
+    title: "Réservation automatique",
+    href: "/auto",
+    Icon: ReplayIcon,
   },
-  { title: "profile", href: "/profile", icon: <PersonIcon /> },
-  { title: "memberArea", href: "/memberArea", icon: <ArrowBackIcon /> },
+  { title: "Mon profil", href: "/profile", Icon: PersonIcon },
+  { title: "Espace membre", href: "/member", Icon: ArrowBackIcon },
 ]
 
 const Menu = () => {
@@ -143,7 +147,6 @@ const Menu = () => {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -171,6 +174,7 @@ const Menu = () => {
           </Button>
         </Toolbar>
       </AppBar>
+      <Toolbar />
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -192,18 +196,19 @@ const Menu = () => {
         <Divider />
         <ListItem button>
           <ListItemIcon>
-            {" "}
             <PersonIcon />
           </ListItemIcon>
           {data && <ListItemText primary={`${data.user.prenom} ${data.user.nom}`} />}
         </ListItem>
         <Divider />
         <List>
-          {items.map((item) => (
-            <Link to={`${item.href}`} key={item.title}>
+          {ITEMS.map(({ href, title, Icon }) => (
+            <Link to={href} key={href}>
               <ListItem button>
-                <ListItemIcon> {item.icon}</ListItemIcon>
-                <ListItemText primary={item.title} />
+                <ListItemIcon>
+                  <Icon />
+                </ListItemIcon>
+                <ListItemText primary={title} />
               </ListItem>
             </Link>
           ))}
