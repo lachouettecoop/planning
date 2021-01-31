@@ -23,6 +23,3 @@ yarn-error.log*
 # environment
 .env
 .env.*
-
-# editor
-/.vscode
