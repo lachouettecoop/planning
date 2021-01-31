@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { useQuery } from "@apollo/client"
 import clsx from "clsx"
 import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles"
 import {
@@ -32,9 +31,6 @@ import {
 } from "@material-ui/icons"
 
 import { useUser } from "src/providers/user"
-import { LOGGED_IN_USER } from "src/graphql/queries"
-import apollo from "src/helpers/apollo"
-import { User } from "src/types/model"
 
 const DRAWER_WIDTH = 240
 
@@ -106,8 +102,6 @@ const useStyles = makeStyles((theme) =>
   })
 )
 
-type Result = { user: User }
-
 const ITEMS = [
   { title: "Accueil", href: "/", Icon: HomeIcon },
   { title: "Planning", href: "/planning", Icon: EventIcon },
@@ -123,7 +117,7 @@ const ITEMS = [
 
 const Menu = () => {
   const classes = useStyles()
-  const { user, logout } = useUser()
+  const { user, logout } = useUser<true>()
   const theme = useTheme()
   const [open, setOpen] = useState(false)
   const matches = useMediaQuery(theme.breakpoints.up("sm"))
@@ -135,11 +129,6 @@ const Menu = () => {
   const handleDrawerClose = () => {
     setOpen(false)
   }
-
-  const { data } = useQuery<Result>(LOGGED_IN_USER, {
-    variables: { id: `/api/users/${user?.id}` },
-    client: apollo,
-  })
 
   if (!matches) {
     return null
@@ -198,7 +187,7 @@ const Menu = () => {
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
-          {data && <ListItemText primary={`${data.user.prenom} ${data.user.nom}`} />}
+          {user && <ListItemText primary={`${user.prenom} ${user.nom}`} />}
         </ListItem>
         <Divider />
         <List>

@@ -31,7 +31,7 @@ export interface User {
   id: ID
   email: string
   username: string
-  roles: Role[]
+  roles: string[]
   enabled: boolean
   civilite: string
   nom: string

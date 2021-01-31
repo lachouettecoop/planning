@@ -1,14 +1,19 @@
-import { createContext, useContext, useState, FC } from "react"
+import { createContext, useContext, useState, FC, useEffect } from "react"
+import { LOGGED_IN_USER } from "src/graphql/queries"
 
-export interface AuthUser {
+import apollo from "src/helpers/apollo"
+import { User } from "src/types/model"
+
+export interface Auth {
   email: string
   token: string
   id: string
 }
 
-export interface IUserContext {
-  user: AuthUser | null
-  login: (user: AuthUser) => void
+export interface IUserContext<IsAuthenticated extends boolean = false> {
+  auth: IsAuthenticated extends true ? Auth : Auth | null
+  user: User | null
+  login: (auth: Auth) => void
   logout: () => void
 }
 
@@ -21,29 +26,39 @@ export const getStoredUser = () => {
   if (!stored) {
     return null
   }
-  return JSON.parse(stored) as AuthUser
+  return JSON.parse(stored) as Auth
 }
 
 export const UserProvider: FC = ({ children }) => {
-  const [user, setUser] = useState<AuthUser | null>(getStoredUser)
+  const [auth, setAuth] = useState<Auth | null>(getStoredUser)
+  const [user, setUser] = useState<User | null>(null)
 
-  const login = (data: AuthUser) => {
+  useEffect(() => {
+    if (auth) {
+      apollo
+        .query<{ user: User }>({
+          query: LOGGED_IN_USER,
+          variables: { id: `api/users/${auth.id}` },
+        })
+        .then(({ data }) => {
+          setUser(data.user)
+        })
+    }
+  }, [auth])
+
+  const login = (data: Auth) => {
+    setAuth(data)
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-    setUser(data)
   }
 
   const logout = () => {
+    setAuth(null)
     localStorage.removeItem(STORAGE_KEY)
-    setUser(null)
   }
 
-  return <UserContext.Provider value={{ user, login, logout }}>{children}</UserContext.Provider>
+  return <UserContext.Provider value={{ auth, user, login, logout }}>{children}</UserContext.Provider>
 }
 
-export const useUser = () => useContext(UserContext) as IUserContext
-
-export interface IAuthenticated extends IUserContext {
-  user: AuthUser
+export function useUser<IsAuthenticated extends boolean = false>() {
+  return useContext(UserContext) as IUserContext<IsAuthenticated>
 }
-
-export const useAuthenticatedUser = () => useContext(UserContext) as IAuthenticated

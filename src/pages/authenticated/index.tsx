@@ -7,7 +7,7 @@ import MenuBottom from "src/components/menuBottom"
 
 const Content = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(3),
-  marginLeft: theme.spacing(9),
+  paddingLeft: theme.spacing(12),
 }))
 
 const Authenticated = () => {

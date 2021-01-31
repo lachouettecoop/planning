@@ -6,9 +6,9 @@ import Anonymous from "./pages/anonymous"
 import Authenticated from "src/pages/authenticated"
 
 const App = () => {
-  const { user } = useUser()
+  const { auth } = useUser()
 
-  return <BrowserRouter>{user ? <Authenticated /> : <Anonymous />}</BrowserRouter>
+  return <BrowserRouter>{auth ? <Authenticated /> : <Anonymous />}</BrowserRouter>
 }
 
 export default App
