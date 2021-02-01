@@ -4,16 +4,13 @@ import CalendarDay from "src/components/calendarDay"
 import { Day } from "src/components/calendarDay"
 import { PLANNING } from "src/graphql/queries"
 import { Creneau } from "src/types/model"
-import apollo from "src/helpers/apollo"
+import { List } from "src/helpers/apollo"
 
-type Result = {
-  creneaus: { edges: { node: Creneau }[] }
-}
+type Result = { creneaus: List<Creneau> }
 
 const Planning = () => {
   const { data, /*loading, */ error } = useQuery<Result>(PLANNING, {
     variables: { dateIni: new Date(1234567), dateFin: new Date(1234567) },
-    client: apollo,
   })
 
   if (error) {
