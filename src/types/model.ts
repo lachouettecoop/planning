@@ -1,3 +1,5 @@
+import { List } from "src/helpers/apollo"
+
 export type ID = string
 
 export interface Role {
@@ -57,6 +59,7 @@ export interface Creneau {
   heureDebut: string // ISO datetime
   heureFin: string // ISO datetime
   informations: string
+  piafs: List<PIAF>
 }
 
 export interface PIAF {
