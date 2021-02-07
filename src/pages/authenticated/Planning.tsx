@@ -1,6 +1,5 @@
 import { useQuery } from "@apollo/client"
-import clsx from "clsx"
-import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 
 import CalendarDay from "src/components/calendarDay"
 import { Day } from "src/components/calendarDay"
@@ -10,7 +9,7 @@ import { List } from "src/helpers/apollo"
 
 type Result = { creneaus: List<Creneau> }
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     dayContainer: {
       display: "flex",
@@ -33,10 +32,8 @@ const Planning = () => {
     return null
   }
 
-  // return <pre>{JSON.stringify(data, null, 2)}</pre>
-
   return (
-    <div className={clsx(classes.dayContainer)}>
+    <div className={classes.dayContainer}>
       {data.creneaus.edges.map(({ node }) => {
         const day: Day = {
           date: node.date,
