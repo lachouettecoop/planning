@@ -31,19 +31,23 @@ const Planning = () => {
   if (!data) {
     return null
   }
-
+  const creneaus = data.creneaus.edges.slice() //copy data to avoid immutable error on sorting
   return (
     <div className={classes.dayContainer}>
-      {data.creneaus.edges.map(({ node }) => {
-        const day: Day = {
-          date: node.date,
-          title: node.titre,
-          iniHour: new Date(node.heureDebut),
-          finHour: new Date(node.heureFin),
-          piafs: node.piafs,
-        }
-        return <CalendarDay day={day} key={node.id} />
-      })}
+      {creneaus
+        .sort((a, b) => {
+          return new Date(a.node.date).getTime() - new Date(b.node.date).getTime()
+        })
+        .map(({ node }) => {
+          const day: Day = {
+            date: new Date(node.date),
+            title: node.titre,
+            iniHour: new Date(node.heureDebut),
+            finHour: new Date(node.heureFin),
+            piafs: node.piafs,
+          }
+          return <CalendarDay day={day} key={node.id} />
+        })}
     </div>
   )
 }

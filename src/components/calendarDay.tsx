@@ -4,10 +4,10 @@ import { createStyles, makeStyles } from "@material-ui/core/styles"
 import { List } from "src/helpers/apollo"
 import { PIAF } from "src/types/model"
 import DayInfo from "src/components/dayInfo"
-import { formatTime } from "src/helpers/date"
+import { formatTime, formatDate } from "src/helpers/date"
 
 export interface Day {
-  date: string
+  date: Date
   iniHour: Date
   finHour: Date
   title: string
@@ -54,7 +54,7 @@ const CalendarDay = ({ day }: Props) => {
   return (
     <>
       <div className={classes.piafContainer} onClick={handleClick}>
-        <div>{day.date}</div>
+        <div>{formatDate(day.date)}</div>
         <div>{day.title}</div>
         <div>
           {formatTime(day.iniHour)} – {formatTime(day.finHour)}
