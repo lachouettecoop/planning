@@ -1,18 +1,18 @@
 import { Dialog, DialogContent, DialogTitle } from "@material-ui/core"
 
-import { Day } from "src/components/calendarDay"
 import { formatTime, formatDate } from "src/helpers/date"
 import { REGISTRATION } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
+import { Creneau } from "src/types/model"
 
 interface Props {
-  day: Day
+  creneau: Creneau
   show: boolean
   handleClose: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const DayInfo = ({ day, show, handleClose }: Props) => {
+const DayInfo = ({ creneau, show, handleClose }: Props) => {
   const { user } = useUser<true>()
   const registration = async (idPIAF: string) => {
     apollo
@@ -29,17 +29,16 @@ const DayInfo = ({ day, show, handleClose }: Props) => {
   return (
     <Dialog open={show} onClose={handleClose}>
       <DialogTitle>
-        {day.title}
+        {creneau.titre}
         <button onClick={handleClose}>X</button>
       </DialogTitle>
       <DialogContent>
-        <div>{formatDate(day.date)}</div>
-        <div>{day.title}</div>
+        <div>{formatDate(new Date(creneau.date))}</div>
         <div>
-          {formatTime(day.iniHour)} – {formatTime(day.finHour)}
+          {formatTime(new Date(creneau.heureDebut))} – {formatTime(new Date(creneau.heureFin))}
         </div>
         <ul>
-          {day.piafs.edges.map(({ node }) => (
+          {creneau.piafs.edges.map(({ node }) => (
             <li key={node.id}>
               {node.piaffeur?.nom} {node.piaffeur?.prenom} {node.statut} {node.role.libelle}
               <button onClick={() => registration(node.id)}>S&apos;inscrire</button>

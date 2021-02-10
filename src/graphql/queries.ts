@@ -40,8 +40,8 @@ export const NEXT_PIAFS = gql`
 `
 
 export const PLANNING = gql`
-  query PLANNING($dateIni: String, $dateEnd: String) {
-    creneaus(date: { after: $dateIni, before: $dateEnd }) {
+  query PLANNING($after: String, $before: String) {
+    creneaus(date: { after: $after, before: $before }) {
       edges {
         node {
           id
