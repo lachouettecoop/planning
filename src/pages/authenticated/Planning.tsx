@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
+import { addDays, addWeeks, startOfWeek } from "date-fns"
 
 import CalendarDay from "src/components/calendarDay"
 import { Day } from "src/components/calendarDay"
@@ -18,20 +19,16 @@ const useStyles = makeStyles(() =>
   })
 )
 
-const numWeeks = 4
-const today = new Date(Date.now())
-let after = new Date(today)
-let todayIndex = today.getDay()
-if (todayIndex === 0) todayIndex = 7
-
-after.setDate(today.getDate() - (todayIndex - 1))
-const before = new Date(after)
-before.setDate(before.getDate() + 7 * numWeeks)
+const NUM_WEEKS = 4
 
 const Planning = () => {
+  const now = new Date()
+  const start = startOfWeek(now, { weekStartsOn: 1 })
+  const end = addWeeks(start, NUM_WEEKS)
+
   const classes = useStyles()
   const { data, /*loading, */ error } = useQuery<Result>(PLANNING, {
-    variables: { after: after, before: before },
+    variables: { after: start, before: end },
   })
 
   if (error) {
@@ -43,12 +40,14 @@ const Planning = () => {
   }
 
   const days: Array<Day> = []
-  let daySlotsAll = data.creneaus.edges.slice() //copy data to avoid immutable error on sorting
-  daySlotsAll = daySlotsAll.sort((a, b) => {
+  const slots = data.creneaus.edges.slice() //copy data to avoid immutable error on sorting
+  slots.sort((a, b) => {
     return new Date(a.node.date).getTime() - new Date(b.node.date).getTime()
   })
-  do {
-    const daySlots = daySlotsAll.filter((c) => new Date(c.node.date).toDateString() === new Date(after).toDateString())
+
+  let current = new Date(start)
+  while (current < end) {
+    const daySlots = slots.filter(({ node }) => new Date(node.date).toDateString() === current.toDateString())
     const test: List<Creneau> = {
       edges: [],
       pageInfo: { startCursor: "", endCursor: "", hasNextPage: false, hasPreviousPage: false },
@@ -64,11 +63,11 @@ const Planning = () => {
     })
 
     days.push({
-      date: new Date(after),
+      date: new Date(current),
       creneaus: test,
     })
-    after = new Date(after.setDate(after.getDate() + 1))
-  } while (after < before)
+    current = addDays(current, 1)
+  }
 
   return (
     <div className={classes.dayContainer}>
