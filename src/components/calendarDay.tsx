@@ -2,7 +2,7 @@ import { useState } from "react"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 
 import { List } from "src/helpers/apollo"
-import { Creneau, PIAF } from "src/types/model"
+import { Creneau } from "src/types/model"
 import DayInfo from "src/components/dayInfo"
 import { formatTime, formatDate } from "src/helpers/date"
 
@@ -53,15 +53,15 @@ const CalendarDay = ({ day }: Props) => {
       <div className={classes.piafContainer} onClick={handleClick}>
         <div>{formatDate(day.date)}</div>
         <ul>
-          {day.creneaus.edges.map(({ node }) => (
-            <li key={node.id}>
-              <DayInfo show={open} creneau={node} handleClose={handleClose} />
-              <div>{node.titre}</div>
-              {formatTime(new Date(node.heureDebut))} {formatTime(new Date(node.heureFin))}
+          {day.creneaus.edges.map(({ node: slot }) => (
+            <li key={slot.id}>
+              <DayInfo show={open} creneau={slot} handleClose={handleClose} />
+              <div>{slot.titre}</div>
+              {formatTime(new Date(slot.heureDebut))} {formatTime(new Date(slot.heureFin))}
               <ul>
-                {node.piafs.edges.map(({ node }) => (
-                  <li key={node.id}>
-                    {node.piaffeur?.nom} {node.piaffeur?.prenom} {node.statut} {node.role.libelle}
+                {slot.piafs.edges.map(({ node: piaf }) => (
+                  <li key={piaf.id}>
+                    {piaf.piaffeur?.nom} {piaf.piaffeur?.prenom} {piaf.statut} {piaf.role.libelle}
                   </li>
                 ))}
               </ul>
