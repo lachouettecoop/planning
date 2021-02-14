@@ -33,7 +33,7 @@ export interface User {
   id: ID
   email: string
   username: string
-  roles: string[]
+  rolesChouette: List<Role>
   enabled: boolean
   civilite: string
   nom: string
