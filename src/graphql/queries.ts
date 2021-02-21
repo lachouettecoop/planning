@@ -84,8 +84,8 @@ export const PLANNING = gql`
 
 export const REGISTRATION = gql`
   mutation REGISTRATION($idPiaf: ID!, $idPiaffeur: String) {
-    # updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur, statut: statusPiaf.Disponible }) {
-    updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur, statut: "" }) {
+    # updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur, statut: statusPiaf.Occupe }) {
+    updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur, statut: "occupe" }) {
       piaf {
         id
         piaffeur {
@@ -98,8 +98,8 @@ export const REGISTRATION = gql`
 `
 export const DEREGISTRATION = gql`
   mutation DEREGISTRATION($idPiaf: ID!) {
-    # updatePiaf(input: { id: $idPiaf, piaffeur: null, statut: statusPiaf.Remplacement }) {
-    updatePiaf(input: { id: $idPiaf, piaffeur: null, statut: "remplacement" }) {
+    # updatePiaf(input: { id: $idPiaf, statut: statusPiaf.Remplacement }) {
+    updatePiaf(input: { id: $idPiaf, statut: "remplacement" }) {
       piaf {
         id
         piaffeur {
