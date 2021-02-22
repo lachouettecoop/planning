@@ -24,21 +24,12 @@ import {
 
 const useStyles = makeStyles((theme) =>
   createStyles({
-    text: {
-      padding: theme.spacing(2, 2, 0),
-    },
-    list: {
-      marginBottom: theme.spacing(2),
-    },
     appBar: {
       top: "auto",
       bottom: 0,
     },
     toolbar: {
       justifyContent: "space-between",
-    },
-    grow: {
-      flexGrow: 1,
     },
     label: {
       // Aligns the content of the button vertically.

@@ -26,7 +26,7 @@ module.exports = {
   overrides: [
     {
       files: ["**/*.ts", "**/*.tsx"],
-      extends: ["plugin:@typescript-eslint/recommended", "prettier/@typescript-eslint"],
+      extends: ["plugin:@typescript-eslint/recommended"],
       rules: {
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-explicit-any": "off",
