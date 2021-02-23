@@ -6,6 +6,7 @@ export interface IDatePlanningContext {
   end: Date
   goBack: () => void
   goForward: () => void
+  goToday: () => void
 }
 
 const NUM_WEEKS = 4
@@ -28,8 +29,15 @@ export const DatePlanningProvider: FC = ({ children }) => {
     setEnd(addWeeks(end, NUM_WEEKS))
   }
 
+  const goToday = () => {
+    setStart(new Date())
+    setEnd(addWeeks(new Date(), NUM_WEEKS))
+  }
+
   return (
-    <DatePlanningContext.Provider value={{ start, end, goBack, goForward }}>{children}</DatePlanningContext.Provider>
+    <DatePlanningContext.Provider value={{ start, end, goBack, goForward, goToday }}>
+      {children}
+    </DatePlanningContext.Provider>
   )
 }
 

@@ -3,7 +3,7 @@ import type { List } from "src/helpers/apollo"
 
 import { useQuery } from "@apollo/client"
 import { Button, CircularProgress, Grid } from "@material-ui/core"
-import { ArrowBackIos, ArrowForwardIos, Search } from "@material-ui/icons"
+import { ArrowBackIos, ArrowForwardIos, Search, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 
 import { useDatePlanning } from "src/providers/datePlanning"
@@ -51,7 +51,7 @@ const Title = styled.h2`
 `
 
 const Planning = () => {
-  const { goBack, goForward, start, end } = useDatePlanning()
+  const { goBack, goForward, goToday, start, end } = useDatePlanning()
 
   const { data, loading, error } = useQuery<Result>(PLANNING, {
     variables: { after: start, before: end },
@@ -81,6 +81,9 @@ const Planning = () => {
         <Title>{formatInterval(start, end)}</Title>
         <Button disabled={loading} variant="contained" color="primary" startIcon={<ArrowBackIos />} onClick={goBack}>
           Précédent
+        </Button>
+        <Button disabled={loading} variant="contained" color="primary" startIcon={<CalendarToday />} onClick={goToday}>
+          Aujourd´hui
         </Button>
         <Button
           disabled={loading}
