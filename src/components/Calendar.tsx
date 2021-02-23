@@ -1,5 +1,5 @@
 import type { Creneau } from "src/types/model"
-import type { IDay } from "src/types/app"
+import type { IWeek } from "src/types/app"
 import type { List } from "src/helpers/apollo"
 
 import styled from "@emotion/styled/macro"
@@ -17,11 +17,6 @@ const WeekRow = styled.div`
   }
 `
 
-interface Week {
-  date: Date
-  days: IDay[]
-}
-
 interface Props {
   start: Date
   end: Date
@@ -33,7 +28,7 @@ const Calendar = ({ start, end, list }: Props) => {
     return null
   }
 
-  const weeks: Week[] = eachWeekOfInterval({ start, end }, { weekStartsOn: 1 }).map((date) => ({
+  const weeks: IWeek[] = eachWeekOfInterval({ start, end }, { weekStartsOn: 1 }).map((date) => ({
     date,
     days: [0, 1, 2, 3, 4, 5, 6].map((i) => ({ date: addDays(date, i), slots: [] })),
   }))
@@ -49,7 +44,7 @@ const Calendar = ({ start, end, list }: Props) => {
     const startTime = node.heureDebut.split("T")[1]
     const endTime = node.heureFin.split("T")[1]
 
-    week.days[day]?.slots.push({
+    week.days[day].slots.push({
       id: node.id,
       title: node.titre,
       start: new Date(`${dateStr}T${startTime}`),

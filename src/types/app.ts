@@ -12,3 +12,8 @@ export interface IDay {
   date: Date
   slots: ISlot[]
 }
+
+export interface IWeek {
+  date: Date
+  days: IDay[]
+}
