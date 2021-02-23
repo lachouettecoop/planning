@@ -29,8 +29,8 @@ export const DatePlanningProvider: FC = ({ children }) => {
   }
 
   const goToday = () => {
-    setStart(new Date())
-    setEnd(addWeeks(new Date(), NUM_WEEKS))
+    setStart(getInitialStart)
+    setEnd(getInitialEnd)
   }
 
   return (

@@ -11,6 +11,7 @@ import { PLANNING } from "src/graphql/queries"
 import Calendar from "src/components/Calendar"
 import { PiafIcon } from "src/components/Piaf"
 import { formatMonthYear } from "src/helpers/date"
+import { isSameMonth } from "date-fns"
 
 type Result = { creneaus: List<Creneau> }
 
@@ -40,11 +41,12 @@ const Nav = styled.nav`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-`
-const Spacer = styled.div`
-  flex: 1;
+  button:not(:first-of-type) {
+    margin-left: 10px;
+  }
 `
 const Title = styled.h2`
+  flex: 1;
   margin: 0 20px;
   text-transform: capitalize;
   min-width: 160px;
@@ -75,13 +77,18 @@ const Planning = () => {
         <Button variant="contained" color="primary" startIcon={<Search />} disabled>
           Recherche
         </Button>
-        <Spacer />
+        <Title>{formatMonthYear(start)}</Title>
         <Button disabled={loading} variant="contained" color="primary" startIcon={<ArrowBackIos />} onClick={goBack}>
           Précédent
         </Button>
-        <Title>{formatMonthYear(start)}</Title>
-        <Button disabled={loading} variant="contained" color="primary" startIcon={<CalendarToday />} onClick={goToday}>
-          Aujourd´hui
+        <Button
+          disabled={loading || isSameMonth(start, new Date())}
+          variant="contained"
+          color="primary"
+          startIcon={<CalendarToday />}
+          onClick={goToday}
+        >
+          Aujourd’hui
         </Button>
         <Button
           disabled={loading}

@@ -25,7 +25,7 @@ const Title = styled.div`
   }
 `
 const PiafRow = styled.div`
-  margin: 8px 0;
+  margin: 0 0 16px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,20 +33,13 @@ const PiafRow = styled.div`
 const Status = styled.div`
   flex: 1;
   margin: 0 8px;
+  span {
+    color: #888;
+  }
 `
-
-const getName = ({ piaffeur, role }: PIAF) => (
-  <span>
-    <strong>
-      {piaffeur.prenom} {piaffeur.nom}
-    </strong>{" "}
-    ({role.libelle})
-    <br />
-    <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
-    <br />
-    <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
-  </span>
-)
+const Contact = styled.div`
+  text-align: right;
+`
 
 interface Props {
   slot: ISlot
@@ -109,7 +102,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   }
 
   return (
-    <Dialog open={show} onClose={handleClose} fullWidth maxWidth="xs">
+    <Dialog open={show} onClose={handleClose} fullWidth>
       <CloseButton onClick={handleClose}>
         <Close />
       </CloseButton>
@@ -125,17 +118,30 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
       </DialogTitle>
       <DialogContent>
         {slot.piafs.map((piaf) => {
+          const { id, role, piaffeur } = piaf
           const status = getStatus(piaf)
+
           return (
-            <PiafRow key={piaf.id}>
+            <PiafRow key={id}>
               <Piaf piaf={piaf} />
-              <Status>{status === "occupied" ? getName(piaf) : "Disponible"}</Status>
+              <Status>
+                {status === "occupied" ? `${piaffeur.prenom} ${piaffeur.nom}` : "Place disponible"}
+                <br />
+                <span>{role.libelle}</span>
+              </Status>
+              {status === "occupied" && (
+                <Contact>
+                  <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
+                  <br />
+                  <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
+                </Contact>
+              )}
               {status !== "occupied" && !userPiaf && (
                 <Button disabled={loading} color="primary" variant="contained" onClick={() => register(piaf)}>
                   S’inscrire
                 </Button>
               )}
-              {piaf.piaffeur?.id == user?.id && piaf.statut == "occupe" && (
+              {piaffeur?.id == user?.id && piaf.statut == "occupe" && (
                 <Button disabled={loading} color="primary" variant="contained" onClick={() => unregister(piaf)}>
                   Demander un remplacement
                 </Button>
