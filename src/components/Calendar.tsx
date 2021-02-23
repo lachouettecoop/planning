@@ -37,7 +37,7 @@ const Calendar = ({ start, end, list }: Props) => {
     const dateStr = node.date.split("T")[0]
 
     const date = new Date(dateStr)
-    const weekIndex = differenceInWeeks(date, start)
+    const weekIndex = differenceInWeeks(date, weeks[0].date)
     const week = weeks[weekIndex]
     const day = (getDay(date) || 7) - 1 // Monday = 0, ..., Sunday = 6
 

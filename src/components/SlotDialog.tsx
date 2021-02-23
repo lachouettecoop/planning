@@ -10,7 +10,7 @@ import { formatTime, formatDateLong } from "src/helpers/date"
 import { REGISTRATION_UPDATE } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
-import Piaf from "src/components/Piaf"
+import Piaf, { getStatus } from "src/components/Piaf"
 import { handleError } from "src/helpers/errors"
 
 const CloseButton = styled(IconButton)`
@@ -35,23 +35,18 @@ const Status = styled.div`
   margin: 0 8px;
 `
 
-const getPiafTitle = ({ statut, piaffeur, role }: PIAF) => {
-  if (statut === "occupe") {
-    return (
-      <span>
-        <strong>
-          {piaffeur.prenom} {piaffeur.nom}
-        </strong>{" "}
-        ({role.libelle})
-        <br />
-        <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
-        <br />
-        <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
-      </span>
-    )
-  }
-  return "Disponible"
-}
+const getName = ({ piaffeur, role }: PIAF) => (
+  <span>
+    <strong>
+      {piaffeur.prenom} {piaffeur.nom}
+    </strong>{" "}
+    ({role.libelle})
+    <br />
+    <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
+    <br />
+    <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
+  </span>
+)
 
 interface Props {
   slot: ISlot
@@ -129,22 +124,25 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
         </Title>
       </DialogTitle>
       <DialogContent>
-        {slot.piafs.map((piaf) => (
-          <PiafRow key={piaf.id}>
-            <Piaf piaf={piaf} />
-            <Status>{getPiafTitle(piaf)}</Status>
-            {(piaf.statut == "" || piaf.statut == "remplacement" || !piaf.statut) && !userPiaf && (
-              <Button disabled={loading} color="primary" variant="contained" onClick={() => register(piaf)}>
-                S’inscrire
-              </Button>
-            )}
-            {piaf.piaffeur && piaf.piaffeur.id == user?.id && piaf.statut == "occupe" && (
-              <Button disabled={loading} color="primary" variant="contained" onClick={() => unregister(piaf)}>
-                Demander un remplacement
-              </Button>
-            )}
-          </PiafRow>
-        ))}
+        {slot.piafs.map((piaf) => {
+          const status = getStatus(piaf)
+          return (
+            <PiafRow key={piaf.id}>
+              <Piaf piaf={piaf} />
+              <Status>{status === "occupied" ? getName(piaf) : "Disponible"}</Status>
+              {status !== "occupied" && !userPiaf && (
+                <Button disabled={loading} color="primary" variant="contained" onClick={() => register(piaf)}>
+                  S’inscrire
+                </Button>
+              )}
+              {piaf.piaffeur?.id == user?.id && piaf.statut == "occupe" && (
+                <Button disabled={loading} color="primary" variant="contained" onClick={() => unregister(piaf)}>
+                  Demander un remplacement
+                </Button>
+              )}
+            </PiafRow>
+          )
+        })}
       </DialogContent>
     </Dialog>
   )

@@ -26,13 +26,12 @@ const ClickableSlot = styled.button<{ $open: boolean }>`
 const Title = styled.div`
   span {
     color: gray;
-    margin-left: 5px;
   }
 `
 const List = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  margin: 0 -2px;
 `
 
 interface Props {
@@ -57,6 +56,7 @@ const Slot = ({ slot }: Props) => {
           <strong>
             {formatTime(slot.start)}–{formatTime(slot.end)}
           </strong>
+          <br />
           <span>{slot.title}</span>
         </Title>
         <List>

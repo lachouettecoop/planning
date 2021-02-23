@@ -8,9 +8,11 @@ import { formatDateShort } from "src/helpers/date"
 const Container = styled.div`
   border: 1px solid gray;
   min-height: 60px;
+  background-color: #eee;
 `
-const Title = styled.div`
-  text-align: center;
+const Title = styled.h3`
+  margin: 0 5px;
+  text-transform: capitalize;
 `
 const List = styled.ul`
   list-style: none;

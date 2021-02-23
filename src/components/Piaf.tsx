@@ -1,32 +1,54 @@
-import { PIAF } from "src/types/model"
+import type { PIAF } from "src/types/model"
+import type { IStatus } from "src/types/app"
 
 import styled from "@emotion/styled/macro"
 
-type Status = "available" | "replacement"
+import Chouettos from "src/images/chouettos.png"
 
-const STATUS_COLORS: Record<Status, string> = {
-  available: "green",
+const STATUS_COLORS: Record<IStatus, string> = {
+  available: "white",
   replacement: "orange",
+  occupied: "green",
 }
 
-export const PiafIcon = styled.span<{ $status?: Status }>`
+const IMAGES: Record<string, string> = {
+  Chouettos,
+}
+
+const getImg = (role?: string) => {
+  if (role) {
+    const img = IMAGES[role]
+    if (img) {
+      return `url(${img})`
+    }
+  }
+}
+
+export const PiafIcon = styled.span<{ $status: IStatus; $role?: string }>`
   flex-shrink: 0;
   display: inline-block;
-  text-align: center;
-  background-color: #ccc;
-  width: 24px;
-  height: 24px;
+  margin: 2px;
+  width: 32px;
+  height: 32px;
+  border: 2px solid ${({ $status }) => STATUS_COLORS[$status]};
   border-radius: 50%;
-  border: 2px solid ${({ $status }) => ($status ? STATUS_COLORS[$status] : "grey")};
+  background-color: #ddd;
+  background-image: ${({ $role }) => getImg($role) || "none"};
+  background-position: center;
+  background-size: 24px;
+  background-repeat: no-repeat;
+  line-height: 28px;
+  text-align: center;
 `
 
-const getStatus = (piaf: PIAF): Status | undefined => {
-  if (!piaf.piaffeur && piaf.statut !== "remplacement") {
-    return "available"
-  }
+export const getStatus = (piaf: PIAF): IStatus => {
   if (piaf.statut === "remplacement") {
     return "replacement"
   }
+  if (piaf.piaffeur) {
+    return "occupied"
+  }
+  return "available"
 }
 
 const ROLE_INITIALS: Record<string, string> = {
@@ -38,8 +60,10 @@ interface Props {
   piaf: PIAF
 }
 
-const Piaf = ({ piaf }: Props) => {
-  return <PiafIcon $status={getStatus(piaf)}>{ROLE_INITIALS[piaf.role.libelle] || ""}</PiafIcon>
-}
+const Piaf = ({ piaf }: Props) => (
+  <PiafIcon $status={getStatus(piaf)} $role={piaf.role.libelle}>
+    {ROLE_INITIALS[piaf.role.libelle] || ""}
+  </PiafIcon>
+)
 
 export default Piaf

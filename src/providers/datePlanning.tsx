@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, FC } from "react"
-import { addWeeks, subSeconds, subWeeks, startOfWeek } from "date-fns"
+import { startOfMonth, endOfMonth, subMonths, addMonths } from "date-fns"
 
 export interface IDatePlanningContext {
   start: Date
@@ -9,24 +9,23 @@ export interface IDatePlanningContext {
   goToday: () => void
 }
 
-const NUM_WEEKS = 4
 const DatePlanningContext = createContext<IDatePlanningContext>({} as IDatePlanningContext)
 
-const getInitialStart = () => startOfWeek(new Date(), { weekStartsOn: 1 })
-const getInitialEnd = () => subSeconds(addWeeks(getInitialStart(), NUM_WEEKS), 1)
+const getInitialStart = () => startOfMonth(new Date())
+const getInitialEnd = () => endOfMonth(new Date())
 
 export const DatePlanningProvider: FC = ({ children }) => {
   const [start, setStart] = useState<Date>(getInitialStart)
   const [end, setEnd] = useState<Date>(getInitialEnd)
 
   const goBack = () => {
-    setStart(subWeeks(start, NUM_WEEKS))
-    setEnd(subWeeks(end, NUM_WEEKS))
+    setStart(subMonths(start, 1))
+    setEnd(subMonths(end, 1))
   }
 
   const goForward = () => {
-    setStart(addWeeks(start, NUM_WEEKS))
-    setEnd(addWeeks(end, NUM_WEEKS))
+    setStart(addMonths(start, 1))
+    setEnd(addMonths(end, 1))
   }
 
   const goToday = () => {

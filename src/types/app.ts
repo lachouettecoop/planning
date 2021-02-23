@@ -17,3 +17,5 @@ export interface IWeek {
   date: Date
   days: IDay[]
 }
+
+export type IStatus = "available" | "replacement" | "occupied"

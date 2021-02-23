@@ -10,7 +10,7 @@ import { useDatePlanning } from "src/providers/datePlanning"
 import { PLANNING } from "src/graphql/queries"
 import Calendar from "src/components/Calendar"
 import { PiafIcon } from "src/components/Piaf"
-import { formatInterval } from "src/helpers/date"
+import { formatMonthYear } from "src/helpers/date"
 
 type Result = { creneaus: List<Creneau> }
 
@@ -27,10 +27,9 @@ const ErrorMessage = styled.div`
 const Caption = styled.div`
   border: 1px solid gray;
   border-radius: 10px;
-  width: 350px;
+  width: 450px;
   margin: 20px 0 20px auto;
   padding: 10px;
-  font-size: 11px;
   text-align: center;
 `
 const CaptionTitle = styled.h3`
@@ -41,12 +40,14 @@ const Nav = styled.nav`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  button:not(:first-of-type) {
-    margin-left: 20px;
-  }
+`
+const Spacer = styled.div`
+  flex: 1;
 `
 const Title = styled.h2`
-  flex: 1;
+  margin: 0 20px;
+  text-transform: capitalize;
+  min-width: 160px;
   text-align: center;
 `
 
@@ -68,20 +69,17 @@ const Planning = () => {
     )
   }
 
-  const handleSearch = () => {
-    // TODO
-  }
-
   return (
-    <div>
+    <>
       <Nav>
-        <Button variant="contained" color="primary" startIcon={<Search />} onClick={handleSearch}>
+        <Button variant="contained" color="primary" startIcon={<Search />} disabled>
           Recherche
         </Button>
-        <Title>{formatInterval(start, end)}</Title>
+        <Spacer />
         <Button disabled={loading} variant="contained" color="primary" startIcon={<ArrowBackIos />} onClick={goBack}>
           Précédent
         </Button>
+        <Title>{formatMonthYear(start)}</Title>
         <Button disabled={loading} variant="contained" color="primary" startIcon={<CalendarToday />} onClick={goToday}>
           Aujourd´hui
         </Button>
@@ -114,12 +112,12 @@ const Planning = () => {
             <div>Cherche remplaçant</div>
           </Grid>
           <Grid item xs={4}>
-            <PiafIcon />
+            <PiafIcon $status="occupied" />
             <div>PIAF occupée</div>
           </Grid>
         </Grid>
       </Caption>
-    </div>
+    </>
   )
 }
 
