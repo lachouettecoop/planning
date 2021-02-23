@@ -61,9 +61,9 @@ interface Props {
 
 const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const [loading, setLoading] = useState(false)
-  const { user, auth } = useUser<true>()
+  const { user } = useUser<true>()
 
-  const userPiaf = slot.piafs.find(({ piaffeur, statut }) => piaffeur?.id == auth.id && statut == "occupe")
+  const userPiaf = slot.piafs.find(({ piaffeur, statut }) => piaffeur?.id == user?.id && statut == "occupe")
 
   const register = async (piaf: PIAF) => {
     const roles = user?.rolesChouette.edges
@@ -85,7 +85,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
     apollo
       .mutate({
         mutation: REGISTRATION_UPDATE,
-        variables: { idPiaf, idPiaffeur: auth.id, statut: "occupe" },
+        variables: { idPiaf, idPiaffeur: user?.id, statut: "occupe" },
       })
       .then((response) => {
         console.log(response)
@@ -102,7 +102,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
     apollo
       .mutate({
         mutation: REGISTRATION_UPDATE,
-        variables: { idPiaf: piaf.id, idPiaffeur: auth.id, statut: "remplacement" },
+        variables: { idPiaf: piaf.id, idPiaffeur: user?.id, statut: "remplacement" },
       })
       .then((response) => {
         console.log(response)
@@ -138,7 +138,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
                 S’inscrire
               </Button>
             )}
-            {piaf.piaffeur && piaf.piaffeur.id == auth.id && piaf.statut == "occupe" && (
+            {piaf.piaffeur && piaf.piaffeur.id == user?.id && piaf.statut == "occupe" && (
               <Button disabled={loading} color="primary" variant="contained" onClick={() => unregister(piaf)}>
                 Demander un remplacement
               </Button>

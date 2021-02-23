@@ -8,7 +8,7 @@ import apollo from "src/helpers/apollo"
 export interface Auth {
   email: string
   token: string
-  id: string
+  id: number
 }
 
 export interface IUserContext<IsAuthenticated extends boolean = false> {
