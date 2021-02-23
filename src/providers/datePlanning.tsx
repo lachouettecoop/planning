@@ -19,13 +19,13 @@ export const DatePlanningProvider: FC = ({ children }) => {
   const [end, setEnd] = useState<Date>(getInitialEnd)
 
   const goBack = () => {
-    setStart(subWeeks(start, 1))
-    setEnd(subWeeks(end, 1))
+    setStart(subWeeks(start, NUM_WEEKS))
+    setEnd(subWeeks(end, NUM_WEEKS))
   }
 
   const goForward = () => {
-    setStart(addWeeks(start, 1))
-    setEnd(addWeeks(end, 1))
+    setStart(addWeeks(start, NUM_WEEKS))
+    setEnd(addWeeks(end, NUM_WEEKS))
   }
 
   return (

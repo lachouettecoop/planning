@@ -1,5 +1,7 @@
 import { Redirect, Route, Switch } from "react-router-dom"
 import { styled, Container } from "@material-ui/core"
+
+import { DatePlanningProvider } from "src/providers/datePlanning"
 import HomePage from "src/pages/authenticated/Home"
 import Planning from "src/pages/authenticated/Planning"
 import Menu from "src/components/menu"
@@ -12,7 +14,7 @@ const Content = styled(Container)(({ theme }) => ({
 
 const Authenticated = () => {
   return (
-    <>
+    <DatePlanningProvider>
       <Menu />
       <Content>
         <Switch>
@@ -26,7 +28,7 @@ const Authenticated = () => {
         </Switch>
         <MenuBottom />
       </Content>
-    </>
+    </DatePlanningProvider>
   )
 }
 

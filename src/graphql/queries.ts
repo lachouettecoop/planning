@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client"
-// import { statusPiaf } from "src/helpers/constants"
 
 export const LOGGED_IN_USER = gql`
   query LOGGED_IN_USER($id: ID!) {
@@ -82,24 +81,9 @@ export const PLANNING = gql`
   }
 `
 
-export const REGISTRATION = gql`
-  mutation REGISTRATION($idPiaf: ID!, $idPiaffeur: String) {
-    # updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur, statut: statusPiaf.Occupe }) {
-    updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur, statut: "occupe" }) {
-      piaf {
-        id
-        piaffeur {
-          id
-        }
-        statut
-      }
-    }
-  }
-`
-export const DEREGISTRATION = gql`
-  mutation DEREGISTRATION($idPiaf: ID!) {
-    # updatePiaf(input: { id: $idPiaf, statut: statusPiaf.Remplacement }) {
-    updatePiaf(input: { id: $idPiaf, statut: "remplacement" }) {
+export const REGISTRATION_UPDATE = gql`
+  mutation REGISTRATION_UPDATE($idPiaf: ID!, $idPiaffeur: String!, $statut: String!) {
+    updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur, statut: $statut }) {
       piaf {
         id
         piaffeur {

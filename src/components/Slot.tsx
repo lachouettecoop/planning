@@ -1,8 +1,9 @@
+import type { ISlot } from "src/types/app"
+
 import { useState } from "react"
 import styled from "@emotion/styled/macro"
 
-import { Creneau } from "src/types/model"
-import SlotInfo from "src/components/slotInfo"
+import SlotInfo from "src/components/SlotDialog"
 import { formatTime } from "src/helpers/date"
 import Piaf from "src/components/Piaf"
 
@@ -35,7 +36,7 @@ const List = styled.div`
 `
 
 interface Props {
-  slot: Creneau
+  slot: ISlot
 }
 
 const Slot = ({ slot }: Props) => {
@@ -54,20 +55,17 @@ const Slot = ({ slot }: Props) => {
       <ClickableSlot $open={open} onClick={handleClick}>
         <Title>
           <strong>
-            {formatTime(new Date(slot.heureDebut))}–{formatTime(new Date(slot.heureFin))}
+            {formatTime(slot.start)}–{formatTime(slot.end)}
           </strong>
-          <span>{slot.titre}</span>
+          <span>{slot.title}</span>
         </Title>
         <List>
-          {slot.piafs.edges
-            .slice()
-            .sort((a, b) => (a.node.role.id > b.node.role.id ? 1 : -1))
-            .map(({ node: piaf }) => (
-              <Piaf key={piaf.id} piaf={piaf} />
-            ))}
+          {slot.piafs.map((piaf) => (
+            <Piaf key={piaf.id} piaf={piaf} />
+          ))}
         </List>
       </ClickableSlot>
-      <SlotInfo show={open} creneau={slot} handleClose={handleClose} />
+      <SlotInfo show={open} slot={slot} handleClose={handleClose} />
     </>
   )
 }

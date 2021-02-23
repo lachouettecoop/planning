@@ -1,8 +1,9 @@
 import { FormEvent, useState } from "react"
 import { Container, TextField, Button } from "@material-ui/core"
 
-import { post } from "src/helpers/request"
 import { useUser, Auth } from "src/providers/user"
+import { post } from "src/helpers/request"
+import { handleError } from "src/helpers/errors"
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false)
@@ -21,7 +22,7 @@ const LoginPage = () => {
       }
       login(auth)
     } catch (error) {
-      alert(error)
+      handleError(error)
       setLoading(false)
     }
   }

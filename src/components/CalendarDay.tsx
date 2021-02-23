@@ -1,14 +1,9 @@
-import type { Creneau } from "src/types/model"
+import type { IDay } from "src/types/app"
 
 import styled from "@emotion/styled/macro"
 
 import Slot from "src/components/Slot"
 import { formatDateShort } from "src/helpers/date"
-
-export interface Day {
-  date: Date
-  slots: Creneau[]
-}
 
 const Container = styled.div`
   border: 1px solid gray;
@@ -24,7 +19,7 @@ const List = styled.ul`
 `
 
 interface Props {
-  day: Day
+  day: IDay
 }
 
 const CalendarDay = ({ day }: Props) => {

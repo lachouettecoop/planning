@@ -1,7 +1,6 @@
 import { PIAF } from "src/types/model"
 
 import styled from "@emotion/styled/macro"
-import { statusPiaf } from "src/helpers/constants"
 
 type Status = "available" | "replacement"
 
@@ -11,6 +10,7 @@ const STATUS_COLORS: Record<Status, string> = {
 }
 
 export const PiafIcon = styled.span<{ $status?: Status }>`
+  flex-shrink: 0;
   display: inline-block;
   text-align: center;
   background-color: #ccc;
@@ -21,10 +21,10 @@ export const PiafIcon = styled.span<{ $status?: Status }>`
 `
 
 const getStatus = (piaf: PIAF): Status | undefined => {
-  if (!piaf.piaffeur && piaf.statut !== statusPiaf.Remplacement) {
+  if (!piaf.piaffeur && piaf.statut !== "remplacement") {
     return "available"
   }
-  if (piaf.statut === statusPiaf.Remplacement) {
+  if (piaf.statut === "remplacement") {
     return "replacement"
   }
 }
