@@ -27,8 +27,8 @@ export const LOGGED_IN_USER = gql`
 `
 
 export const USER_PIAFS_BY_DATE = gql`
-  query USER_PIAFS_BY_DATE($idPiaffeur: String, $after: String, $before: String) {
-    piafs(piaffeur: $idPiaffeur, creneau_debut: { after: $after, before: $before }) {
+  query USER_PIAFS_BY_DATE($idPiaffeur: String, $after: PiafFilter_creneau_debut) {
+    piafs(piaffeur: $idPiaffeur, creneau_debut: $after) {
       id
       creneau {
         debut
