@@ -27,7 +27,7 @@ interface Props {
 const CalendarDay = ({ day }: Props) => {
   return (
     <Container>
-      <Title>{formatDateShort(day.date)}</Title>
+      <Title>{formatDateShort(day.start)}</Title>
       <List>
         {day.slots.map((slot) => (
           <Slot slot={slot} key={slot.id}></Slot>

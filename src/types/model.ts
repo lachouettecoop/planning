@@ -2,9 +2,12 @@ import { List } from "src/helpers/apollo"
 
 export type ID = string
 
+export type RoleId = "CH" | "GH" | "CA"
+
 export interface Role {
   id: ID
   libelle: string
+  roleUniqueId: RoleId
 }
 
 export interface CreneauGenerique {
@@ -55,9 +58,8 @@ export interface Creneau {
   id: ID
   titre: string
   creneauGenerique: CreneauGenerique
-  date: string // ISO datetime
-  heureDebut: string // ISO datetime
-  heureFin: string // ISO datetime
+  debut: string // ISO datetime
+  fin: string // ISO datetime
   informations: string
   piafs: List<PIAF>
 }

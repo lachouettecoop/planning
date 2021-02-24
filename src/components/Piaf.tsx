@@ -1,9 +1,9 @@
-import type { PIAF } from "src/types/model"
+import type { PIAF, RoleId } from "src/types/model"
 import type { IStatus } from "src/types/app"
 
 import styled from "@emotion/styled/macro"
 
-import Chouettos from "src/images/chouettos.png"
+import chouettos from "src/images/chouettos.png"
 
 const STATUS_COLORS: Record<IStatus, string> = {
   available: "white",
@@ -11,11 +11,11 @@ const STATUS_COLORS: Record<IStatus, string> = {
   occupied: "green",
 }
 
-const IMAGES: Record<string, string> = {
-  Chouettos,
+const IMAGES: Partial<Record<RoleId, string>> = {
+  CH: chouettos,
 }
 
-const getImg = (role?: string) => {
+const getImg = (role?: RoleId) => {
   if (role) {
     const img = IMAGES[role]
     if (img) {
@@ -24,7 +24,7 @@ const getImg = (role?: string) => {
   }
 }
 
-export const PiafIcon = styled.span<{ $status: IStatus; $role?: string }>`
+export const PiafIcon = styled.span<{ $status: IStatus; $role?: RoleId }>`
   flex-shrink: 0;
   display: inline-block;
   margin: 2px;
@@ -51,18 +51,13 @@ export const getStatus = (piaf: PIAF): IStatus => {
   return "available"
 }
 
-const ROLE_INITIALS: Record<string, string> = {
-  Caissier: "C",
-  "Grand Hibou": "GH",
-}
-
 interface Props {
   piaf: PIAF
 }
 
 const Piaf = ({ piaf }: Props) => (
-  <PiafIcon $status={getStatus(piaf)} $role={piaf.role.libelle}>
-    {ROLE_INITIALS[piaf.role.libelle] || ""}
+  <PiafIcon $status={getStatus(piaf)} $role={piaf.role.roleUniqueId}>
+    {piaf.role.roleUniqueId}
   </PiafIcon>
 )
 

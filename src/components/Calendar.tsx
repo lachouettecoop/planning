@@ -29,26 +29,21 @@ const Calendar = ({ start, end, list }: Props) => {
   }
 
   const weeks: IWeek[] = eachWeekOfInterval({ start, end }, { weekStartsOn: 1 }).map((date) => ({
-    date,
-    days: [0, 1, 2, 3, 4, 5, 6].map((i) => ({ date: addDays(date, i), slots: [] })),
+    start: date,
+    days: [0, 1, 2, 3, 4, 5, 6].map((i) => ({ start: addDays(date, i), slots: [] })),
   }))
 
   list.edges.forEach(({ node }) => {
-    const dateStr = node.date.split("T")[0]
-
-    const date = new Date(dateStr)
-    const weekIndex = differenceInWeeks(date, weeks[0].date)
+    const date = new Date(node.debut)
+    const weekIndex = differenceInWeeks(date, weeks[0].start)
     const week = weeks[weekIndex]
     const day = (getDay(date) || 7) - 1 // Monday = 0, ..., Sunday = 6
-
-    const startTime = node.heureDebut.split("T")[1]
-    const endTime = node.heureFin.split("T")[1]
 
     week.days[day].slots.push({
       id: node.id,
       title: node.titre,
-      start: new Date(`${dateStr}T${startTime}`),
-      end: new Date(`${dateStr}T${endTime}`),
+      start: date,
+      end: new Date(node.fin),
       piafs: node.piafs.edges
         .map(({ node: piaf }) => piaf)
         .sort((left, right) => (left.role.id > right.role.id ? 1 : -1)),

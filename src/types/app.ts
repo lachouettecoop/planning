@@ -9,12 +9,12 @@ export interface ISlot {
 }
 
 export interface IDay {
-  date: Date
+  start: Date
   slots: ISlot[]
 }
 
 export interface IWeek {
-  date: Date
+  start: Date
   days: IDay[]
 }
 
