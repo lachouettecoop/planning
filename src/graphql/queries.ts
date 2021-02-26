@@ -5,7 +5,15 @@ export const LOGGED_IN_USER = gql`
     user(id: $id) {
       id
       username
-      roles
+      rolesChouette {
+        edges {
+          node {
+            id
+            roleUniqueId
+            libelle
+          }
+        }
+      }
       nom
       prenom
       email
@@ -20,9 +28,8 @@ export const NEXT_PIAFS = gql`
         node {
           id
           creneau {
-            date
-            heureDebut
-            heureFin
+            debut
+            fin
           }
           piaffeur {
             prenom
@@ -31,6 +38,7 @@ export const NEXT_PIAFS = gql`
           }
           role {
             id
+            roleUniqueId
             libelle
           }
         }
@@ -40,24 +48,26 @@ export const NEXT_PIAFS = gql`
 `
 
 export const PLANNING = gql`
-  query PLANNING($dateIni: String, $dateEnd: String) {
-    creneaus(date: { after: $dateIni, before: $dateEnd }) {
+  query PLANNING($after: String, $before: String) {
+    creneaus(debut: { after: $after, before: $before }) {
       edges {
         node {
           id
-          date
-          heureFin
-          heureDebut
+          debut
+          fin
           titre
           piafs {
             edges {
               node {
                 id
+                statut
                 role {
                   id
+                  roleUniqueId
                   libelle
                 }
                 piaffeur {
+                  id
                   nom
                   prenom
                   email
@@ -72,14 +82,15 @@ export const PLANNING = gql`
   }
 `
 
-export const REGISTRATION = gql`
-  mutation REGISTRATION($idPiaf: ID!, $idPiaffeur: String) {
-    updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur }) {
+export const REGISTRATION_UPDATE = gql`
+  mutation REGISTRATION_UPDATE($idPiaf: ID!, $idPiaffeur: String!, $statut: String!) {
+    updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur, statut: $statut }) {
       piaf {
         id
         piaffeur {
           id
         }
+        statut
       }
     }
   }

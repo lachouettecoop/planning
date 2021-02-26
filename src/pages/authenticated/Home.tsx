@@ -1,9 +1,11 @@
+import type { PIAF } from "src/types/model"
+
 import { useState } from "react"
 import { gql } from "@apollo/client"
 import { Button } from "@material-ui/core"
 
 import apollo, { List } from "src/helpers/apollo"
-import type { PIAF } from "src/types/model"
+import { handleError } from "src/helpers/errors"
 
 const TEST_QUERY = gql`
   query {
@@ -42,7 +44,7 @@ const HomePage = () => {
       const { data } = await apollo.query<Result>({ query: TEST_QUERY })
       setResult(data)
     } catch (error) {
-      alert(error)
+      handleError(error)
     }
     setLoading(false)
   }

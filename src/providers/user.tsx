@@ -1,13 +1,14 @@
-import { createContext, useContext, useState, FC, useEffect } from "react"
-import { LOGGED_IN_USER } from "src/graphql/queries"
+import type { User } from "src/types/model"
 
+import { createContext, useContext, useState, FC, useEffect } from "react"
+
+import { LOGGED_IN_USER } from "src/graphql/queries"
 import apollo from "src/helpers/apollo"
-import { User } from "src/types/model"
 
 export interface Auth {
   email: string
   token: string
-  id: string
+  id: number
 }
 
 export interface IUserContext<IsAuthenticated extends boolean = false> {
