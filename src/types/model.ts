@@ -30,6 +30,14 @@ export interface Reserve {
   user: User
 }
 
+export interface Statut {
+  id: ID
+  libelle: string
+  actif: boolean
+  dateDebut: string // ISO datetime
+  dateFin: string // ISO datetime
+}
+
 export interface User {
   id: ID
   email: string
@@ -49,7 +57,8 @@ export interface User {
   carteImprimee: boolean
   gh: boolean // grand hibou
   poste: Poste
-  reserve: Reserve
+  reserve: Reserve | null
+  statuts: List<Statut>
 }
 
 export interface Creneau {

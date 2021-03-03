@@ -13,27 +13,44 @@ export const LOGGED_IN_USER = gql`
       nom
       prenom
       email
+      telephone
+      actif
+      statuts {
+        edges {
+          node {
+            id
+            libelle
+            actif
+            dateDebut
+            dateFin
+          }
+        }
+      }
     }
   }
 `
 
-export const NEXT_PIAFS = gql`
-  query NEXT_PIAFS($piaffeur: String) {
-    piafs(piaffeur: $piaffeur) {
-      id
-      creneau {
-        debut
-        fin
-      }
-      piaffeur {
-        prenom
-        nom
-        username
-      }
-      role {
-        id
-        roleUniqueId
-        libelle
+export const USER_PIAFS_BY_DATE = gql`
+  query USER_PIAFS_BY_DATE($idPiaffeur: String, $after: String, $before: String) {
+    piafs(piaffeur: $idPiaffeur, after: $after, before: $before) {
+      edges {
+        node {
+          id
+          creneau {
+            debut
+            fin
+          }
+          piaffeur {
+            prenom
+            nom
+            username
+          }
+          role {
+            id
+            roleUniqueId
+            libelle
+          }
+        }
       }
     }
   }
@@ -75,6 +92,19 @@ export const REGISTRATION_UPDATE = gql`
           id
         }
         statut
+      }
+    }
+  }
+`
+
+export const USER_UPDATE = gql`
+  mutation USER_UPDATE($idUser: ID!, $email: String, $telephone: String) {
+    updateUser(input: { id: $idUser, email: $email, telephone: $telephone }) {
+      user {
+        id
+        username
+        email
+        telephone
       }
     }
   }
