@@ -19,13 +19,15 @@ export const DatePlanningProvider: FC = ({ children }) => {
   const [end, setEnd] = useState<Date>(getInitialEnd)
 
   const goBack = () => {
-    setStart(subMonths(start, 1))
-    setEnd(subMonths(end, 1))
+    const date = subMonths(start, 1)
+    setStart(date)
+    setEnd(endOfMonth(date))
   }
 
   const goForward = () => {
-    setStart(addMonths(start, 1))
-    setEnd(addMonths(end, 1))
+    const date = addMonths(start, 1)
+    setStart(date)
+    setEnd(endOfMonth(date))
   }
 
   const goToday = () => {
