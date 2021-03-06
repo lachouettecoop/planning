@@ -1,5 +1,4 @@
 import type { Creneau } from "src/types/model"
-import type { List } from "src/helpers/apollo"
 
 import { useQuery } from "@apollo/client"
 import { Button, CircularProgress, Grid } from "@material-ui/core"
@@ -13,7 +12,7 @@ import { PiafIcon } from "src/components/Piaf"
 import { formatMonthYear } from "src/helpers/date"
 import { isSameMonth } from "date-fns"
 
-type Result = { creneaus: List<Creneau> }
+type Result = { creneaus: Creneau[] }
 
 const Loading = styled.div`
   border: 2px solid gray;

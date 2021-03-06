@@ -4,35 +4,31 @@ import { useState } from "react"
 import { gql } from "@apollo/client"
 import { Button } from "@material-ui/core"
 
-import apollo, { List } from "src/helpers/apollo"
+import apollo from "src/helpers/apollo"
 import { handleError } from "src/helpers/errors"
 
 const TEST_QUERY = gql`
   query {
     piafs {
-      edges {
-        node {
-          role {
-            libelle
-          }
-          piaffeur {
-            username
-          }
-          creneau {
-            date
-            creneauGenerique {
-              jour
-              frequence
-            }
-          }
-          visible
+      role {
+        libelle
+      }
+      piaffeur {
+        username
+      }
+      creneau {
+        date
+        creneauGenerique {
+          jour
+          frequence
         }
       }
+      visible
     }
   }
 `
 
-type Result = { piafs: List<PIAF> }
+type Result = { piafs: PIAF[] }
 
 const HomePage = () => {
   const [loading, setLoading] = useState(false)

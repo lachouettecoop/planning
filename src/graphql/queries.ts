@@ -6,13 +6,9 @@ export const LOGGED_IN_USER = gql`
       id
       username
       rolesChouette {
-        edges {
-          node {
-            id
-            roleUniqueId
-            libelle
-          }
-        }
+        id
+        roleUniqueId
+        libelle
       }
       nom
       prenom
@@ -24,24 +20,20 @@ export const LOGGED_IN_USER = gql`
 export const NEXT_PIAFS = gql`
   query NEXT_PIAFS($piaffeur: String) {
     piafs(piaffeur: $piaffeur) {
-      edges {
-        node {
-          id
-          creneau {
-            debut
-            fin
-          }
-          piaffeur {
-            prenom
-            nom
-            username
-          }
-          role {
-            id
-            roleUniqueId
-            libelle
-          }
-        }
+      id
+      creneau {
+        debut
+        fin
+      }
+      piaffeur {
+        prenom
+        nom
+        username
+      }
+      role {
+        id
+        roleUniqueId
+        libelle
       }
     }
   }
@@ -50,32 +42,24 @@ export const NEXT_PIAFS = gql`
 export const PLANNING = gql`
   query PLANNING($after: String, $before: String) {
     creneaus(debut: { after: $after, before: $before }) {
-      edges {
-        node {
+      id
+      debut
+      fin
+      titre
+      piafs {
+        id
+        statut
+        role {
           id
-          debut
-          fin
-          titre
-          piafs {
-            edges {
-              node {
-                id
-                statut
-                role {
-                  id
-                  roleUniqueId
-                  libelle
-                }
-                piaffeur {
-                  id
-                  nom
-                  prenom
-                  email
-                  telephone
-                }
-              }
-            }
-          }
+          roleUniqueId
+          libelle
+        }
+        piaffeur {
+          id
+          nom
+          prenom
+          email
+          telephone
         }
       }
     }

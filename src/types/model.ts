@@ -1,5 +1,3 @@
-import { List } from "src/helpers/apollo"
-
 export type ID = string
 
 export type RoleId = "CH" | "GH" | "CA"
@@ -36,7 +34,7 @@ export interface User {
   id: ID
   email: string
   username: string
-  rolesChouette: List<Role>
+  rolesChouette: Role[]
   enabled: boolean
   civilite: string
   nom: string
@@ -61,7 +59,7 @@ export interface Creneau {
   debut: string // ISO datetime
   fin: string // ISO datetime
   informations: string
-  piafs: List<PIAF>
+  piafs: PIAF[]
 }
 
 export interface PIAF {

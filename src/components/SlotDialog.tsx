@@ -54,8 +54,8 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const userPiaf = slot.piafs.find(({ piaffeur, statut }) => piaffeur?.id == user?.id && statut == "occupe")
 
   const register = async (piaf: PIAF) => {
-    const roles = user?.rolesChouette.edges
-    if (!roles || !roles.find((r) => r.node.id == piaf.role.id)) {
+    const roles = user?.rolesChouette
+    if (!roles || !roles.find(({ id }) => id == piaf.role.id)) {
       alert(`Pour t'inscrire à cette PIAF tu dois d'abord passer la formation ${piaf.role.libelle}`)
       return
     }
