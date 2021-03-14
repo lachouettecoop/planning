@@ -3,11 +3,12 @@ import { useUser } from "src/providers/user"
 import { Phone, MailOutline } from "@material-ui/icons"
 import { Button, Grid, Hidden, Input } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { handleError } from "src/helpers/errors"
 import apollo from "src/helpers/apollo"
 import { USER_UPDATE } from "src/graphql/queries"
 import InfoDialog from "src/components/InfoDialog"
+import { Statut } from "src/types/model"
 
 const Title = styled.h3`
   text-align: left;
@@ -29,11 +30,8 @@ const ButtonArea = styled.div`
 
 const ProfilePage = () => {
   const { user } = useUser<true>()
-  const status = user?.statuts.edges.find((s) => s.node.actif == true)?.node.libelle.toLowerCase()
-  const roles =
-    user?.rolesChouette.edges.map(({ node }) => ({
-      role: node.libelle,
-    })) || []
+  const status = user?.statuts.find((s: Statut) => s.actif)?.libelle.toLowerCase()
+  const roles = user?.rolesChouette || []
 
   const [email, setEmail] = useState<string>(user?.email || "")
   const [telephone, setTelephone] = useState<string>(user?.telephone || "")
@@ -77,7 +75,7 @@ const ProfilePage = () => {
       })
       .then((response) => {
         console.log(response)
-        handleOpenDialog("Les nouveaux données de l'utilisateur ont bien été enregistrés")
+        handleOpenDialog("Les nouveaux données de l’utilisateur ont bien été enregistrés")
       })
       .catch(handleError)
   }
@@ -93,7 +91,7 @@ const ProfilePage = () => {
             <InfoUser> Je suis {status}</InfoUser>
           </Grid>
           <Grid item xs={12}>
-            <InfoUser> Et j´ai formation comme {roles.map((r) => r.role).join(", ")} </InfoUser>
+            <InfoUser> Et j´ai formation comme {roles.map((r) => r.libelle).join(", ")} </InfoUser>
           </Grid>
           <Grid item xs={1}>
             <Phone />

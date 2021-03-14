@@ -53,12 +53,12 @@ export interface User {
   photo: string
   dateNaissance: string // ISO datetime
   notes: string
-  actif: boolean // what's the difference with "enabled"?
+  actif: boolean // what’s the difference with "enabled"?
   carteImprimee: boolean
   gh: boolean // grand hibou
   poste: Poste
   reserve: Reserve | null
-  statuts: List<Statut>
+  statuts: Statut[]
 }
 
 export interface Creneau {

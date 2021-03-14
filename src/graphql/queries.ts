@@ -16,15 +16,11 @@ export const LOGGED_IN_USER = gql`
       telephone
       actif
       statuts {
-        edges {
-          node {
-            id
-            libelle
-            actif
-            dateDebut
-            dateFin
-          }
-        }
+        id
+        libelle
+        actif
+        dateDebut
+        dateFin
       }
     }
   }
@@ -33,24 +29,20 @@ export const LOGGED_IN_USER = gql`
 export const USER_PIAFS_BY_DATE = gql`
   query USER_PIAFS_BY_DATE($idPiaffeur: String, $after: String, $before: String) {
     piafs(piaffeur: $idPiaffeur, after: $after, before: $before) {
-      edges {
-        node {
-          id
-          creneau {
-            debut
-            fin
-          }
-          piaffeur {
-            prenom
-            nom
-            username
-          }
-          role {
-            id
-            roleUniqueId
-            libelle
-          }
-        }
+      id
+      creneau {
+        debut
+        fin
+      }
+      piaffeur {
+        prenom
+        nom
+        username
+      }
+      role {
+        id
+        roleUniqueId
+        libelle
       }
     }
   }

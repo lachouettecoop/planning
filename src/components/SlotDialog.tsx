@@ -90,7 +90,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const register = async (piaf: PIAF) => {
     const roles = user?.rolesChouette
     if (!roles || !roles.find(({ id }) => id == piaf.role.id)) {
-      handleClickOpenDialog(`Pour t'inscrire à cette PIAF tu dois d'abord passer la formation ${piaf.role.libelle}`)
+      handleClickOpenDialog(`Pour t’inscrire à cette PIAF tu dois d’abord passer la formation ${piaf.role.libelle}`)
       return
     }
 
