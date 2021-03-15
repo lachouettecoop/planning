@@ -14,7 +14,7 @@ import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
 import Piaf, { getStatus } from "src/components/Piaf"
 import { handleError } from "src/helpers/errors"
-import InfoDialog from "./InfoDialog"
+import { useDialog } from "src/providers/dialog"
 
 //type Result = { piafs: List<PIAF> }
 
@@ -55,20 +55,9 @@ interface Props {
 
 const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const [loading, setLoading] = useState(false)
-  const [infoMessage, setInfoMessage] = useState("")
+  const { openDialog } = useDialog()
   const { user } = useUser<true>()
   const piafCurrentUser = slot.piafs.find(({ piaffeur, statut }) => piaffeur?.id == user?.id && statut == "occupe")
-
-  const [openDialog, setOpenDialog] = useState(false)
-
-  const handleClickOpenDialog = (_infoMessage: string) => {
-    setInfoMessage(_infoMessage)
-    setOpenDialog(true)
-  }
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
 
   /* TEST TO CHECK MAXIMUM NUMBER OF PIAFS WAITING FOR THE BACK TO BE DONE
   const getPiafCountByDay = async () => {
@@ -90,7 +79,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const register = async (piaf: PIAF) => {
     const roles = user?.rolesChouette
     if (!roles || !roles.find(({ id }) => id == piaf.role.id)) {
-      handleClickOpenDialog(`Pour t’inscrire à cette PIAF tu dois d’abord passer la formation ${piaf.role.libelle}`)
+      openDialog(`Pour t’inscrire à cette PIAF tu dois d’abord passer la formation ${piaf.role.libelle}`)
       return
     }
 
@@ -105,16 +94,16 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
       idPiaf = piafReplacement.id
     }
 
-    apollo
-      .mutate({
+    try {
+      await apollo.mutate({
         mutation: REGISTRATION_UPDATE,
         variables: { idPiaf, idPiaffeur: user?.id, statut: "occupe" },
       })
-      .then((response) => {
-        console.log(response)
-        handleClickOpenDialog("Inscription OK. Merci !")
-      })
-      .catch(handleError)
+
+      openDialog("Inscription OK. Merci !")
+    } catch (error) {
+      handleError(error)
+    }
 
     setLoading(false)
   }
@@ -122,16 +111,16 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const unregister = async (piaf: PIAF) => {
     setLoading(true)
 
-    apollo
-      .mutate({
+    try {
+      await apollo.mutate({
         mutation: REGISTRATION_UPDATE,
         variables: { idPiaf: piaf.id, idPiaffeur: user?.id, statut: "remplacement" },
       })
-      .then((response) => {
-        console.log(response)
-        handleClickOpenDialog("Désinscription faite : la PIAF est désormais en recherche de remplacement")
-      })
-      .catch(handleError)
+
+      openDialog("Désinscription faite : la PIAF est désormais en recherche de remplacement")
+    } catch (error) {
+      handleError(error)
+    }
 
     setLoading(false)
   }
@@ -189,7 +178,6 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
           )
         })}
       </DialogContent>
-      <InfoDialog open={openDialog} handleClose={handleCloseDialog} title="" message={infoMessage}></InfoDialog>
     </Dialog>
   )
 }

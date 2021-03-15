@@ -1,14 +1,15 @@
-import { useUser } from "src/providers/user"
+import type { Statut } from "src/types/model"
 
+import { useEffect, useState } from "react"
 import { Phone, MailOutline } from "@material-ui/icons"
 import { Button, Grid, Hidden, Input } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
-import { useEffect, useState } from "react"
+
+import { useUser } from "src/providers/user"
 import { handleError } from "src/helpers/errors"
 import apollo from "src/helpers/apollo"
 import { USER_UPDATE } from "src/graphql/queries"
-import InfoDialog from "src/components/InfoDialog"
-import { Statut } from "src/types/model"
+import { useDialog } from "src/providers/dialog"
 
 const Title = styled.h3`
   text-align: left;
@@ -30,31 +31,21 @@ const ButtonArea = styled.div`
 
 const ProfilePage = () => {
   const { user } = useUser<true>()
+  const { openDialog } = useDialog()
   const status = user?.statuts.find((s: Statut) => s.actif)?.libelle.toLowerCase()
   const roles = user?.rolesChouette || []
 
   const [email, setEmail] = useState<string>(user?.email || "")
   const [telephone, setTelephone] = useState<string>(user?.telephone || "")
-  const [openDialog, setOpenDialog] = useState(false)
-  const [infoMessage, setInfoMessage] = useState("")
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setEmail(user?.email || "")
     setTelephone(user?.telephone || "")
   }, [user])
 
-  const handleOpenDialog = (_infoMessage: string) => {
-    setInfoMessage(_infoMessage)
-    setOpenDialog(true)
-  }
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
-
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value
-    const name = e.target.name
+  function handleInputChange({ target }: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = target
 
     switch (name) {
       case "email":
@@ -67,17 +58,18 @@ const ProfilePage = () => {
     }
   }
 
-  function handleSave() {
-    apollo
-      .mutate({
+  const handleSave = async () => {
+    setLoading(true)
+    try {
+      await apollo.mutate({
         mutation: USER_UPDATE,
         variables: { idUser: user?.id, email: email, telephone: telephone },
       })
-      .then((response) => {
-        console.log(response)
-        handleOpenDialog("Les nouveaux données de l’utilisateur ont bien été enregistrés")
-      })
-      .catch(handleError)
+      openDialog("Vos informations ont bien été mises à jour")
+    } catch (error) {
+      handleError(error)
+    }
+    setLoading(false)
   }
 
   return (
@@ -88,10 +80,10 @@ const ProfilePage = () => {
             {user?.prenom} {user?.nom}
           </Title>
           <Grid item xs={12}>
-            <InfoUser> Je suis {status}</InfoUser>
+            <InfoUser>Je suis {status}</InfoUser>
           </Grid>
           <Grid item xs={12}>
-            <InfoUser> Et j´ai formation comme {roles.map((r) => r.libelle).join(", ")} </InfoUser>
+            <InfoUser>Et j’ai comme formations {roles.map((r) => r.libelle).join(", ")}</InfoUser>
           </Grid>
           <Grid item xs={1}>
             <Phone />
@@ -112,12 +104,11 @@ const ProfilePage = () => {
             <Input name="email" required value={email} fullWidth onChange={handleInputChange} />
           </Grid>
           <ButtonArea>
-            <Button color="primary" variant="contained" onClick={handleSave}>
+            <Button color="primary" variant="contained" onClick={handleSave} disabled={loading}>
               Enregistrer
             </Button>
           </ButtonArea>
         </Grid>
-        <InfoDialog open={openDialog} handleClose={handleCloseDialog} title="" message={infoMessage}></InfoDialog>
       </form>
     </ProfileContainer>
   )
