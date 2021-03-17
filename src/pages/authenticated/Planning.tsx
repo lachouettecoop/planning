@@ -57,7 +57,7 @@ const ButtonArea = styled.div`
   justify-content: end;
 `
 
-const Planning = () => {
+const PlanningPage = () => {
   const { goBack, goForward, goToday, start, end } = useDatePlanning()
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.up("sm"))
@@ -153,4 +153,4 @@ const Planning = () => {
   )
 }
 
-export default Planning
+export default PlanningPage

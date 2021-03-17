@@ -9,3 +9,8 @@ export const formatDateLong = (date: Date | number) => formatInFrench(date, "EEE
 export const formatMonthYear = (date: Date | number) => formatInFrench(date, "MMMM yyyy")
 
 export const formatTime = (date: Date | number) => formatInFrench(date, "HH:mm")
+
+export const getDayOfWeek = (index: number) => {
+  const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+  return daysOfWeek[index]
+}

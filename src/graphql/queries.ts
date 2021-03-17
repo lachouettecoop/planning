@@ -101,3 +101,79 @@ export const USER_UPDATE = gql`
     }
   }
 `
+
+export const RESERVE_CREATE = gql`
+  mutation RESERVE($idUser: String, $informations: String, $creneauGenerique: [String]) {
+    createReserve(input: { user: $idUser, informations: $informations, creneauGeneriques: $creneauGenerique }) {
+      reserve {
+        id
+        informations
+        user {
+          id
+          username
+        }
+        creneauGeneriques {
+          id
+          jour
+          frequence
+          heureDebut
+          heureFin
+        }
+      }
+    }
+  }
+`
+
+export const RESERVE_UPDATE = gql`
+  mutation RESERVE($id: String, $idUser: String, $informations: String, $creneauGenerique: [String]) {
+    updateReserve(
+      input: { id: $id, user: $idUser, informations: $informations, creneauGeneriques: $creneauGenerique }
+    ) {
+      reserve {
+        id
+        informations
+        user {
+          id
+          username
+        }
+        creneauGeneriques {
+          id
+          jour
+          frequence
+          heureDebut
+          heureFin
+        }
+      }
+    }
+  }
+`
+
+export const RESERVE_USER = gql`
+  query($idUser: ID!) {
+    reserve(input: { user: $idUser }) {
+      informations
+      creneauGeneriques {
+        id
+      }
+    }
+  }
+`
+
+export const CRENEAUX_GENERIQUES = gql`
+  query {
+    creneauGeneriques {
+      id
+      heureDebut
+      heureFin
+      titre
+      jour
+      actif
+      postes {
+        id
+        role {
+          libelle
+        }
+      }
+    }
+  }
+`

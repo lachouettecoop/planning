@@ -3,11 +3,12 @@ import { styled, Container } from "@material-ui/core"
 
 import { DatePlanningProvider } from "src/providers/datePlanning"
 import HomePage from "src/pages/authenticated/Home"
-import Planning from "src/pages/authenticated/Planning"
+import PlanningPage from "src/pages/authenticated/Planning"
 import Profile from "src/pages/authenticated/Profile"
 import Menu from "src/components/menu"
 import MenuBottom from "src/components/menuBottom"
 import { getParams } from "src/helpers/request"
+import ReservePage from "./Reserve"
 
 const Content = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(3),
@@ -30,10 +31,13 @@ const Authenticated = () => {
             <HomePage />
           </Route>
           <Route path="/planning">
-            <Planning />
+            <PlanningPage />
           </Route>
           <Route path="/profile">
             <Profile />
+          </Route>
+          <Route path="/reserve">
+            <ReservePage />
           </Route>
           <Redirect to={next || "/home"} />
         </Switch>
