@@ -8,11 +8,15 @@ import CalendarDay from "src/components/CalendarDay"
 
 const Container = styled.div`
   border: 1px solid gray;
+  margin: 0;
+  padding: 0;
 `
 const WeekRow = styled.div`
-  display: flex;
-  > div {
-    flex: 1 0 14.29%;
+  @media screen and (min-width: 800px) {
+    display: flex;
+    > div {
+      flex: 1 0 14.29%;
+    }
   }
 `
 

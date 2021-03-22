@@ -30,6 +30,14 @@ export interface Reserve {
   user: User
 }
 
+export interface Statut {
+  id: ID
+  libelle: string // très chouette / chouette / chouette en alerte / vacances / etc
+  actif: boolean
+  dateDebut: string // ISO datetime
+  dateFin: string // ISO datetime
+}
+
 export interface User {
   id: ID
   email: string
@@ -45,11 +53,12 @@ export interface User {
   photo: string
   dateNaissance: string // ISO datetime
   notes: string
-  actif: boolean // what's the difference with "enabled"?
+  actif: boolean // what’s the difference with "enabled"?
   carteImprimee: boolean
   gh: boolean // grand hibou
   poste: Poste
-  reserve: Reserve
+  reserve: Reserve | null
+  statuts: Statut[]
 }
 
 export interface Creneau {

@@ -1,7 +1,7 @@
 import type { Creneau } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
-import { Button, CircularProgress, Grid } from "@material-ui/core"
+import { Button, CircularProgress, Grid, useMediaQuery, useTheme } from "@material-ui/core"
 import { ArrowBackIos, ArrowForwardIos, Search, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 
@@ -27,8 +27,8 @@ const ErrorMessage = styled.div`
 const Caption = styled.div`
   border: 1px solid gray;
   border-radius: 10px;
-  width: 450px;
-  margin: 20px 0 20px auto;
+  max-width: 450px;
+  margin: 20px 0 100px auto;
   padding: 10px;
   text-align: center;
 `
@@ -52,8 +52,18 @@ const Title = styled.h2`
   text-align: center;
 `
 
+const ButtonArea = styled.div`
+  display: flex;
+  justify-content: end;
+`
+
 const Planning = () => {
   const { goBack, goForward, goToday, start, end } = useDatePlanning()
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.up("sm"))
+  const textTodayButton = matches ? "Aujourd’hui" : ""
+  const textBeforeButton = matches ? "Précédent" : ""
+  const textAfterButton = matches ? "Suivant" : ""
 
   const { data, loading, error } = useQuery<Result>(PLANNING, {
     variables: { after: start, before: end },
@@ -73,31 +83,47 @@ const Planning = () => {
   return (
     <>
       <Nav>
-        <Button variant="contained" color="primary" startIcon={<Search />} disabled>
-          Recherche
-        </Button>
-        <Title>{formatMonthYear(start)}</Title>
-        <Button disabled={loading} variant="contained" color="primary" startIcon={<ArrowBackIos />} onClick={goBack}>
-          Précédent
-        </Button>
-        <Button
-          disabled={loading || isSameMonth(start, new Date())}
-          variant="contained"
-          color="primary"
-          startIcon={<CalendarToday />}
-          onClick={goToday}
-        >
-          Aujourd’hui
-        </Button>
-        <Button
-          disabled={loading}
-          variant="contained"
-          color="primary"
-          endIcon={<ArrowForwardIos />}
-          onClick={goForward}
-        >
-          Suivant
-        </Button>
+        <Grid container>
+          <Grid item xs={12} md={3}>
+            <Button variant="contained" color="primary" startIcon={<Search />} disabled>
+              Recherche
+            </Button>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Title>{formatMonthYear(start)}</Title>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ButtonArea>
+              <Button
+                disabled={loading}
+                variant="contained"
+                color="primary"
+                startIcon={<ArrowBackIos />}
+                onClick={goBack}
+              >
+                {textBeforeButton}
+              </Button>
+              <Button
+                disabled={loading || isSameMonth(start, new Date())}
+                variant="contained"
+                color="primary"
+                startIcon={<CalendarToday />}
+                onClick={goToday}
+              >
+                {textTodayButton}
+              </Button>
+              <Button
+                disabled={loading}
+                variant="contained"
+                color="primary"
+                endIcon={<ArrowForwardIos />}
+                onClick={goForward}
+              >
+                {textAfterButton}
+              </Button>
+            </ButtonArea>
+          </Grid>
+        </Grid>
       </Nav>
       {loading ? (
         <Loading>
