@@ -29,7 +29,7 @@ export interface Reserve {
   id: ID
   informations: string
   user: User
-  creneauGenerique: CreneauGenerique[]
+  creneauGeneriques: CreneauGenerique[]
 }
 
 export interface Statut {

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Checkbox, CircularProgress, TextField } from "@material-ui/core"
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled/macro"
@@ -35,6 +35,10 @@ const ReserveGrid = styled.div`
   }
 `
 
+const ReserveCell = styled.div`
+  display: flex;
+`
+
 const ButtonArea = styled.div`
   margin: 15px auto;
   width: 100%;
@@ -44,7 +48,7 @@ const ButtonArea = styled.div`
 `
 
 type ResultCG = { creneauGeneriques: CreneauGenerique[] }
-type ResultRU = { reserve: Reserve }
+type ResultRU = { reserves: Reserve[] }
 
 const ReservePage = () => {
   const [openDialog, setOpenDialog] = useState(false)
@@ -57,20 +61,29 @@ const ReservePage = () => {
   const handleCloseDialog = () => {
     setOpenDialog(false)
   }
-
-  const { data: dataCreneauxList, loading, error: errorCreneauxList } = useQuery<ResultCG>(CRENEAUX_GENERIQUES)
-  /* const { data: dataCreneauxUser, error: errorReserve } = useQuery<ResultRU>(RESERVE_USER, {
+  const { data: dataCreneauxList, loading: loadingCL, error: errorCreneauxList } = useQuery<ResultCG>(
+    CRENEAUX_GENERIQUES
+  )
+  const { data: dataCreneauxUser, loading: loadingCU, error: errorReserve } = useQuery<ResultRU>(RESERVE_USER, {
     variables: { idUser: user?.id },
-  }) */
+  })
 
-  if (errorCreneauxList /*|| errorReserve*/) {
+  useEffect(() => {
+    if (dataCreneauxUser && dataCreneauxUser?.reserves.length > 0) {
+      setInformation(dataCreneauxUser.reserves[0].informations)
+      setCreneauGeneriqueChecked(dataCreneauxUser.reserves[0].creneauGeneriques.map((cg) => cg.id))
+      console.log(dataCreneauxUser.reserves[0].creneauGeneriques.map((cg) => cg.id))
+    }
+  }, [dataCreneauxUser])
+
+  if (errorCreneauxList || errorReserve) {
     return (
       <ErrorMessage>
         <h2>
           <strong>Une erreur est survenue.</strong> Essayez de recharger la page.
         </h2>
         <p>{errorCreneauxList?.message}</p>
-        {/* <p>{errorReserve?.message}</p> */}
+        {<p>{errorReserve?.message}</p>}
       </ErrorMessage>
     )
   }
@@ -89,21 +102,23 @@ const ReservePage = () => {
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, idCreneauGenerique: string) => {
     const isChecked = e.target.checked
+    const temp = creneauGeneriqueChecked.slice()
     if (isChecked) {
-      creneauGeneriqueChecked.push(idCreneauGenerique)
-      setCreneauGeneriqueChecked(creneauGeneriqueChecked)
+      temp.push(idCreneauGenerique)
+      setCreneauGeneriqueChecked(temp)
     } else {
-      setCreneauGeneriqueChecked(creneauGeneriqueChecked.splice(creneauGeneriqueChecked.indexOf(idCreneauGenerique)))
+      temp.splice(temp.indexOf(idCreneauGenerique), 1)
+      setCreneauGeneriqueChecked(temp)
     }
   }
 
   const register = async () => {
-    /*    if (dataCreneauxUser) {
+    if (dataCreneauxUser) {
       apollo
         .mutate({
           mutation: RESERVE_UPDATE,
           variables: {
-            id: dataCreneauxUser.reserve.id,
+            id: dataCreneauxUser.reserves[0].id,
             idUser: user?.id,
             informations: information,
             creneauGenerique: creneauGeneriqueChecked,
@@ -114,24 +129,24 @@ const ReservePage = () => {
           handleClickOpenDialog()
         })
         .catch(handleError)
-    } else { */
-    apollo
-      .mutate({
-        mutation: RESERVE_CREATE,
-        variables: { idUser: user?.id, informations: information, creneauGenerique: creneauGeneriqueChecked },
-      })
-      .then((response) => {
-        console.log(response)
-        handleClickOpenDialog()
-      })
-      .catch(handleError)
-    //}
+    } else {
+      apollo
+        .mutate({
+          mutation: RESERVE_CREATE,
+          variables: { idUser: user?.id, informations: information, creneauGenerique: creneauGeneriqueChecked },
+        })
+        .then((response) => {
+          console.log(response)
+          handleClickOpenDialog()
+        })
+        .catch(handleError)
+    }
   }
 
   return (
     <>
       <ReserveGrid>
-        {loading ? (
+        {loadingCL || loadingCU ? (
           <Loading>
             <CircularProgress />
           </Loading>
@@ -141,10 +156,11 @@ const ReservePage = () => {
               {reserve.slots.map(
                 (c) =>
                   c.actif && (
-                    <div key={c.id}>
+                    <ReserveCell key={c.id}>
                       <Checkbox
                         color="default"
                         key={"checkbox" + c.id}
+                        checked={creneauGeneriqueChecked.indexOf(c.id) >= 0}
                         onChange={(event) => {
                           handleCheckboxChange(event, c.id)
                         }}
@@ -153,7 +169,7 @@ const ReservePage = () => {
                         {getDayOfWeek(c.jour)} {formatTime(new Date(c.heureDebut))} {formatTime(new Date(c.heureFin))}{" "}
                         {c.titre}
                       </List>
-                    </div>
+                    </ReserveCell>
                   )
               )}
             </div>
