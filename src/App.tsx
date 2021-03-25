@@ -4,6 +4,7 @@ import { useUser } from "src/providers/user"
 
 import Anonymous from "src/pages/anonymous"
 import Authenticated from "src/pages/authenticated"
+import { DialogProvider } from "src/providers/dialog"
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles"
 
@@ -30,7 +31,9 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>{auth ? <Authenticated /> : <Anonymous />}</BrowserRouter>
+      <BrowserRouter>
+        <DialogProvider>{auth ? <Authenticated /> : <Anonymous />}</DialogProvider>
+      </BrowserRouter>
     </ThemeProvider>
   )
 }

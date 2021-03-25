@@ -8,7 +8,7 @@ import Profile from "src/pages/authenticated/Profile"
 import Menu from "src/components/menu"
 import MenuBottom from "src/components/menuBottom"
 import { getParams } from "src/helpers/request"
-import ReservePage from "./Reserve"
+import ReservePage from "src/pages/authenticated/Reserve"
 
 const Content = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(3),
@@ -38,6 +38,9 @@ const Authenticated = () => {
           </Route>
           <Route path="/reserve">
             <ReservePage />
+          </Route>
+          <Route path="/profile">
+            <Profile />
           </Route>
           <Redirect to={next || "/home"} />
         </Switch>

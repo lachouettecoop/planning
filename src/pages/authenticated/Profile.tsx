@@ -1,125 +1,132 @@
-import { useUser } from "src/providers/user"
+import type { Statut } from "src/types/model"
 
-import { Phone, MailOutline } from "@material-ui/icons"
-import { Button, Grid, Hidden, Input } from "@material-ui/core"
-import styled from "@emotion/styled/macro"
 import { useEffect, useState } from "react"
+import { Phone, Mail } from "@material-ui/icons"
+import { Button, CircularProgress, InputAdornment, TextField } from "@material-ui/core"
+import styled from "@emotion/styled/macro"
+
+import { useUser } from "src/providers/user"
 import { handleError } from "src/helpers/errors"
 import apollo from "src/helpers/apollo"
 import { USER_UPDATE } from "src/graphql/queries"
-import InfoDialog from "src/components/InfoDialog"
-import { Statut } from "src/types/model"
+import { useDialog } from "src/providers/dialog"
 
-const Title = styled.h3`
-  text-align: left;
-  margin-top: 0;
+const Loading = styled.div`
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
-const InfoUser = styled.h4`
-  text-align: left;
-  margin-top: 0;
-  color: gray;
-`
-const ProfileContainer = styled.div`
+const Container = styled.div`
   margin: 0 auto;
   max-width: 500px;
-`
-
-const ButtonArea = styled.div`
-  margin: 15px auto;
+  p,
+  .MuiTextField-root {
+    margin: 10px 0;
+  }
+  button {
+    margin: 15px auto;
+    display: block;
+  }
 `
 
 const ProfilePage = () => {
   const { user } = useUser<true>()
-  const status = user?.statuts.find((s: Statut) => s.actif)?.libelle.toLowerCase()
-  const roles = user?.rolesChouette || []
-
-  const [email, setEmail] = useState<string>(user?.email || "")
-  const [telephone, setTelephone] = useState<string>(user?.telephone || "")
-  const [openDialog, setOpenDialog] = useState(false)
-  const [infoMessage, setInfoMessage] = useState("")
+  const { openDialog } = useDialog()
+  const [loading, setLoading] = useState(false)
+  const [values, setValues] = useState({
+    email: user?.email || "",
+    telephone: user?.telephone || "",
+  })
 
   useEffect(() => {
-    setEmail(user?.email || "")
-    setTelephone(user?.telephone || "")
+    if (user) {
+      setValues({
+        email: user.email,
+        telephone: user.telephone,
+      })
+    }
   }, [user])
 
-  const handleOpenDialog = (_infoMessage: string) => {
-    setInfoMessage(_infoMessage)
-    setOpenDialog(true)
+  const handleInputChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = target
+    setValues({
+      ...values,
+      [name]: value,
+    })
   }
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
-
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value
-    const name = e.target.name
-
-    switch (name) {
-      case "email":
-        setEmail(value)
-        break
-
-      case "telephone":
-        setTelephone(value)
-        break
-    }
-  }
-
-  function handleSave() {
-    apollo
-      .mutate({
+  const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setLoading(true)
+    try {
+      await apollo.mutate({
         mutation: USER_UPDATE,
-        variables: { idUser: user?.id, email: email, telephone: telephone },
+        variables: { ...values, idUser: user?.id },
       })
-      .then((response) => {
-        console.log(response)
-        handleOpenDialog("Les nouveaux données de l’utilisateur ont bien été enregistrés")
-      })
-      .catch(handleError)
+      openDialog("Vos informations ont bien été mises à jour")
+    } catch (error) {
+      handleError(error)
+    }
+    setLoading(false)
   }
+
+  if (!user) {
+    return (
+      <Loading>
+        <CircularProgress />
+      </Loading>
+    )
+  }
+
+  const status = user.statuts.find((s: Statut) => s.actif)?.libelle.toLowerCase()
+  const roles = user.rolesChouette.map((r) => r.libelle).join(", ")
 
   return (
-    <ProfileContainer>
-      <form>
-        <Grid container>
-          <Title>
-            {user?.prenom} {user?.nom}
-          </Title>
-          <Grid item xs={12}>
-            <InfoUser> Je suis {status}</InfoUser>
-          </Grid>
-          <Grid item xs={12}>
-            <InfoUser> Et j´ai formation comme {roles.map((r) => r.libelle).join(", ")} </InfoUser>
-          </Grid>
-          <Grid item xs={1}>
-            <Phone />
-          </Grid>
-          <Grid item xs={3}>
-            <Hidden xsDown>Téléphone</Hidden>
-          </Grid>
-          <Grid item xs={8}>
-            <Input name="telephone" required value={telephone} fullWidth onChange={handleInputChange} />
-          </Grid>
-          <Grid item xs={1}>
-            <MailOutline />
-          </Grid>
-          <Grid item xs={3}>
-            <Hidden xsDown>Mail</Hidden>
-          </Grid>
-          <Grid item xs={8}>
-            <Input name="email" required value={email} fullWidth onChange={handleInputChange} />
-          </Grid>
-          <ButtonArea>
-            <Button color="primary" variant="contained" onClick={handleSave}>
-              Enregistrer
-            </Button>
-          </ButtonArea>
-        </Grid>
-        <InfoDialog open={openDialog} handleClose={handleCloseDialog} title="" message={infoMessage}></InfoDialog>
+    <Container>
+      <form onSubmit={handleSave}>
+        <h2>
+          {user.prenom} {user.nom}
+        </h2>
+        <p>Je suis {status || "(sans statut)"}</p>
+        <p>Et j’ai comme formations {roles || "(sans rôle)"}</p>
+        <TextField
+          name="telephone"
+          label="Téléphone"
+          required
+          disabled={!user}
+          value={values.telephone}
+          onChange={handleInputChange}
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Phone />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <TextField
+          name="email"
+          label="Adresse e-mail"
+          required
+          disabled={!user}
+          value={values.email}
+          onChange={handleInputChange}
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Mail />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button color="primary" variant="contained" disabled={loading} type="submit">
+          Enregistrer
+        </Button>
       </form>
-    </ProfileContainer>
+    </Container>
   )
 }
 

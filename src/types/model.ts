@@ -40,6 +40,14 @@ export interface Statut {
   dateFin: string // ISO datetime
 }
 
+export interface Statut {
+  id: ID
+  libelle: string // très chouette / chouette / chouette en alerte / vacances / etc
+  actif: boolean
+  dateDebut: string // ISO datetime
+  dateFin: string // ISO datetime
+}
+
 export interface User {
   id: ID
   email: string
