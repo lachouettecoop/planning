@@ -166,6 +166,7 @@ const ReservePage = () => {
 
   return (
     <>
+      <h1>Réserve</h1>
       {loading ? (
         <Loading>
           <CircularProgress />

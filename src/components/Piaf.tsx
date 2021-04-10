@@ -57,7 +57,7 @@ interface Props {
 
 const Piaf = ({ piaf }: Props) => (
   <PiafIcon $status={getStatus(piaf)} $role={piaf.role.roleUniqueId}>
-    <span hidden={!!getImg(piaf.role.roleUniqueId)}>{piaf.role.roleUniqueId}</span>
+    {getImg(piaf.role.roleUniqueId) ? "" : piaf.role.roleUniqueId}
   </PiafIcon>
 )
 

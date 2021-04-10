@@ -25,7 +25,7 @@ const Loading = styled.div`
 const Caption = styled.div`
   border: 1px solid gray;
   border-radius: 10px;
-  max-width: 450px;
+  max-width: 500px;
   margin: 20px 0 100px auto;
   padding: 10px;
   text-align: center;
@@ -134,11 +134,28 @@ const PlanningPage = () => {
           </Grid>
           <Grid item xs={4}>
             <PiafIcon $status="replacement" />
-            <div>Cherche remplaçant</div>
+            <div>Cherche remplaçant·e</div>
           </Grid>
           <Grid item xs={4}>
             <PiafIcon $status="occupied" />
             <div>PIAF occupée</div>
+          </Grid>
+        </Grid>
+        <br />
+        <Grid container>
+          <Grid item xs={4}>
+            <PiafIcon $status="available" $role="CH">
+               
+            </PiafIcon>
+            <div>Chouettos</div>
+          </Grid>
+          <Grid item xs={4}>
+            <PiafIcon $status="available">CA</PiafIcon>
+            <div>Caissier·e</div>
+          </Grid>
+          <Grid item xs={4}>
+            <PiafIcon $status="available">GH</PiafIcon>
+            <div>Grand Hibou</div>
           </Grid>
         </Grid>
       </Caption>
