@@ -2,15 +2,16 @@ import type { Creneau } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
 import { Button, CircularProgress, Grid, useMediaQuery, useTheme } from "@material-ui/core"
-import { ArrowBackIos, ArrowForwardIos, Search, CalendarToday } from "@material-ui/icons"
+import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
+import { isSameMonth } from "date-fns"
 
 import { useDatePlanning } from "src/providers/datePlanning"
 import { PLANNING } from "src/graphql/queries"
 import Calendar from "src/components/Calendar"
 import { PiafIcon } from "src/components/Piaf"
 import { formatMonthYear } from "src/helpers/date"
-import { isSameMonth } from "date-fns"
+import ErrorMessage from "src/components/ErrorMessage"
 
 type Result = { creneaus: Creneau[] }
 
@@ -21,13 +22,10 @@ const Loading = styled.div`
   align-items: center;
   justify-content: center;
 `
-const ErrorMessage = styled.div`
-  color: #e53935;
-`
 const Caption = styled.div`
   border: 1px solid gray;
   border-radius: 10px;
-  max-width: 450px;
+  max-width: 500px;
   margin: 20px 0 100px auto;
   padding: 10px;
   text-align: center;
@@ -57,7 +55,7 @@ const ButtonArea = styled.div`
   justify-content: end;
 `
 
-const Planning = () => {
+const PlanningPage = () => {
   const { goBack, goForward, goToday, start, end } = useDatePlanning()
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.up("sm"))
@@ -84,12 +82,7 @@ const Planning = () => {
     <>
       <Nav>
         <Grid container>
-          <Grid item xs={12} md={3}>
-            <Button variant="contained" color="primary" startIcon={<Search />} disabled>
-              Recherche
-            </Button>
-          </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={6}>
             <Title>{formatMonthYear(start)}</Title>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -141,11 +134,28 @@ const Planning = () => {
           </Grid>
           <Grid item xs={4}>
             <PiafIcon $status="replacement" />
-            <div>Cherche remplaçant</div>
+            <div>Cherche remplaçant·e</div>
           </Grid>
           <Grid item xs={4}>
             <PiafIcon $status="occupied" />
             <div>PIAF occupée</div>
+          </Grid>
+        </Grid>
+        <br />
+        <Grid container>
+          <Grid item xs={4}>
+            <PiafIcon $status="available" $role="CH">
+               
+            </PiafIcon>
+            <div>Chouettos</div>
+          </Grid>
+          <Grid item xs={4}>
+            <PiafIcon $status="available">CA</PiafIcon>
+            <div>Caissier·e</div>
+          </Grid>
+          <Grid item xs={4}>
+            <PiafIcon $status="available">GH</PiafIcon>
+            <div>Grand Hibou</div>
           </Grid>
         </Grid>
       </Caption>
@@ -153,4 +163,4 @@ const Planning = () => {
   )
 }
 
-export default Planning
+export default PlanningPage

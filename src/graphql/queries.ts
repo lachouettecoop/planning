@@ -28,7 +28,7 @@ export const LOGGED_IN_USER = gql`
 
 export const USER_PIAFS_BY_DATE = gql`
   query USER_PIAFS_BY_DATE($idPiaffeur: String, $after: String, $before: String) {
-    piafs(piaffeur: $idPiaffeur, after: $after, before: $before) {
+    piafs(piaffeur: $idPiaffeur, creneau_debut: { after: $after, before: $before }) {
       id
       creneau {
         debut
@@ -97,6 +97,81 @@ export const USER_UPDATE = gql`
         username
         email
         telephone
+      }
+    }
+  }
+`
+
+export const RESERVE_CREATE = gql`
+  mutation RESERVE_CREATE($user: String, $informations: String, $creneauGenerique: [String]) {
+    createReserve(input: { user: $user, informations: $informations, creneauGeneriques: $creneauGenerique }) {
+      reserve {
+        id
+        informations
+        user {
+          id
+          username
+        }
+        creneauGeneriques {
+          id
+          jour
+          frequence
+          heureDebut
+          heureFin
+        }
+      }
+    }
+  }
+`
+
+export const RESERVE_UPDATE = gql`
+  mutation RESERVE_UPDATE($id: ID!, $user: String, $informations: String, $creneauGenerique: [String]) {
+    updateReserve(input: { id: $id, user: $user, informations: $informations, creneauGeneriques: $creneauGenerique }) {
+      reserve {
+        id
+        informations
+        user {
+          id
+          username
+        }
+        creneauGeneriques {
+          id
+          jour
+          frequence
+          heureDebut
+          heureFin
+        }
+      }
+    }
+  }
+`
+
+export const RESERVE_USER = gql`
+  query($idUser: String) {
+    reserves(user: $idUser) {
+      id
+      informations
+      creneauGeneriques {
+        id
+      }
+    }
+  }
+`
+
+export const CRENEAUX_GENERIQUES = gql`
+  query {
+    creneauGeneriques {
+      id
+      heureDebut
+      heureFin
+      titre
+      jour
+      actif
+      postes {
+        id
+        role {
+          libelle
+        }
       }
     }
   }

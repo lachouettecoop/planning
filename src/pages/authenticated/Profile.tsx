@@ -32,8 +32,8 @@ const Container = styled.div`
 
 const ProfilePage = () => {
   const { user } = useUser<true>()
+  const [saving, setSaving] = useState(false)
   const { openDialog } = useDialog()
-  const [loading, setLoading] = useState(false)
   const [values, setValues] = useState({
     email: user?.email || "",
     telephone: user?.telephone || "",
@@ -58,7 +58,7 @@ const ProfilePage = () => {
 
   const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setLoading(true)
+    setSaving(true)
     try {
       await apollo.mutate({
         mutation: USER_UPDATE,
@@ -68,7 +68,7 @@ const ProfilePage = () => {
     } catch (error) {
       handleError(error)
     }
-    setLoading(false)
+    setSaving(false)
   }
 
   if (!user) {
@@ -122,7 +122,7 @@ const ProfilePage = () => {
             ),
           }}
         />
-        <Button color="primary" variant="contained" disabled={loading} type="submit">
+        <Button color="primary" variant="contained" disabled={saving} type="submit">
           Enregistrer
         </Button>
       </form>

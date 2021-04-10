@@ -15,6 +15,7 @@ export interface CreneauGenerique {
   jour: number
   heureDebut: string // ISO datetime
   heureFin: string // ISO datetime
+  actif: boolean
 }
 
 export interface Poste {
@@ -28,6 +29,15 @@ export interface Reserve {
   id: ID
   informations: string
   user: User
+  creneauGeneriques: CreneauGenerique[]
+}
+
+export interface Statut {
+  id: ID
+  libelle: string
+  actif: boolean
+  dateDebut: string // ISO datetime
+  dateFin: string // ISO datetime
 }
 
 export interface Statut {

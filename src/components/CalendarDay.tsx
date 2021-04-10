@@ -4,11 +4,15 @@ import styled from "@emotion/styled/macro"
 
 import Slot from "src/components/Slot"
 import { formatDateShort } from "src/helpers/date"
+import { isPast, isToday } from "date-fns"
 
-const Container = styled.div`
+type TimeStatus = "past" | "present" | "future"
+
+const Container = styled.div<{ $when: TimeStatus }>`
+  opacity: ${({ $when }) => ($when === "past" ? 0.5 : 1)};
   border: 1px solid gray;
   min-height: 60px;
-  background-color: #eee;
+  background-color: ${({ $when }) => ($when === "present" ? "#d0d9d0" : "#eee")};
 `
 const Title = styled.h3`
   margin: 0 5px;
@@ -26,7 +30,7 @@ interface Props {
 
 const CalendarDay = ({ day }: Props) => {
   return (
-    <Container>
+    <Container $when={isToday(day.start) ? "present" : isPast(day.start) ? "past" : "future"}>
       <Title>{formatDateShort(day.start)}</Title>
       <List>
         {day.slots.map((slot) => (

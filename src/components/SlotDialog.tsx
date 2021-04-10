@@ -1,22 +1,21 @@
 import type { PIAF } from "src/types/model"
 import type { ISlot } from "src/types/app"
-//import type { List } from "src/helpers/apollo"
 
 import { useState } from "react"
 import { Button, capitalize, Dialog, DialogContent, DialogTitle, IconButton } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
-//import { addDays } from "date-fns"
+import { startOfWeek, endOfWeek, startOfDay, endOfDay } from "date-fns"
 
 import { formatTime, formatDateLong } from "src/helpers/date"
-import { REGISTRATION_UPDATE /*, USER_PIAFS_BY_DATE*/ } from "src/graphql/queries"
+import { REGISTRATION_UPDATE, USER_PIAFS_BY_DATE } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
 import Piaf, { getStatus } from "src/components/Piaf"
 import { handleError } from "src/helpers/errors"
 import { useDialog } from "src/providers/dialog"
 
-//type Result = { piafs: List<PIAF> }
+type Result = { piafs: PIAF[] }
 
 const CloseButton = styled(IconButton)`
   position: absolute;
@@ -58,23 +57,37 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const { openDialog } = useDialog()
   const { user } = useUser<true>()
   const piafCurrentUser = slot.piafs.find(({ piaffeur, statut }) => piaffeur?.id == user?.id && statut == "occupe")
+  const hideButtons = slot.start.getTime() < Date.now()
 
-  /* TEST TO CHECK MAXIMUM NUMBER OF PIAFS WAITING FOR THE BACK TO BE DONE
-  const getPiafCountByDay = async () => {
-    const after = new Date(slot.start.getFullYear(), slot.start.getMonth(), slot.start.getDate())
-    const before = addDays(after, 1)
-    console.log(before.toISOString())
-
-    apollo
-      .query<Result>({
+  const getPiafCountByWeek = async () => {
+    const after = startOfWeek(slot.start)
+    const before = endOfWeek(slot.start)
+    try {
+      const result = await apollo.query<Result>({
         query: USER_PIAFS_BY_DATE,
         variables: { idPiaffeur: user?.id, after: after, before: before },
       })
-      .then(({ data }) => {
-        console.log(data)
+      return result.data.piafs.length
+    } catch (ex) {
+      handleError(ex)
+    }
+    return 0
+  }
+
+  const getPiafCountByDay = async () => {
+    const after = startOfDay(slot.start)
+    const before = endOfDay(slot.start)
+    try {
+      const result = await apollo.query<Result>({
+        query: USER_PIAFS_BY_DATE,
+        variables: { idPiaffeur: user?.id, after: after, before: before },
       })
-      .catch(handleError)
-  }*/
+      return result.data.piafs.length
+    } catch (ex) {
+      handleError(ex)
+    }
+    return 0
+  }
 
   const register = async (piaf: PIAF) => {
     const roles = user?.rolesChouette
@@ -84,7 +97,16 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
     }
 
     setLoading(true)
-    //getPiafCountByDay()
+    const piafOfWeek = await getPiafCountByWeek()
+    if (piafOfWeek >= 3) {
+      openDialog(`Il n'est pas possible de s'inscriresur plus de 3 PIAF par semaine`)
+      return
+    }
+    const piafOfDay = await getPiafCountByDay()
+    if (piafOfDay >= 2) {
+      openDialog(`Il n'est pas possible de s'inscrire sur plus de 2 PIAF par jour`)
+      return
+    }
 
     // If there is a piaf with status "remplacement" and the same role,
     // the user will be register in this piaf by default
@@ -164,12 +186,12 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
                     <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
                   </Contact>
                 )}
-              {status !== "occupied" && !piafCurrentUser && (
+              {status !== "occupied" && !piafCurrentUser && !hideButtons && (
                 <Button disabled={loading} color="primary" variant="contained" onClick={() => register(piaf)}>
                   S’inscrire
                 </Button>
               )}
-              {piaffeur?.id == user?.id && piaf.statut == "occupe" && (
+              {piaffeur?.id == user?.id && piaf.statut == "occupe" && !hideButtons && (
                 <Button disabled={loading} color="primary" variant="contained" onClick={() => unregister(piaf)}>
                   Demander un remplacement
                 </Button>
