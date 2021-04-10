@@ -4,13 +4,14 @@ import { useQuery } from "@apollo/client"
 import { Button, CircularProgress, Grid, useMediaQuery, useTheme } from "@material-ui/core"
 import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
+import { isSameMonth } from "date-fns"
 
 import { useDatePlanning } from "src/providers/datePlanning"
 import { PLANNING } from "src/graphql/queries"
 import Calendar from "src/components/Calendar"
 import { PiafIcon } from "src/components/Piaf"
 import { formatMonthYear } from "src/helpers/date"
-import { isSameMonth } from "date-fns"
+import ErrorMessage from "src/components/ErrorMessage"
 
 type Result = { creneaus: Creneau[] }
 
@@ -20,9 +21,6 @@ const Loading = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
-const ErrorMessage = styled.div`
-  color: #e53935;
 `
 const Caption = styled.div`
   border: 1px solid gray;

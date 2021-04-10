@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react"
-import { Button, Checkbox, CircularProgress, TextField } from "@material-ui/core"
+import { CreneauGenerique, Reserve } from "src/types/model"
+import { IReserve } from "src/types/app"
+
+import { useEffect, useState, ChangeEvent } from "react"
+import { Button, FormGroup, FormControlLabel, Checkbox, CircularProgress, TextField } from "@material-ui/core"
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled/macro"
 
@@ -7,56 +10,38 @@ import apollo from "src/helpers/apollo"
 import { handleError } from "src/helpers/errors"
 import { RESERVE_CREATE, RESERVE_UPDATE, CRENEAUX_GENERIQUES, RESERVE_USER } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
+import { useDialog } from "src/providers/dialog"
 import { formatTime, getDayOfWeek } from "src/helpers/date"
-import InfoDialog from "src/components/InfoDialog"
-import { CreneauGenerique, Reserve } from "src/types/model"
-import { IReserve } from "src/types/app"
+import ErrorMessage from "src/components/ErrorMessage"
 
-const ErrorMessage = styled.div`
-  color: #e53935;
-`
 const Loading = styled.div`
-  border: 2px solid gray;
-  height: 500px;
+  height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
 `
-const List = styled.div`
-  display: inline-flex;
-`
-
 const ReserveGrid = styled.div`
-  @media screen and (min-width: 800px) {
+  @media screen and (min-width: 980px) {
     display: flex;
     > div {
       flex: 1 0 14.29%;
     }
   }
 `
-
-const ButtonArea = styled.div`
-  margin: 15px auto 100px auto;
-  width: 100%;
-  > div {
-    width: 100%;
-  }
+const Infos = styled.div`
+  margin: 20px 0 40px;
 `
 
 type ResultCG = { creneauGeneriques: CreneauGenerique[] }
 type ResultRU = { reserves: Reserve[] }
 
 const ReservePage = () => {
-  const [openDialog, setOpenDialog] = useState(false)
   const { user } = useUser<true>()
+  const [saving, setSaving] = useState(false)
+  const { openDialog } = useDialog()
   const [information, setInformation] = useState<string>("")
-  const [creneauGeneriqueChecked, setCreneauGeneriqueChecked] = useState<string[]>([])
-  const handleClickOpenDialog = () => {
-    setOpenDialog(true)
-  }
-  const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
+  const [slots, setSlots] = useState<string[]>([])
+
   const { data: dataCreneauxList, loading: loadingCL, error: errorCreneauxList } = useQuery<ResultCG>(
     CRENEAUX_GENERIQUES
   )
@@ -69,7 +54,7 @@ const ReservePage = () => {
   useEffect(() => {
     if (dataCreneauxUser && dataCreneauxUser?.reserves.length > 0) {
       setInformation(dataCreneauxUser.reserves[0].informations)
-      setCreneauGeneriqueChecked(dataCreneauxUser.reserves[0].creneauGeneriques.map((cg) => cg.id))
+      setSlots(dataCreneauxUser.reserves[0].creneauGeneriques.map((cg) => cg.id))
     }
   }, [dataCreneauxUser])
 
@@ -80,7 +65,7 @@ const ReservePage = () => {
           <strong>Une erreur est survenue.</strong> Essayez de recharger la page.
         </h2>
         <p>{errorCreneauxList?.message}</p>
-        {<p>{errorReserve?.message}</p>}
+        <p>{errorReserve?.message}</p>
       </ErrorMessage>
     )
   }
@@ -88,20 +73,21 @@ const ReservePage = () => {
   const slotList: IReserve[] = []
 
   if (dataCreneauxList) {
-    for (let day = 0; day < 6; day++) {
+    for (let day = 0; day < 7; day++) {
       dataCreneauxList?.creneauGeneriques
-        .filter((c) => c.jour == day && c.actif)
-        .forEach((cg) => {
+        .filter(({ jour, actif }) => jour === day && actif)
+        .forEach((slot) => {
           const reserveFound = slotList.find((s) => s.day == day)
+          const startTime = new Date(slot.heureDebut).getTime()
           if (reserveFound) {
-            const slotReserveFound = reserveFound.slots.find((c) => c.time == new Date(cg.heureDebut).getTime())
+            const slotReserveFound = reserveFound.slots.find(({ time }) => time == startTime)
             if (slotReserveFound) {
-              slotReserveFound.allSlotIds.push(cg.id)
+              slotReserveFound.allSlotIds.push(slot.id)
             } else {
               reserveFound.slots.push({
-                time: new Date(cg.heureDebut).getTime(),
-                slotDisplayed: cg,
-                allSlotIds: [cg.id],
+                time: startTime,
+                slotDisplayed: slot,
+                allSlotIds: [slot.id],
               })
             }
           } else {
@@ -109,9 +95,9 @@ const ReservePage = () => {
               day: day,
               slots: [
                 {
-                  time: new Date(cg.heureDebut).getTime(),
-                  slotDisplayed: cg,
-                  allSlotIds: [cg.id],
+                  time: startTime,
+                  slotDisplayed: slot,
+                  allSlotIds: [slot.id],
                 },
               ],
             })
@@ -120,116 +106,109 @@ const ReservePage = () => {
     }
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInformation(e.target.value)
+  const handleInfoChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    setInformation(target.value)
   }
 
-  const getSlot = (idCreneauGenerique: string) => {
-    let allSlotsSelected: string[] = []
-    slotList.forEach((s) => {
-      const selSlot = s.slots.find((displayed) => displayed.slotDisplayed.id == idCreneauGenerique)
-      if (selSlot) {
-        allSlotsSelected = selSlot.allSlotIds
+  const getSlots = (idCreneauGenerique: string) => {
+    let list: string[] = []
+    slotList.forEach((slot) => {
+      const selected = slot.slots.find((displayed) => displayed.slotDisplayed.id == idCreneauGenerique)
+      if (selected) {
+        list = selected.allSlotIds
       }
     })
-    return allSlotsSelected
+    return list
   }
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, idCreneauGenerique: string) => {
-    const isChecked = e.target.checked
-    const temp = creneauGeneriqueChecked.slice()
-    if (isChecked) {
-      temp.push(...getSlot(idCreneauGenerique))
-      setCreneauGeneriqueChecked(temp)
+  const handleCheckboxChange = (idCreneauGenerique: string, checked: boolean) => {
+    const temp = slots.slice()
+    if (checked) {
+      temp.push(...getSlots(idCreneauGenerique))
+      setSlots(temp)
     } else {
-      getSlot(idCreneauGenerique).forEach((s) => {
-        temp.splice(temp.indexOf(s), 1)
+      getSlots(idCreneauGenerique).forEach((slot) => {
+        temp.splice(temp.indexOf(slot), 1)
       })
-      setCreneauGeneriqueChecked(temp)
+      setSlots(temp)
     }
   }
 
-  const register = async () => {
-    if (dataCreneauxUser?.reserves.length) {
-      apollo
-        .mutate({
-          mutation: RESERVE_UPDATE,
-          variables: {
-            id: dataCreneauxUser.reserves[0].id,
-            idUser: user?.id,
-            informations: information,
-            creneauGenerique: creneauGeneriqueChecked,
-          },
-        })
-        .then((response) => {
-          console.log(response)
-          handleClickOpenDialog()
-        })
-        .catch(handleError)
-    } else {
-      apollo
-        .mutate({
-          mutation: RESERVE_CREATE,
-          variables: { idUser: user?.id, informations: information, creneauGenerique: creneauGeneriqueChecked },
-        })
-        .then((response) => {
-          console.log(response)
-          handleClickOpenDialog()
-        })
-        .catch(handleError)
+  const handleSave = async () => {
+    setSaving(true)
+
+    const variables: Record<string, any> = {
+      user: user?.id,
+      informations: information,
+      creneauGenerique: slots,
     }
+    if (dataCreneauxUser?.reserves.length) {
+      variables.id = dataCreneauxUser.reserves[0].id
+    }
+
+    try {
+      await apollo.mutate({
+        mutation: variables.id ? RESERVE_UPDATE : RESERVE_CREATE,
+        variables,
+      })
+
+      openDialog(
+        (variables.id
+          ? "Votre inscription à la réserve a bien été mise à jour."
+          : "Vous êtes désormais inscrit·e à la reserve.") + " Merci !"
+      )
+    } catch (error) {
+      handleError(error)
+    }
+
+    setSaving(false)
   }
 
   return (
     <>
-      <ReserveGrid>
-        {loading ? (
-          <Loading>
-            <CircularProgress />
-          </Loading>
-        ) : (
-          slotList.map((reserve) => (
-            <div key={reserve.day}>
-              {getDayOfWeek(reserve.day)}
-              {reserve.slots.map((s) => (
-                <div key={s.slotDisplayed.id}>
-                  <Checkbox
-                    color="default"
-                    key={"checkbox" + s.slotDisplayed.id}
-                    checked={creneauGeneriqueChecked.indexOf(s.slotDisplayed.id) >= 0}
-                    onChange={(event) => {
-                      handleCheckboxChange(event, s.slotDisplayed.id)
-                    }}
+      {loading ? (
+        <Loading>
+          <CircularProgress />
+        </Loading>
+      ) : (
+        <>
+          <ReserveGrid>
+            {slotList.map((reserve) => (
+              <FormGroup key={reserve.day}>
+                {getDayOfWeek(reserve.day)}
+                {reserve.slots.map(({ slotDisplayed }) => (
+                  <FormControlLabel
+                    key={slotDisplayed.id}
+                    control={
+                      <Checkbox
+                        color="default"
+                        checked={slots.includes(slotDisplayed.id)}
+                        onChange={({ target }) => {
+                          handleCheckboxChange(slotDisplayed.id, target.checked)
+                        }}
+                      />
+                    }
+                    label={`${formatTime(slotDisplayed.heureDebut)} - ${formatTime(slotDisplayed.heureFin)}`}
                   />
-                  <List key={s.slotDisplayed.id}>
-                    {formatTime(new Date(s.slotDisplayed.heureDebut))} -{" "}
-                    {formatTime(new Date(s.slotDisplayed.heureFin))}
-                  </List>
-                </div>
-              ))}
-            </div>
-          ))
-        )}
-      </ReserveGrid>
-      <ButtonArea>
-        <TextField
-          disabled={loading}
-          label="Information supplémentaire (optionel)"
-          value={information}
-          onChange={handleInputChange}
-        />
-      </ButtonArea>
-      <ButtonArea>
-        <Button disabled={loading} color="primary" variant="contained" onClick={register}>
-          S’inscrire
-        </Button>
-      </ButtonArea>
-      <InfoDialog
-        open={openDialog}
-        handleClose={handleCloseDialog}
-        title=""
-        message={"Vous êtes désormais inscrits à la reserve. Merci !"}
-      ></InfoDialog>
+                ))}
+              </FormGroup>
+            ))}
+          </ReserveGrid>
+          <Infos>
+            <TextField
+              multiline
+              disabled={loading}
+              label="Informations supplémentaires (optionnel)"
+              value={information}
+              onChange={handleInfoChange}
+              fullWidth
+            />
+          </Infos>
+          <Button disabled={saving} color="primary" variant="contained" onClick={handleSave}>
+            S’inscrire
+          </Button>
+        </>
+      )}
     </>
   )
 }

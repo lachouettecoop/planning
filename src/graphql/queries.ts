@@ -103,8 +103,8 @@ export const USER_UPDATE = gql`
 `
 
 export const RESERVE_CREATE = gql`
-  mutation RESERVE_CREATE($idUser: String, $informations: String, $creneauGenerique: [String]) {
-    createReserve(input: { user: $idUser, informations: $informations, creneauGeneriques: $creneauGenerique }) {
+  mutation RESERVE_CREATE($user: String, $informations: String, $creneauGenerique: [String]) {
+    createReserve(input: { user: $user, informations: $informations, creneauGeneriques: $creneauGenerique }) {
       reserve {
         id
         informations
@@ -125,10 +125,8 @@ export const RESERVE_CREATE = gql`
 `
 
 export const RESERVE_UPDATE = gql`
-  mutation RESERVE_UPDATE($id: ID!, $idUser: String, $informations: String, $creneauGenerique: [String]) {
-    updateReserve(
-      input: { id: $id, user: $idUser, informations: $informations, creneauGeneriques: $creneauGenerique }
-    ) {
+  mutation RESERVE_UPDATE($id: ID!, $user: String, $informations: String, $creneauGenerique: [String]) {
+    updateReserve(input: { id: $id, user: $user, informations: $informations, creneauGeneriques: $creneauGenerique }) {
       reserve {
         id
         informations
