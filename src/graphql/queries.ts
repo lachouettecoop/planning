@@ -28,7 +28,7 @@ export const LOGGED_IN_USER = gql`
 
 export const USER_PIAFS_BY_DATE = gql`
   query USER_PIAFS_BY_DATE($idPiaffeur: String, $after: String, $before: String) {
-    piafs(piaffeur: $idPiaffeur, after: $after, before: $before) {
+    piafs(piaffeur: $idPiaffeur, creneau_debut: { after: $after, before: $before }) {
       id
       creneau {
         debut
@@ -103,7 +103,7 @@ export const USER_UPDATE = gql`
 `
 
 export const RESERVE_CREATE = gql`
-  mutation RESERVE($idUser: String, $informations: String, $creneauGenerique: [String]) {
+  mutation RESERVE_CREATE($idUser: String, $informations: String, $creneauGenerique: [String]) {
     createReserve(input: { user: $idUser, informations: $informations, creneauGeneriques: $creneauGenerique }) {
       reserve {
         id
@@ -125,7 +125,7 @@ export const RESERVE_CREATE = gql`
 `
 
 export const RESERVE_UPDATE = gql`
-  mutation RESERVE($id: ID!, $idUser: String, $informations: String, $creneauGenerique: [String]) {
+  mutation RESERVE_UPDATE($id: ID!, $idUser: String, $informations: String, $creneauGenerique: [String]) {
     updateReserve(
       input: { id: $id, user: $idUser, informations: $informations, creneauGeneriques: $creneauGenerique }
     ) {

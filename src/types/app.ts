@@ -18,9 +18,15 @@ export interface IWeek {
   days: IDay[]
 }
 
+export interface ISlotReserve {
+  time: number
+  slotDisplayed: CreneauGenerique
+  allSlotIds: string[]
+}
+
 export interface IReserve {
   day: number
-  slots: CreneauGenerique[]
+  slots: ISlotReserve[]
 }
 
 export type IStatus = "available" | "replacement" | "occupied"

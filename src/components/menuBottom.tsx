@@ -35,9 +35,13 @@ const useStyles = makeStyles((theme) =>
       // Aligns the content of the button vertically.
       flexDirection: "column",
     },
-    textMenu: {
+    textMenuDecoration: {
       textDecoration: "none",
+    },
+    textMenu: {
       color: "white",
+      paddingTop: "0 !important",
+      paddingBottom: "0 !important",
       backgroundColor: theme.palette.primary.main, //TODO
     },
     icon: {
@@ -80,7 +84,7 @@ export default function BottomAppBar() {
       <AppBar position="fixed" color="primary" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           {MAIN_ITEMS.map(({ href, title, Icon }) => (
-            <Link to={href} key={title}>
+            <Link className={classes.textMenuDecoration} to={href} key={title}>
               <ListItem button className={classes.label}>
                 <ListItemIcon className={classes.icon}>
                   <Icon />
@@ -91,7 +95,7 @@ export default function BottomAppBar() {
           ))}
           <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
             {EXTRA_ITEMS.map((item) => (
-              <Link to={item.href} key={item.title}>
+              <Link className={classes.textMenuDecoration} to={item.href} key={item.title}>
                 <MenuItem className={classes.textMenu} onClick={handleClose}>
                   {item.title}
                 </MenuItem>

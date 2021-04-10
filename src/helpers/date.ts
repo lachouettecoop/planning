@@ -10,7 +10,7 @@ export const formatMonthYear = (date: Date | number) => formatInFrench(date, "MM
 
 export const formatTime = (date: Date | number) => formatInFrench(date, "HH:mm")
 
+const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 export const getDayOfWeek = (index: number) => {
-  const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
   return daysOfWeek[index]
 }

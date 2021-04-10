@@ -2,7 +2,7 @@ import type { Creneau } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
 import { Button, CircularProgress, Grid, useMediaQuery, useTheme } from "@material-ui/core"
-import { ArrowBackIos, ArrowForwardIos, Search, CalendarToday } from "@material-ui/icons"
+import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 
 import { useDatePlanning } from "src/providers/datePlanning"
@@ -84,12 +84,7 @@ const PlanningPage = () => {
     <>
       <Nav>
         <Grid container>
-          <Grid item xs={12} md={3}>
-            <Button variant="contained" color="primary" startIcon={<Search />} disabled>
-              Recherche
-            </Button>
-          </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={6}>
             <Title>{formatMonthYear(start)}</Title>
           </Grid>
           <Grid item xs={12} md={6}>
