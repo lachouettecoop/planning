@@ -1,6 +1,6 @@
 import styled from "@emotion/styled/macro"
 
-import type { PIAF } from "src/types/model"
+import type { PIAF, Statut } from "src/types/model"
 import { USER_PIAFS_BY_DATE } from "src/graphql/queries"
 import { useQuery } from "@apollo/client"
 import { formatTime, formatDateLong, queryDate } from "src/helpers/date"
@@ -14,15 +14,22 @@ const Accueil = styled.div`
   column-gap: 10px;
   row-gap: 20px;
 `
+
+const PiafDisponible = styled.div`
+  background: #efefe0;
+`
+const PiafUrgent = styled.div`
+  background: #efefe5;
+  flex-direction: column;
+  flex-wrap: wrap;
+`
 const MesPiafs = styled.div`
-  background: #b573c9;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 1em;
   grid-column: 2 / span 1;
   grid-row: 1 / 1;
 `
 const Role = styled.div`
-  color: yellow;
+  color: black;
   padding: 8px;
 `
 const PiafDate = styled.div`
@@ -32,17 +39,13 @@ const PiafHoraire = styled.div`
   color: #f5cb42;
 `
 const PiafsUrgents = styled.div`
-  background: #660512;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 1em;
   grid-column: 1 / 3;
   grid-row: 2 / 3;
   display: flex;
-  flex-direction: column;
 `
 const Status = styled.div`
   background: #efefef;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 1em;
   grid-column: 1 / span 1;
   grid-row: 1 / 1;
@@ -69,7 +72,7 @@ const HomePage = () => {
   const today: string = queryDate(new Date(startOfToday())).toString() // must be String
   const todayPlusSeven: string = queryDate(addDays(new Date(startOfToday()), 7)).toString()
 
-  const { auth } = useUser<true>()
+  const { auth, user } = useUser<true>()
 
   const myPiafsData = useQuery<Result>(USER_PIAFS_BY_DATE, {
     variables: {
@@ -84,8 +87,7 @@ const HomePage = () => {
       before: todayPlusSeven,
     },
   })
-
-  console.log("P U", piafsUrgentsData.data?.piafs)
+  const status = user?.statuts.find((s: Statut) => s.actif)?.libelle.toLowerCase()
 
   const prochainesPiafs = myPiafsData.data?.piafs.map((piaf) => {
     if (piaf.piaffeur) {
@@ -95,7 +97,7 @@ const HomePage = () => {
       const heureFin = piaf.creneau.fin
       const piaffeur = `Chouettos : ${piaf.piaffeur.nom}`
       return (
-        <div key={piaf.id}>
+        <PiafDisponible key={piaf.id}>
           <Role>{role}</Role>
           <div>
             <PiafDate>Le {formatDateLong(new Date(date))} </PiafDate>
@@ -103,7 +105,7 @@ const HomePage = () => {
               de {formatTime(new Date(heureDebut))} à {formatTime(new Date(heureFin))} {piaffeur}
             </PiafHoraire>
           </div>
-        </div>
+        </PiafDisponible>
       )
     }
   })
@@ -111,11 +113,11 @@ const HomePage = () => {
   const creneauxUrgents = piafsUrgentsData.data?.piafs.map((piaf) => {
     if (piaf.piaffeur === null) {
       const role = piaf.role.libelle
-      const date = piaf.creneau.debut // il faut calculer la date de l'heure du debutiaf.creneau.date
+      const date = piaf.creneau.debut
       const heureDebut = piaf.creneau.debut
       const heureFin = piaf.creneau.fin
       return (
-        <div key={piaf.id}>
+        <PiafUrgent key={piaf.id}>
           <Role>{role}</Role>
           <div>
             <PiafDate>Le {formatDateLong(new Date(date))} </PiafDate>
@@ -123,7 +125,7 @@ const HomePage = () => {
               de {formatTime(new Date(heureDebut))} à {formatTime(new Date(heureFin))}
             </PiafHoraire>
           </div>
-        </div>
+        </PiafUrgent>
       )
     }
   })
@@ -137,7 +139,7 @@ const HomePage = () => {
         </PiafsAttendues>
         <ChouetteStatut>
           <h4>Je suis</h4>
-          <h1>Très Chouette</h1>
+          <h1>{status || "Tu est un peu choeutte mais quand même pas trop"}</h1>
         </ChouetteStatut>
       </Status>
       <MesPiafs>{prochainesPiafs}</MesPiafs>
