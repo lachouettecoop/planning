@@ -4,7 +4,7 @@ import type { IWeek } from "src/types/app"
 import styled from "@emotion/styled/macro"
 import { addDays, differenceInWeeks, eachWeekOfInterval, getDay } from "date-fns"
 
-import CalendarDay from "src/components/CalendarDay"
+import CalendarDay, { DayPlaceholder } from "src/components/CalendarDay"
 
 const Container = styled.div`
   border: 1px solid gray;
@@ -56,9 +56,9 @@ const Calendar = ({ start, end, list }: Props) => {
     <Container>
       {weeks.map((week, index) => (
         <WeekRow key={index}>
-          {week.days.map((day, i) => (
-            <CalendarDay day={day} key={i} />
-          ))}
+          {week.days.map((day, i) =>
+            day.start >= start && day.start < end ? <CalendarDay day={day} key={i} /> : <DayPlaceholder key={i} />
+          )}
         </WeekRow>
       ))}
     </Container>

@@ -107,7 +107,7 @@ const useStyles = makeStyles((theme) =>
 )
 
 const ITEMS = [
-  { title: "Accueil", href: "/", Icon: HomeIcon },
+  { title: "Accueil", href: "/home", Icon: HomeIcon },
   { title: "Planning", href: "/planning", Icon: EventIcon },
   { title: "Réserve", href: "/reserve", Icon: GroupIcon },
   {

@@ -10,6 +10,7 @@ import PiafCircle from "src/components/PiafCircle"
 const SELECTED_COLOR = "#FFFFAA"
 
 const ClickableSlot = styled.button<{ $open: boolean }>`
+  width: 100%;
   border: none;
   background-color: ${({ $open }) => ($open ? SELECTED_COLOR : "transparent")};
   padding: 5px;
