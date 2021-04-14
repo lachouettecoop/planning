@@ -32,7 +32,7 @@ import {
 
 import { useUser } from "src/providers/user"
 
-const DRAWER_WIDTH = 240
+const DRAWER_WIDTH = 260
 
 const Spacer = styled(Box)({
   flexGrow: 1,
@@ -98,6 +98,10 @@ const useStyles = makeStyles((theme) =>
     content: {
       flexGrow: 1,
       padding: theme.spacing(3),
+    },
+    menuItem: {
+      textDecoration: "none",
+      color: "black",
     },
   })
 )
@@ -192,7 +196,7 @@ const Menu = () => {
         <Divider />
         <List>
           {ITEMS.map(({ href, title, Icon }) => (
-            <Link to={href} key={href}>
+            <Link className={classes.menuItem} to={href} key={href}>
               <ListItem button>
                 <ListItemIcon>
                   <Icon />

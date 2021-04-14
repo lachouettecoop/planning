@@ -35,14 +35,21 @@ const useStyles = makeStyles((theme) =>
       // Aligns the content of the button vertically.
       flexDirection: "column",
     },
+    menu: {
+      "& ul": {
+        paddingTop: "0 !important",
+        paddingBottom: "0 !important",
+      },
+    },
     textMenuDecoration: {
       textDecoration: "none",
     },
     textMenu: {
       color: "white",
-      paddingTop: "0 !important",
-      paddingBottom: "0 !important",
-      backgroundColor: theme.palette.primary.main, //TODO
+      backgroundColor: theme.palette.primary.main,
+      "&:hover": {
+        background: theme.palette.primary.dark,
+      },
     },
     icon: {
       justifyContent: "center",
@@ -93,7 +100,14 @@ export default function BottomAppBar() {
               </ListItem>
             </Link>
           ))}
-          <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
+          <Menu
+            id="simple-menu"
+            className={classes.menu}
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
             {EXTRA_ITEMS.map((item) => (
               <Link className={classes.textMenuDecoration} to={item.href} key={item.title}>
                 <MenuItem className={classes.textMenu} onClick={handleClose}>
