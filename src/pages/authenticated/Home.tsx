@@ -1,6 +1,6 @@
 import styled from "@emotion/styled/macro"
 
-import type { PIAF, PiafFilter_creneau_debut } from "src/types/model"
+import type { PIAF } from "src/types/model"
 import { USER_PIAFS_BY_DATE } from "src/graphql/queries"
 import { useQuery } from "@apollo/client"
 import { formatTime, formatDateLong, queryDate } from "src/helpers/date"
@@ -68,22 +68,20 @@ type Result = { piafs: PIAF[] }
 const HomePage = () => {
   const today: string = queryDate(new Date(startOfToday())).toString() // must be String
   const todayPlusSeven: string = queryDate(addDays(new Date(startOfToday()), 7)).toString()
-  const nextWeek: PiafFilter_creneau_debut = { after: today, before: todayPlusSeven }
-  const MyPiafsTime: PiafFilter_creneau_debut = { after: today }
 
-  console.log("today", today, "t +7", todayPlusSeven, "nextweek", nextWeek)
   const { auth } = useUser<true>()
 
   const myPiafsData = useQuery<Result>(USER_PIAFS_BY_DATE, {
     variables: {
       idPiaffeur: `/api/users/${auth.id}`,
-      after: MyPiafsTime,
+      after: today,
     },
   })
 
   const piafsUrgentsData = useQuery<Result>(USER_PIAFS_BY_DATE, {
     variables: {
-      after: nextWeek,
+      after: today,
+      before: todayPlusSeven,
     },
   })
 

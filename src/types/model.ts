@@ -90,9 +90,3 @@ export interface PIAF {
   pourvu: boolean
   statut: "occupe" | "remplacement" | "" | null // empty = available
 }
-export interface PiafFilter_creneau_debut {
-  before?: string
-  strictly_before?: string
-  after?: string
-  strictly_after?: string
-}
