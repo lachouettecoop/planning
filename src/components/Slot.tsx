@@ -3,9 +3,9 @@ import type { ISlot } from "src/types/app"
 import { useState } from "react"
 import styled from "@emotion/styled/macro"
 
-import SlotInfo from "src/components/SlotDialog"
+import SlotDialog from "src/components/SlotDialog"
 import { formatTime } from "src/helpers/date"
-import Piaf from "src/components/Piaf"
+import PiafCircle from "src/components/PiafCircle"
 
 const SELECTED_COLOR = "#FFFFAA"
 
@@ -60,12 +60,12 @@ const Slot = ({ slot }: Props) => {
           <span>{slot.title}</span>
         </Title>
         <List>
-          {slot.piafs.map((piaf) => (
-            <Piaf key={piaf.id} piaf={piaf} />
+          {slot.piafs?.map((piaf) => (
+            <PiafCircle key={piaf.id} piaf={piaf} />
           ))}
         </List>
       </ClickableSlot>
-      <SlotInfo show={open} slot={slot} handleClose={handleClose} />
+      <SlotDialog show={open} slot={slot} handleClose={handleClose} />
     </>
   )
 }

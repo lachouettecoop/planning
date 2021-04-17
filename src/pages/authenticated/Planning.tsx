@@ -9,7 +9,7 @@ import { isSameMonth } from "date-fns"
 import { useDatePlanning } from "src/providers/datePlanning"
 import { PLANNING } from "src/graphql/queries"
 import Calendar from "src/components/Calendar"
-import { PiafIcon } from "src/components/Piaf"
+import { PiafIcon } from "src/components/PiafCircle"
 import { formatMonthYear } from "src/helpers/date"
 import ErrorMessage from "src/components/ErrorMessage"
 

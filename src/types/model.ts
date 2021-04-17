@@ -92,7 +92,7 @@ export interface Creneau {
 export interface PIAF {
   id: ID
   role: Role
-  piaffeur: User
+  piaffeur?: User
   creneau: Creneau
   visible: boolean
   pourvu: boolean

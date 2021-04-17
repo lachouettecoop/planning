@@ -77,10 +77,10 @@ const ReservePage = () => {
       dataCreneauxList?.creneauGeneriques
         .filter(({ jour, actif }) => jour === day && actif)
         .forEach((slot) => {
-          const reserveFound = slotList.find((s) => s.day == day)
+          const reserveFound = slotList.find((s) => s.day === day)
           const startTime = new Date(slot.heureDebut).getTime()
           if (reserveFound) {
-            const slotReserveFound = reserveFound.slots.find(({ time }) => time == startTime)
+            const slotReserveFound = reserveFound.slots.find(({ time }) => time === startTime)
             if (slotReserveFound) {
               slotReserveFound.allSlotIds.push(slot.id)
             } else {
@@ -113,7 +113,7 @@ const ReservePage = () => {
   const getSlots = (idCreneauGenerique: string) => {
     let list: string[] = []
     slotList.forEach((slot) => {
-      const selected = slot.slots.find((displayed) => displayed.slotDisplayed.id == idCreneauGenerique)
+      const selected = slot.slots.find((displayed) => displayed.slotDisplayed.id === idCreneauGenerique)
       if (selected) {
         list = selected.allSlotIds
       }

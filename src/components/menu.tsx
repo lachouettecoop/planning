@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
 import clsx from "clsx"
 import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles"
 import {
@@ -31,6 +30,7 @@ import {
 } from "@material-ui/icons"
 
 import { useUser } from "src/providers/user"
+import Link from "src/components/Link"
 
 const DRAWER_WIDTH = 260
 
@@ -116,7 +116,7 @@ const ITEMS = [
     Icon: ReplayIcon,
   },
   { title: "Mon profil", href: "/profile", Icon: PersonIcon },
-  { title: "Espace membre", href: "/member", Icon: ArrowBackIcon },
+  { title: "Espace membre", href: "https://espace-membres.lachouettecoop.fr/page/homepage", Icon: ArrowBackIcon },
 ]
 
 const Menu = () => {
@@ -196,7 +196,7 @@ const Menu = () => {
         <Divider />
         <List>
           {ITEMS.map(({ href, title, Icon }) => (
-            <Link className={classes.menuItem} to={href} key={href}>
+            <Link className={classes.menuItem} href={href} key={href}>
               <ListItem button>
                 <ListItemIcon>
                   <Icon />
