@@ -26,15 +26,42 @@ export const LOGGED_IN_USER = gql`
   }
 `
 
-export const USER_PIAFS_BY_DATE = gql`
-  query USER_PIAFS_BY_DATE($idPiaffeur: String, $after: String, $before: String) {
-    piafs(piaffeur: $idPiaffeur, creneau_debut: { after: $after, before: $before }) {
+export const SLOTS = gql`
+  query SLOTS($id: ID!) {
+    creneau(id: $id) {
+      titre
+      debut
+      fin
+      piafs {
+        id
+        statut
+        role {
+          id
+          roleUniqueId
+          libelle
+        }
+        piaffeur {
+          id
+          prenom
+          nom
+        }
+      }
+    }
+  }
+`
+
+export const PIAFS = gql`
+  query PIAFS($idPiaffeur: String, $after: String, $before: String, $statut: String) {
+    piafs(piaffeur: $idPiaffeur, creneau_debut: { after: $after, before: $before }, statut: $statut) {
       id
+      statut
       creneau {
+        id
         debut
         fin
       }
       piaffeur {
+        id
         prenom
         nom
         username
@@ -147,7 +174,7 @@ export const RESERVE_UPDATE = gql`
 `
 
 export const RESERVE_USER = gql`
-  query($idUser: String) {
+  query RESERVE_USER($idUser: String) {
     reserves(user: $idUser) {
       id
       informations
@@ -159,7 +186,7 @@ export const RESERVE_USER = gql`
 `
 
 export const CRENEAUX_GENERIQUES = gql`
-  query {
+  query CRENEAUX_GENERIQUES {
     creneauGeneriques {
       id
       heureDebut

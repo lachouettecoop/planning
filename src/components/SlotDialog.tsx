@@ -2,16 +2,16 @@ import type { PIAF } from "src/types/model"
 import type { ISlot } from "src/types/app"
 
 import { useState } from "react"
-import { Button, capitalize, Dialog, DialogContent, DialogTitle, IconButton } from "@material-ui/core"
+import { Button, capitalize, Dialog, DialogContent, DialogTitle, IconButton, CircularProgress } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 import { startOfWeek, endOfWeek, startOfDay, endOfDay } from "date-fns"
 
 import { formatTime, formatDateLong } from "src/helpers/date"
-import { REGISTRATION_UPDATE, USER_PIAFS_BY_DATE } from "src/graphql/queries"
+import { REGISTRATION_UPDATE, PIAFS } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
-import Piaf, { getStatus } from "src/components/Piaf"
+import PiafCircle, { getStatus } from "src/components/PiafCircle"
 import { handleError } from "src/helpers/errors"
 import { useDialog } from "src/providers/dialog"
 
@@ -56,7 +56,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const [loading, setLoading] = useState(false)
   const { openDialog } = useDialog()
   const { user } = useUser<true>()
-  const piafCurrentUser = slot.piafs.find(({ piaffeur, statut }) => piaffeur?.id == user?.id && statut == "occupe")
+  const piafCurrentUser = slot.piafs?.find(({ piaffeur, statut }) => piaffeur?.id === user?.id && statut === "occupe")
   const hideButtons = slot.start.getTime() < Date.now()
 
   const getPiafCountByWeek = async () => {
@@ -64,7 +64,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
     const before = endOfWeek(slot.start)
     try {
       const result = await apollo.query<Result>({
-        query: USER_PIAFS_BY_DATE,
+        query: PIAFS,
         variables: { idPiaffeur: user?.id, after: after, before: before },
       })
       return result.data.piafs.length
@@ -79,7 +79,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
     const before = endOfDay(slot.start)
     try {
       const result = await apollo.query<Result>({
-        query: USER_PIAFS_BY_DATE,
+        query: PIAFS,
         variables: { idPiaffeur: user?.id, after: after, before: before },
       })
       return result.data.piafs.length
@@ -91,7 +91,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
 
   const register = async (piaf: PIAF) => {
     const roles = user?.rolesChouette
-    if (!roles || !roles.find(({ id }) => id == piaf.role.id)) {
+    if (!roles || !roles.find(({ id }) => id === piaf.role.id)) {
       openDialog(`Pour t’inscrire à cette PIAF tu dois d’abord passer la formation ${piaf.role.libelle}`)
       return
     }
@@ -111,7 +111,9 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
     // If there is a piaf with status "remplacement" and the same role,
     // the user will be register in this piaf by default
     let idPiaf = piaf.id
-    const piafReplacement = slot.piafs.find(({ statut, role }) => statut == "remplacement" && role.id == piaf.role.id)
+    const piafReplacement = slot.piafs?.find(
+      ({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id
+    )
     if (piafReplacement) {
       idPiaf = piafReplacement.id
     }
@@ -163,42 +165,47 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
         </Title>
       </DialogTitle>
       <DialogContent>
-        {slot.piafs.map((piaf) => {
-          const { id, role, piaffeur } = piaf
-          const status = getStatus(piaf)
+        {slot.piafs ? (
+          slot.piafs.map((piaf) => {
+            const { id, role, piaffeur } = piaf
+            const status = getStatus(piaf)
 
-          return (
-            <PiafRow key={id}>
-              <Piaf piaf={piaf} />
-              <Status>
-                {status === "occupied" ? `${piaffeur.prenom} ${piaffeur.nom}` : "Place disponible"}
-                <br />
-                <span>{role.libelle}</span>
-              </Status>
-              {status === "occupied" &&
-                piafCurrentUser &&
-                piafCurrentUser.role.roleUniqueId == "GH" &&
-                piaf.piaffeur.id != user?.id && (
-                  //Show info contacts only if the current user is the GH of the slot
-                  <Contact>
-                    <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
-                    <br />
-                    <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
-                  </Contact>
+            return (
+              <PiafRow key={id}>
+                <PiafCircle piaf={piaf} />
+                <Status>
+                  {status === "occupied" && piaffeur ? `${piaffeur.prenom} ${piaffeur.nom}` : "Place disponible"}
+                  <br />
+                  <span>{role.libelle}</span>
+                </Status>
+                {status === "occupied" &&
+                  piafCurrentUser &&
+                  piafCurrentUser.role.roleUniqueId === "GH" &&
+                  piaffeur &&
+                  piaffeur.id != user?.id && (
+                    //Show info contacts only if the current user is the GH of the slot
+                    <Contact>
+                      <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
+                      <br />
+                      <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
+                    </Contact>
+                  )}
+                {status !== "occupied" && !piafCurrentUser && !hideButtons && (
+                  <Button disabled={loading} color="primary" variant="contained" onClick={() => register(piaf)}>
+                    S’inscrire
+                  </Button>
                 )}
-              {status !== "occupied" && !piafCurrentUser && !hideButtons && (
-                <Button disabled={loading} color="primary" variant="contained" onClick={() => register(piaf)}>
-                  S’inscrire
-                </Button>
-              )}
-              {piaffeur?.id == user?.id && piaf.statut == "occupe" && !hideButtons && (
-                <Button disabled={loading} color="primary" variant="contained" onClick={() => unregister(piaf)}>
-                  Demander un remplacement
-                </Button>
-              )}
-            </PiafRow>
-          )
-        })}
+                {piaffeur?.id === user?.id && piaf.statut === "occupe" && !hideButtons && (
+                  <Button disabled={loading} color="primary" variant="contained" onClick={() => unregister(piaf)}>
+                    Demander un remplacement
+                  </Button>
+                )}
+              </PiafRow>
+            )
+          })
+        ) : (
+          <CircularProgress />
+        )}
       </DialogContent>
     </Dialog>
   )

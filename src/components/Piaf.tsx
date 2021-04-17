@@ -1,64 +1,62 @@
-import type { PIAF, RoleId } from "src/types/model"
-import type { IStatus } from "src/types/app"
+import type { Creneau, PIAF } from "src/types/model"
+import { ISlot } from "src/types/app"
 
-import styled from "@emotion/styled/macro"
+import { useState } from "react"
+import { ListItem, ListItemAvatar, ListItemText } from "@material-ui/core"
+import { useLazyQuery } from "@apollo/client"
 
-import chouettos from "src/images/chouettos.png"
+import { formatDateLong, formatTime } from "src/helpers/date"
+import PiafCircle from "src/components/PiafCircle"
+import SlotDialog from "src/components/SlotDialog"
+import { SLOTS } from "src/graphql/queries"
 
-const STATUS_COLORS: Record<IStatus, string> = {
-  available: "white",
-  replacement: "orange",
-  occupied: "green",
-}
-
-const IMAGES: Partial<Record<RoleId, string>> = {
-  CH: chouettos,
-}
-
-const getImg = (role?: RoleId) => {
-  if (role) {
-    const img = IMAGES[role]
-    if (img) {
-      return `url(${img})`
-    }
-  }
-}
-
-export const PiafIcon = styled.span<{ $status: IStatus; $role?: RoleId }>`
-  flex-shrink: 0;
-  display: inline-block;
-  margin: 2px;
-  width: 32px;
-  height: 32px;
-  border: 2px solid ${({ $status }) => STATUS_COLORS[$status]};
-  border-radius: 50%;
-  background-color: #ddd;
-  background-image: ${({ $role }) => getImg($role) || "none"};
-  background-position: center;
-  background-size: 24px;
-  background-repeat: no-repeat;
-  line-height: 28px;
-  text-align: center;
-`
-
-export const getStatus = (piaf: PIAF): IStatus => {
-  if (piaf.statut === "remplacement") {
-    return "replacement"
-  }
-  if (piaf.piaffeur) {
-    return "occupied"
-  }
-  return "available"
+interface Result {
+  creneau: Creneau
 }
 
 interface Props {
   piaf: PIAF
 }
 
-const Piaf = ({ piaf }: Props) => (
-  <PiafIcon $status={getStatus(piaf)} $role={piaf.role.roleUniqueId}>
-    {getImg(piaf.role.roleUniqueId) ? "" : piaf.role.roleUniqueId}
-  </PiafIcon>
-)
+const Piaf = ({ piaf }: Props) => {
+  const { creneau } = piaf
+  const [open, setOpen] = useState(false)
+
+  const [load, { data }] = useLazyQuery<Result>(SLOTS, {
+    variables: { id: creneau.id },
+  })
+
+  const handleClick = () => {
+    setOpen(true)
+    load()
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const slot: ISlot = {
+    id: creneau.id,
+    title: creneau.titre,
+    start: new Date(creneau.debut),
+    end: new Date(creneau.fin),
+    piafs: data?.creneau.piafs,
+  }
+
+  return (
+    <>
+      <ListItem key={piaf.id} button onClick={handleClick}>
+        <ListItemAvatar>
+          <PiafCircle piaf={piaf} />
+        </ListItemAvatar>
+        <ListItemText
+          primary={formatDateLong(slot.start)}
+          secondary={`de ${formatTime(slot.start)} à ${formatTime(slot.end)}`}
+        />
+      </ListItem>
+      <SlotDialog show={open} slot={slot} handleClose={handleClose} />
+    </>
+  )
+}
 
 export default Piaf

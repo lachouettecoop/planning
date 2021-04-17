@@ -17,3 +17,5 @@ export const formatTime = (date: Date | number | string) => formatInFrench(date,
 
 const WEEKDAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 export const getDayOfWeek = (index: number) => WEEKDAYS[index]
+
+export const queryDate = (date: Date | number) => format(date, "yyyy-MM-dd")

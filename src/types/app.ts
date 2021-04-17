@@ -5,7 +5,7 @@ export interface ISlot {
   title: string
   start: Date
   end: Date
-  piafs: PIAF[]
+  piafs?: PIAF[] // undefined = loading
 }
 
 export interface IDay {
