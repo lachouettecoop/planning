@@ -2,14 +2,14 @@
   "name": "planning",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://lachouettecoop.github.io/planning",
+  "homepage": "https://planning.lachouettecoop.fr",
   "scripts": {
     "prepare": "husky install",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "lint-staged",
-    "predeploy": "npm run build",
+    "predeploy": "yarn build",
     "deploy": "gh-pages -d build",
     "eject": "react-scripts eject"
   },

@@ -1,3 +1,5 @@
+[![Node.js CI](https://github.com/lachouettecoop/planning/actions/workflows/node.js.yml/badge.svg)](https://github.com/lachouettecoop/planning/actions/workflows/node.js.yml)
+
 # Planning
 
 Web app for [La Chouette Coop](https://lachouettecoop.fr/), bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
