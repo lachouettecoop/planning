@@ -62,63 +62,54 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const getPiafCountByWeek = async () => {
     const after = startOfWeek(slot.start)
     const before = endOfWeek(slot.start)
-    try {
-      const result = await apollo.query<Result>({
-        query: PIAFS,
-        variables: { idPiaffeur: user?.id, after: after, before: before },
-      })
-      return result.data.piafs.length
-    } catch (ex) {
-      handleError(ex)
-    }
-    return 0
+    const result = await apollo.query<Result>({
+      query: PIAFS,
+      variables: { idPiaffeur: user?.id, after: after, before: before },
+    })
+    return result.data.piafs.length
   }
 
   const getPiafCountByDay = async () => {
     const after = startOfDay(slot.start)
     const before = endOfDay(slot.start)
-    try {
-      const result = await apollo.query<Result>({
-        query: PIAFS,
-        variables: { idPiaffeur: user?.id, after: after, before: before },
-      })
-      return result.data.piafs.length
-    } catch (ex) {
-      handleError(ex)
-    }
-    return 0
+    const result = await apollo.query<Result>({
+      query: PIAFS,
+      variables: { idPiaffeur: user?.id, after: after, before: before },
+    })
+    return result.data.piafs.length
   }
 
   const register = async (piaf: PIAF) => {
-    const roles = user?.rolesChouette
-    if (!roles || !roles.find(({ id }) => id === piaf.role.id)) {
-      openDialog(`Pour t’inscrire à cette PIAF tu dois d’abord passer la formation ${piaf.role.libelle}`)
-      return
-    }
-
     setLoading(true)
-    const piafOfWeek = await getPiafCountByWeek()
-    if (piafOfWeek >= 3) {
-      openDialog(`Il n'est pas possible de s'inscriresur plus de 3 PIAF par semaine`)
-      return
-    }
-    const piafOfDay = await getPiafCountByDay()
-    if (piafOfDay >= 2) {
-      openDialog(`Il n'est pas possible de s'inscrire sur plus de 2 PIAF par jour`)
-      return
-    }
-
-    // If there is a piaf with status "remplacement" and the same role,
-    // the user will be register in this piaf by default
-    let idPiaf = piaf.id
-    const piafReplacement = slot.piafs?.find(
-      ({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id
-    )
-    if (piafReplacement) {
-      idPiaf = piafReplacement.id
-    }
 
     try {
+      const roles = user?.rolesChouette
+      if (!roles || !roles.find(({ id }) => id === piaf.role.id)) {
+        openDialog(`Pour t’inscrire à cette PIAF tu dois d’abord passer la formation ${piaf.role.libelle}`)
+        return
+      }
+
+      const piafOfWeek = await getPiafCountByWeek()
+      if (piafOfWeek >= 3) {
+        openDialog(`Il n'est pas possible de s'inscriresur plus de 3 PIAF par semaine`)
+        return
+      }
+      const piafOfDay = await getPiafCountByDay()
+      if (piafOfDay >= 2) {
+        openDialog(`Il n'est pas possible de s'inscrire sur plus de 2 PIAF par jour`)
+        return
+      }
+
+      // If there is a piaf with status "remplacement" and the same role,
+      // the user will be register in this piaf by default
+      let idPiaf = piaf.id
+      const piafReplacement = slot.piafs?.find(
+        ({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id
+      )
+      if (piafReplacement) {
+        idPiaf = piafReplacement.id
+      }
+
       await apollo.mutate({
         mutation: REGISTRATION_UPDATE,
         variables: { idPiaf, idPiaffeur: user?.id, statut: "occupe" },

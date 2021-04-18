@@ -41,12 +41,12 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-yarn-
 
-    - name: Build
+    - name: Install dependencies
       run: yarn install --frozen-lockfile
 
     # - run: yarn test
 
-    - name: Deploy
+    - name: Build & Deploy
       run: |
         git config --global user.name $user_name
         git config --global user.email $user_email
@@ -58,3 +58,6 @@ jobs:
         github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
         repository: ${{ github.repository }}
         REACT_APP_API: https://adminchouettos.lachouettecoop.fr
+        REACT_APP_BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
+        REACT_APP_COMMIT: ${{ github.sha }}
+        REACT_APP_AUTHOR: ${{ github.actor }}
