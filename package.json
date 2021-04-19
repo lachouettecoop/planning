@@ -1,7 +1,6 @@
 {
   "name": "planning",
   "version": "0.1.0",
-  "private": true,
   "homepage": "https://planning.lachouettecoop.fr",
   "scripts": {
     "prepare": "husky install",

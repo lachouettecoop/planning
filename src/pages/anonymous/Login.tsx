@@ -6,12 +6,14 @@ import { useUser, Auth } from "src/providers/user"
 import { post } from "src/helpers/request"
 import { handleError } from "src/helpers/errors"
 
-import logo from "src/images/logo.png"
+import { ReactComponent as Logo } from "src/images/logo_white.svg"
 
 const Header = styled.div`
   text-align: center;
-  img {
+  svg {
     width: 250px;
+    height: 250px;
+    margin: -20px 0 -40px;
   }
 `
 
@@ -40,7 +42,7 @@ const LoginPage = () => {
   return (
     <Container maxWidth="xs">
       <Header>
-        <img src={logo} />
+        <Logo />
         <h1>Planning</h1>
       </Header>
       <form onSubmit={handleSubmit}>
