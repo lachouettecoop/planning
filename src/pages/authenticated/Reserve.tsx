@@ -206,7 +206,7 @@ const ReservePage = () => {
             />
           </Infos>
           <Button disabled={saving} color="primary" variant="contained" onClick={handleSave}>
-            S’inscrire
+            Enregistrer
           </Button>
         </>
       )}
