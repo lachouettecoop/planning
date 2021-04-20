@@ -2,7 +2,15 @@ import { CreneauGenerique, Reserve } from "src/types/model"
 import { IReserve } from "src/types/app"
 
 import { useEffect, useState, ChangeEvent } from "react"
-import { Button, FormGroup, FormControlLabel, Checkbox, CircularProgress, TextField } from "@material-ui/core"
+import {
+  Button,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@material-ui/core"
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled/macro"
 
@@ -12,7 +20,7 @@ import { RESERVE_CREATE, RESERVE_UPDATE, CRENEAUX_GENERIQUES, RESERVE_USER } fro
 import { useUser } from "src/providers/user"
 import { useDialog } from "src/providers/dialog"
 import { formatTime, getDayOfWeek } from "src/helpers/date"
-import ErrorMessage from "src/components/ErrorMessage"
+import { ErrorBlock } from "src/helpers/errors"
 
 const Loading = styled.div`
   height: 300px;
@@ -21,6 +29,7 @@ const Loading = styled.div`
   justify-content: center;
 `
 const ReserveGrid = styled.div`
+  margin-top: 2rem;
   @media screen and (min-width: 980px) {
     display: flex;
     > div {
@@ -58,16 +67,9 @@ const ReservePage = () => {
     }
   }, [dataCreneauxUser])
 
-  if (errorCreneauxList || errorReserve) {
-    return (
-      <ErrorMessage>
-        <h2>
-          <strong>Une erreur est survenue.</strong> Essayez de recharger la page.
-        </h2>
-        <p>{errorCreneauxList?.message}</p>
-        <p>{errorReserve?.message}</p>
-      </ErrorMessage>
-    )
+  const queryError = errorCreneauxList || errorReserve
+  if (queryError) {
+    return <ErrorBlock error={queryError} />
   }
 
   const slotList: IReserve[] = []
@@ -166,7 +168,7 @@ const ReservePage = () => {
 
   return (
     <>
-      <h1>Réserve</h1>
+      <Typography variant="h2">Réserve</Typography>
       {loading ? (
         <Loading>
           <CircularProgress />

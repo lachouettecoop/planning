@@ -1,6 +1,7 @@
 import type { Statut, User } from "src/types/model"
 
 import styled from "@emotion/styled/macro"
+import { Typography } from "@material-ui/core"
 
 import { useUser } from "src/providers/user"
 import UserPiafs from "src/components/UserPiafs"
@@ -15,19 +16,15 @@ const Container = styled.div`
   }
 `
 const Status = styled.div`
-  h2 {
-    margin-bottom: 0;
-  }
-  h1 {
-    font-weight: normal;
-    font-size: 2.5em;
-    margin-top: 0;
+  p {
+    font-size: 2.5rem;
     &::first-letter {
       text-transform: uppercase;
     }
     span {
-      font-size: 1.2rem;
+      font-size: 0.5em;
     }
+    margin-bottom: 2rem;
   }
 `
 const MyPlanning = styled.div``
@@ -52,19 +49,19 @@ const HomePage = () => {
   return (
     <Container>
       <Status>
-        <h2>Mon statut</h2>
-        <h1>
+        <Typography variant="h2">Mon statut</Typography>
+        <Typography>
           14/12 <span>PIAFs attendues</span>
-        </h1>
-        <h2>Je suis</h2>
-        <h1>{getStatus(user)}</h1>
+        </Typography>
+        <Typography variant="h2">Je suis</Typography>
+        <Typography>{getStatus(user)}</Typography>
       </Status>
       <MyPlanning>
-        <h2>Mes prochaines PIAFs</h2>
+        <Typography variant="h2">Mes prochaines PIAFs</Typography>
         <UserPiafs />
       </MyPlanning>
       <Replacements>
-        <h2>Remplacements</h2>
+        <Typography variant="h2">Remplacements</Typography>
         <ReplacementPiafs />
       </Replacements>
     </Container>

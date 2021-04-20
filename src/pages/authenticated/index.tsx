@@ -11,7 +11,7 @@ import { getParams } from "src/helpers/request"
 import ReservePage from "src/pages/authenticated/Reserve"
 
 const Content = styled(Container)(({ theme }) => ({
-  marginTop: theme.spacing(3),
+  marginTop: theme.spacing(4),
   paddingLeft: theme.spacing(1),
   [theme.breakpoints.up("sm")]: {
     paddingLeft: theme.spacing(12),

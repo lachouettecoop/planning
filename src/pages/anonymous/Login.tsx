@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react"
-import { Container, TextField, Button } from "@material-ui/core"
+import { Container, TextField, Button, Typography } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
 
 import { useUser, Auth } from "src/providers/user"
@@ -13,7 +13,7 @@ const Header = styled.div`
   svg {
     width: 250px;
     height: 250px;
-    margin: -20px 0 -40px;
+    margin: -20px 0;
   }
 `
 
@@ -43,7 +43,7 @@ const LoginPage = () => {
     <Container maxWidth="xs">
       <Header>
         <Logo />
-        <h1>Planning</h1>
+        <Typography variant="h1">Planning</Typography>
       </Header>
       <form onSubmit={handleSubmit}>
         <p>

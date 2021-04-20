@@ -2,7 +2,7 @@ import type { Statut } from "src/types/model"
 
 import { useEffect, useState } from "react"
 import { Phone, Mail } from "@material-ui/icons"
-import { Button, CircularProgress, InputAdornment, TextField } from "@material-ui/core"
+import { Button, CircularProgress, InputAdornment, TextField, Typography } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
 
 import { useUser } from "src/providers/user"
@@ -85,9 +85,9 @@ const ProfilePage = () => {
   return (
     <Container>
       <form onSubmit={handleSave}>
-        <h2>
+        <Typography variant="h2">
           {user.prenom} {user.nom}
-        </h2>
+        </Typography>
         <p>Je suis {status || "(sans statut)"}</p>
         <p>Et j’ai comme formations {roles || "(sans rôle)"}</p>
         <TextField

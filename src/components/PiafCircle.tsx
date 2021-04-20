@@ -28,8 +28,8 @@ export const PiafIcon = styled.span<{ $status: IStatus; $role?: RoleId }>`
   flex-shrink: 0;
   display: inline-block;
   margin: 2px;
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   border: 2px solid ${({ $status }) => STATUS_COLORS[$status]};
   border-radius: 50%;
   background-color: #ddd;

@@ -7,7 +7,7 @@ import { CircularProgress, List } from "@material-ui/core"
 import { useUser } from "src/providers/user"
 import { PIAFS } from "src/graphql/queries"
 import { queryDate } from "src/helpers/date"
-import ErrorMessage from "src/components/ErrorMessage"
+import { ErrorMessage } from "src/helpers/errors"
 import Piaf from "src/components/Piaf"
 
 type Result = { piafs: PIAF[] }
@@ -27,11 +27,7 @@ const UserPiafs = () => {
   }
 
   if (error) {
-    return (
-      <ErrorMessage>
-        <p>Erreur : {error.message}</p>
-      </ErrorMessage>
-    )
+    return <ErrorMessage error={error} />
   }
 
   if (!data) {

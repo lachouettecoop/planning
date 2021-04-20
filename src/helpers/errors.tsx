@@ -2,6 +2,7 @@ import React, { ErrorInfo, FC } from "react"
 import Bugsnag from "@bugsnag/js"
 import BugsnagPluginReact from "@bugsnag/plugin-react"
 import styled from "@emotion/styled/macro"
+import { Typography } from "@material-ui/core"
 
 const apiKey = process.env.REACT_APP_BUGSNAG_KEY
 
@@ -31,13 +32,14 @@ export const handleError = (error: Error) => {
 const Boundary = apiKey ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) : null
 
 const Container = styled.div`
-  padding: 2em;
-  h1 {
-    color: #e10f14;
+  padding: 1rem;
+  h2 {
+    color: #e53935;
+    margin: 1rem 0;
   }
   code {
     display: block;
-    margin-top: 8em;
+    margin-top: 3rem;
     color: #aaa;
   }
 `
@@ -45,21 +47,31 @@ const Container = styled.div`
 // https://github.com/bugsnag/bugsnag-js/blob/next/packages/plugin-react/types/bugsnag-plugin-react.d.ts
 interface FallbackProps {
   error: Error
-  info: ErrorInfo
-  clearError: () => void
+  info?: ErrorInfo
+  clearError?: () => void
 }
 
-const Fallback = ({ error }: FallbackProps) => (
+export const ErrorBlock = ({ error }: FallbackProps) => (
   <Container>
-    <h1>
+    <Typography variant="h2">
       <span aria-hidden>🐞</span>
       <br />
       Une erreur est survenue
-    </h1>
-    <h2>Essayez de recharger la page</h2>
+    </Typography>
+    <Typography>Essayez de recharger la page</Typography>
     <code>{String(error)}</code>
   </Container>
 )
 
+const Text = styled.p`
+  color: #e53935;
+`
+
+interface MessageProps {
+  error: Error
+}
+
+export const ErrorMessage = ({ error }: MessageProps) => <Text>Erreur : {error.message}</Text>
+
 export const ErrorBoundary: FC = ({ children }) =>
-  Boundary ? <Boundary FallbackComponent={Fallback}>{children}</Boundary> : <>{children}</>
+  Boundary ? <Boundary FallbackComponent={ErrorBlock}>{children}</Boundary> : <>{children}</>

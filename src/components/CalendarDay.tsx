@@ -1,10 +1,10 @@
 import type { IDay } from "src/types/app"
 
 import styled from "@emotion/styled/macro"
+import { isPast, isToday } from "date-fns"
 
 import Slot from "src/components/Slot"
 import { formatDateShort } from "src/helpers/date"
-import { isPast, isToday } from "date-fns"
 
 type TimeStatus = "past" | "present" | "future"
 
@@ -16,6 +16,7 @@ const Container = styled.div<{ $when: TimeStatus }>`
 `
 const Title = styled.h3`
   margin: 0 5px;
+  font-weight: 500;
   text-transform: capitalize;
 `
 const List = styled.ul`

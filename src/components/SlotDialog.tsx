@@ -29,7 +29,7 @@ const Title = styled.div`
   }
 `
 const PiafRow = styled.div`
-  margin: 0 0 16px 0;
+  margin: 0 0 1rem 0;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,7 +1,7 @@
 import type { Creneau } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
-import { Button, CircularProgress, Grid, useMediaQuery, useTheme } from "@material-ui/core"
+import { Button, CircularProgress, Grid, Typography, useMediaQuery, useTheme } from "@material-ui/core"
 import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 import { isSameMonth } from "date-fns"
@@ -11,7 +11,7 @@ import { PLANNING } from "src/graphql/queries"
 import Calendar from "src/components/Calendar"
 import { PiafIcon } from "src/components/PiafCircle"
 import { formatMonthYear } from "src/helpers/date"
-import ErrorMessage from "src/components/ErrorMessage"
+import { ErrorBlock } from "src/helpers/errors"
 
 type Result = { creneaus: Creneau[] }
 
@@ -37,17 +37,14 @@ const CaptionTitle = styled.h3`
 const Nav = styled.nav`
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
   button:not(:first-of-type) {
-    margin-left: 10px;
+    margin-left: 1rem;
   }
-`
-const Title = styled.h2`
-  flex: 1;
-  margin: 0 20px;
-  text-transform: capitalize;
-  min-width: 160px;
-  text-align: center;
+  h2 {
+    flex: 1;
+    text-transform: capitalize;
+  }
 `
 
 const ButtonArea = styled.div`
@@ -68,55 +65,36 @@ const PlanningPage = () => {
   })
 
   if (error) {
-    return (
-      <ErrorMessage>
-        <h2>
-          <strong>Une erreur est survenue.</strong> Essayez de recharger la page.
-        </h2>
-        <p>{error.message}</p>
-      </ErrorMessage>
-    )
+    return <ErrorBlock error={error} />
   }
 
   return (
     <>
       <Nav>
-        <Grid container>
-          <Grid item xs={12} md={6}>
-            <Title>{formatMonthYear(start)}</Title>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ButtonArea>
-              <Button
-                disabled={loading}
-                variant="contained"
-                color="primary"
-                startIcon={<ArrowBackIos />}
-                onClick={goBack}
-              >
-                {textBeforeButton}
-              </Button>
-              <Button
-                disabled={loading || isSameMonth(start, new Date())}
-                variant="contained"
-                color="primary"
-                startIcon={<CalendarToday />}
-                onClick={goToday}
-              >
-                {textTodayButton}
-              </Button>
-              <Button
-                disabled={loading}
-                variant="contained"
-                color="primary"
-                endIcon={<ArrowForwardIos />}
-                onClick={goForward}
-              >
-                {textAfterButton}
-              </Button>
-            </ButtonArea>
-          </Grid>
-        </Grid>
+        <Typography variant="h2">{formatMonthYear(start)}</Typography>
+        <ButtonArea>
+          <Button disabled={loading} variant="contained" color="primary" startIcon={<ArrowBackIos />} onClick={goBack}>
+            {textBeforeButton}
+          </Button>
+          <Button
+            disabled={loading || isSameMonth(start, new Date())}
+            variant="contained"
+            color="primary"
+            startIcon={<CalendarToday />}
+            onClick={goToday}
+          >
+            {textTodayButton}
+          </Button>
+          <Button
+            disabled={loading}
+            variant="contained"
+            color="primary"
+            endIcon={<ArrowForwardIos />}
+            onClick={goForward}
+          >
+            {textAfterButton}
+          </Button>
+        </ButtonArea>
       </Nav>
       {loading ? (
         <Loading>
