@@ -32,7 +32,7 @@ export const PiafIcon = styled.span<{ $status: IStatus; $role?: RoleId }>`
   height: 2rem;
   border: 2px solid ${({ $status }) => STATUS_COLORS[$status]};
   border-radius: 50%;
-  background-color: #ddd;
+  background-color: ${({ theme }) => theme.palette.grey[300]};
   background-image: ${({ $role }) => getImg($role) || "none"};
   background-position: center;
   background-size: 24px;

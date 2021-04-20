@@ -57,6 +57,7 @@ export const PIAFS = gql`
       statut
       creneau {
         id
+        titre
         debut
         fin
       }

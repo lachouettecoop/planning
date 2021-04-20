@@ -1,5 +1,5 @@
-import React, { useState, Fragment } from "react"
-import { Link } from "react-router-dom"
+import { useState } from "react"
+import { Link, useLocation } from "react-router-dom"
 import { createStyles, useTheme, makeStyles } from "@material-ui/core/styles"
 import {
   useMediaQuery,
@@ -19,7 +19,7 @@ import {
   Replay as ReplayIcon,
   ArrowBack as ArrowBackIcon,
   Event as EventIcon,
-  // Home as HomeIcon,
+  Home as HomeIcon,
 } from "@material-ui/icons"
 
 const useStyles = makeStyles((theme) =>
@@ -44,26 +44,42 @@ const useStyles = makeStyles((theme) =>
     textMenuDecoration: {
       textDecoration: "none",
     },
-    textMenu: {
+    menuItem: {
+      color: "rgba(255, 255, 255, 0.54)",
+      backgroundColor: theme.palette.primary.main,
+      "&:hover": {
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+    activeItem: {
       color: "white",
       backgroundColor: theme.palette.primary.main,
       "&:hover": {
-        background: theme.palette.primary.dark,
+        backgroundColor: theme.palette.primary.main,
       },
     },
     icon: {
       justifyContent: "center",
+      "& svg": {
+        fill: "rgba(255, 255, 255, 0.54)",
+      },
+    },
+    activeIcon: {
+      justifyContent: "center",
+      "& svg": {
+        fill: "white",
+      },
     },
   })
 )
 
 const MAIN_ITEMS = [
+  { title: "Accueil", href: "/home", Icon: HomeIcon },
   { title: "Planning", href: "/planning", Icon: EventIcon },
   { title: "Réserve", href: "/reserve", Icon: GroupIcon },
-  { title: "Auto", href: "/auto", Icon: ReplayIcon },
 ]
 const EXTRA_ITEMS = [
-  // { title: "home", href: "/", Icon: HomeIcon },
+  { title: "Auto", href: "/auto", Icon: ReplayIcon },
   { title: "Mon profil", href: "/profile", Icon: PersonIcon },
   { title: "Espace membre", href: "/member", Icon: ArrowBackIcon },
 ]
@@ -72,6 +88,7 @@ export default function BottomAppBar() {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
+  const { pathname } = useLocation()
   const matches = useMediaQuery(theme.breakpoints.down("xs"))
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -87,19 +104,20 @@ export default function BottomAppBar() {
   }
 
   return (
-    <Fragment>
+    <>
       <AppBar position="fixed" color="primary" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
-          {MAIN_ITEMS.map(({ href, title, Icon }) => (
-            <Link className={classes.textMenuDecoration} to={href} key={title}>
-              <ListItem button className={classes.label}>
-                <ListItemIcon className={classes.icon}>
+          {MAIN_ITEMS.map(({ href, title, Icon }) => {
+            const active = pathname === href
+            return (
+              <ListItem button className={classes.label} key={title} component={Link} to={href}>
+                <ListItemIcon className={active ? classes.activeIcon : classes.icon}>
                   <Icon />
                 </ListItemIcon>
-                <ListItemText className={classes.textMenu} primary={title} />
+                <ListItemText className={active ? classes.activeItem : classes.menuItem} primary={title} />
               </ListItem>
-            </Link>
-          ))}
+            )
+          })}
           <Menu
             id="simple-menu"
             className={classes.menu}
@@ -108,19 +126,26 @@ export default function BottomAppBar() {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            {EXTRA_ITEMS.map((item) => (
-              <Link className={classes.textMenuDecoration} to={item.href} key={item.title}>
-                <MenuItem className={classes.textMenu} onClick={handleClose}>
-                  {item.title}
+            {EXTRA_ITEMS.map(({ href, title }) => {
+              const active = pathname === href
+              return (
+                <MenuItem
+                  key={title}
+                  className={active ? classes.activeItem : classes.menuItem}
+                  onClick={handleClose}
+                  component={Link}
+                  to={href}
+                >
+                  {title}
                 </MenuItem>
-              </Link>
-            ))}
+              )
+            })}
           </Menu>
           <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} edge="end" color="inherit">
             <MoreIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
-    </Fragment>
+    </>
   )
 }

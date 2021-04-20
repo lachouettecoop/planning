@@ -12,7 +12,7 @@ const Container = styled.div`
   flex-wrap: wrap;
   > div {
     flex: 0 1 50%;
-    min-width: 400px;
+    min-width: 300px;
   }
 `
 const Status = styled.div`

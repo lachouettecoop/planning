@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useLocation } from "react-router"
 import clsx from "clsx"
 import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles"
 import {
@@ -101,7 +102,11 @@ const useStyles = makeStyles((theme) =>
     },
     menuItem: {
       textDecoration: "none",
-      color: "black",
+      color: theme.palette.secondary.main,
+    },
+    activeItem: {
+      textDecoration: "none",
+      color: theme.palette.primary.main,
     },
   })
 )
@@ -124,6 +129,7 @@ const Menu = () => {
   const { user, logout } = useUser<true>()
   const theme = useTheme()
   const [open, setOpen] = useState(false)
+  const { pathname } = useLocation()
   const matches = useMediaQuery(theme.breakpoints.up("sm"))
 
   const handleDrawerOpen = () => {
@@ -187,7 +193,7 @@ const Menu = () => {
           </IconButton>
         </div>
         <Divider />
-        <ListItem button>
+        <ListItem>
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
@@ -195,16 +201,19 @@ const Menu = () => {
         </ListItem>
         <Divider />
         <List>
-          {ITEMS.map(({ href, title, Icon }) => (
-            <Link className={classes.menuItem} href={href} key={href}>
-              <ListItem button>
-                <ListItemIcon>
-                  <Icon />
-                </ListItemIcon>
-                <ListItemText primary={title} />
-              </ListItem>
-            </Link>
-          ))}
+          {ITEMS.map(({ href, title, Icon }) => {
+            const active = pathname === href
+            return (
+              <Link className={active ? classes.activeItem : classes.menuItem} href={href} key={href}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <Icon color={active ? "primary" : "secondary"} />
+                  </ListItemIcon>
+                  <ListItemText primary={title} />
+                </ListItem>
+              </Link>
+            )
+          })}
         </List>
       </Drawer>
     </div>

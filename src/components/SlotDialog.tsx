@@ -24,7 +24,7 @@ const CloseButton = styled(IconButton)`
 `
 const Title = styled.div`
   span {
-    color: gray;
+    color: ${({ theme }) => theme.palette.grey[600]};
     margin-left: 5px;
   }
 `
@@ -39,7 +39,7 @@ const Status = styled.div`
   flex: 1;
   margin: 0 8px;
   span {
-    color: #888;
+    color: ${({ theme }) => theme.palette.grey[600]};
   }
 `
 const Contact = styled.div`
