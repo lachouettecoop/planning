@@ -1,4 +1,4 @@
-import type { PIAF, RoleId } from "src/types/model"
+import type { PIAF, RoleUniqueId } from "src/types/model"
 import type { IStatus } from "src/types/app"
 
 import styled from "@emotion/styled/macro"
@@ -11,11 +11,11 @@ const STATUS_COLORS: Record<IStatus, string> = {
   occupied: "green",
 }
 
-const IMAGES: Partial<Record<RoleId, string>> = {
+const IMAGES: Partial<Record<RoleUniqueId, string>> = {
   CH: chouettos,
 }
 
-const getImg = (role?: RoleId) => {
+const getImg = (role?: RoleUniqueId) => {
   if (role) {
     const img = IMAGES[role]
     if (img) {
@@ -24,7 +24,7 @@ const getImg = (role?: RoleId) => {
   }
 }
 
-export const PiafIcon = styled.span<{ $status: IStatus; $role?: RoleId }>`
+export const PiafIcon = styled.span<{ $status: IStatus; $role?: RoleUniqueId }>`
   flex-shrink: 0;
   display: inline-block;
   margin: 2px;

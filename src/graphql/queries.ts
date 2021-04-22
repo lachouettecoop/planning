@@ -15,13 +15,7 @@ export const LOGGED_IN_USER = gql`
       email
       telephone
       actif
-      statuts {
-        id
-        libelle
-        actif
-        dateDebut
-        dateFin
-      }
+      statut
     }
   }
 `
@@ -199,6 +193,25 @@ export const CRENEAUX_GENERIQUES = gql`
         id
         role {
           libelle
+        }
+      }
+    }
+  }
+`
+
+export const PIAF_CREATE = gql`
+  mutation PIAF_CREATE($idCreneau: String!, $idRole: String) {
+    createPiaf(input: { creneau: $idCreneau, role: $idRole, visible: true }) {
+      piaf {
+        id
+        creneau {
+          id
+        }
+        piaffeur {
+          id
+        }
+        role {
+          id
         }
       }
     }

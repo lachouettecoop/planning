@@ -1,5 +1,3 @@
-import type { Statut } from "src/types/model"
-
 import { useEffect, useState } from "react"
 import { Phone, Mail } from "@material-ui/icons"
 import { Button, CircularProgress, InputAdornment, TextField, Typography } from "@material-ui/core"
@@ -79,7 +77,6 @@ const ProfilePage = () => {
     )
   }
 
-  const status = user.statuts.find((s: Statut) => s.actif)?.libelle.toLowerCase()
   const roles = user.rolesChouette.map((r) => r.libelle).join(", ")
 
   return (
@@ -88,7 +85,7 @@ const ProfilePage = () => {
         <Typography variant="h2">
           {user.prenom} {user.nom}
         </Typography>
-        <p>Je suis {status || "(sans statut)"}</p>
+        <p>Je suis {user.statut || "(sans statut)"}</p>
         <p>Et j’ai comme formations {roles || "(sans rôle)"}</p>
         <TextField
           name="telephone"

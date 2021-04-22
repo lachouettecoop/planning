@@ -8,12 +8,13 @@ import styled from "@emotion/styled/macro"
 import { startOfWeek, endOfWeek, startOfDay, endOfDay } from "date-fns"
 
 import { formatTime, formatDateLong } from "src/helpers/date"
-import { REGISTRATION_UPDATE, PIAFS } from "src/graphql/queries"
+import { REGISTRATION_UPDATE, PIAFS, PIAF_CREATE } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
 import PiafCircle, { getStatus } from "src/components/PiafCircle"
 import { handleError } from "src/helpers/errors"
 import { useDialog } from "src/providers/dialog"
+import { getIdRoleAccompagnateur, hasRole, hasRoleFormation } from "src/helpers/role"
 
 type Result = { piafs: PIAF[] }
 
@@ -82,9 +83,19 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const register = async (piaf: PIAF) => {
     setLoading(true)
 
+    // If there is a piaf with status "remplacement" and the same role,
+    // the user will be register in this piaf by default
+    let idPiaf = piaf.id
+    const piafReplacement = slot.piafs?.find(
+      ({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id
+    )
+    if (piafReplacement) {
+      idPiaf = piafReplacement.id
+    }
+
     try {
       const roles = user?.rolesChouette
-      if (!roles || !roles.find(({ id }) => id === piaf.role.id)) {
+      if (!roles || !hasRole(piaf.role.id, roles)) {
         openDialog(`Pour t’inscrire à cette PIAF tu dois d’abord passer la formation ${piaf.role.libelle}`)
         return
       }
@@ -100,20 +111,25 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
         return
       }
 
-      // If there is a piaf with status "remplacement" and the same role,
-      // the user will be register in this piaf by default
-      let idPiaf = piaf.id
-      const piafReplacement = slot.piafs?.find(
-        ({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id
-      )
-      if (piafReplacement) {
-        idPiaf = piafReplacement.id
-      }
-
       await apollo.mutate({
         mutation: REGISTRATION_UPDATE,
         variables: { idPiaf, idPiaffeur: user?.id, statut: "occupe" },
       })
+
+      if (hasRoleFormation(roles)) {
+        const idRoleAccompagnateur = getIdRoleAccompagnateur(piaf.role.id)
+        if (idRoleAccompagnateur) {
+          await apollo.mutate({
+            mutation: PIAF_CREATE,
+            variables: {
+              idCreneau: slot.id,
+              idRole: idRoleAccompagnateur,
+            },
+          })
+        } else {
+          console.error("PIAF formation sans role accompagnateur")
+        }
+      }
 
       openDialog("Inscription OK. Merci !")
     } catch (error) {

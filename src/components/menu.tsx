@@ -28,10 +28,13 @@ import {
   ArrowBack as ArrowBackIcon,
   Home as HomeIcon,
   Event as EventIcon,
+  Storefront as StorefrontIcon,
+  CardMembership as CardMembershipIcon,
 } from "@material-ui/icons"
 
 import { useUser } from "src/providers/user"
 import Link from "src/components/Link"
+import { hasRole, RoleId } from "src/helpers/role"
 
 const DRAWER_WIDTH = 260
 
@@ -112,16 +115,24 @@ const useStyles = makeStyles((theme) =>
 )
 
 const ITEMS = [
-  { title: "Accueil", href: "/home", Icon: HomeIcon },
-  { title: "Planning", href: "/planning", Icon: EventIcon },
-  { title: "Réserve", href: "/reserve", Icon: GroupIcon },
+  { title: "Accueil", href: "/home", Icon: HomeIcon, role: RoleId.Chouettos },
+  { title: "Planning", href: "/planning", Icon: EventIcon, role: RoleId.Chouettos },
+  { title: "Réserve", href: "/reserve", Icon: GroupIcon, role: RoleId.Chouettos },
   {
     title: "Réservation automatique",
     href: "/auto",
     Icon: ReplayIcon,
+    role: RoleId.Chouettos,
   },
-  { title: "Mon profil", href: "/profile", Icon: PersonIcon },
-  { title: "Espace membre", href: "https://espace-membres.lachouettecoop.fr/page/homepage", Icon: ArrowBackIcon },
+  { title: "Mon profil", href: "/profile", Icon: PersonIcon, role: RoleId.Chouettos },
+  { title: "Groupe MAG", href: "/magasin", Icon: StorefrontIcon, role: RoleId.AdminMAG },
+  { title: "Groupe BdM", href: "/bdm", Icon: CardMembershipIcon, role: RoleId.AdminBdM },
+  {
+    title: "Espace membre",
+    href: "https://espace-membres.lachouettecoop.fr/page/homepage",
+    Icon: ArrowBackIcon,
+    role: RoleId.Chouettos,
+  },
 ]
 
 const Menu = () => {
@@ -201,17 +212,19 @@ const Menu = () => {
         </ListItem>
         <Divider />
         <List>
-          {ITEMS.map(({ href, title, Icon }) => {
+          {ITEMS.map(({ href, title, Icon, role }) => {
             const active = pathname === href
             return (
-              <Link className={active ? classes.activeItem : classes.menuItem} href={href} key={href}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <Icon color={active ? "primary" : "secondary"} />
-                  </ListItemIcon>
-                  <ListItemText primary={title} />
-                </ListItem>
-              </Link>
+              hasRole(role, user?.rolesChouette || []) && (
+                <Link className={active ? classes.activeItem : classes.menuItem} href={href} key={href}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Icon color={active ? "primary" : "secondary"} />
+                    </ListItemIcon>
+                    <ListItemText primary={title} />
+                  </ListItem>
+                </Link>
+              )
             )
           })}
         </List>

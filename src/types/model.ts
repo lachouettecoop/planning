@@ -1,11 +1,11 @@
 export type ID = string
 
-export type RoleId = "CH" | "GH" | "CA"
+export type RoleUniqueId = "CH" | "GH" | "GH form." | "GH Acc." | "CA" | "CA form." | "CA Acc." | "MAG" | "BdM"
 
 export interface Role {
   id: ID
   libelle: string
-  roleUniqueId: RoleId
+  roleUniqueId: RoleUniqueId
 }
 
 export interface CreneauGenerique {
@@ -32,30 +32,6 @@ export interface Reserve {
   creneauGeneriques: CreneauGenerique[]
 }
 
-export interface Statut {
-  id: ID
-  libelle: string
-  actif: boolean
-  dateDebut: string // ISO datetime
-  dateFin: string // ISO datetime
-}
-
-export interface Statut {
-  id: ID
-  libelle: string // très chouette / chouette / chouette en alerte / vacances / etc
-  actif: boolean
-  dateDebut: string // ISO datetime
-  dateFin: string // ISO datetime
-}
-
-export interface Statut {
-  id: ID
-  libelle: string // très chouette / chouette / chouette en alerte / vacances / etc
-  actif: boolean
-  dateDebut: string // ISO datetime
-  dateFin: string // ISO datetime
-}
-
 export interface User {
   id: ID
   email: string
@@ -75,7 +51,7 @@ export interface User {
   carteImprimee: boolean
   gh: boolean // grand hibou
   poste: Poste
-  statuts: Statut[]
+  statut: string
   reserve: Reserve
 }
 
