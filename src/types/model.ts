@@ -1,11 +1,11 @@
 export type ID = string
 
-export type RoleId = "CH" | "GH" | "CA"
+export type RoleUniqueId = "CH" | "GH" | "GHF" | "GHA" | "CA" | "CAF" | "CAA" | "MAG" | "BdM"
 
 export interface Role {
   id: ID
   libelle: string
-  roleUniqueId: RoleId
+  roleUniqueId: RoleUniqueId
 }
 
 export interface CreneauGenerique {
@@ -53,6 +53,8 @@ export interface User {
   poste: Poste
   statut: string
   reserve: Reserve
+  absenceLongueDureeCourses: boolean
+  absenceLongueDureeSansCourses: boolean
   nbPiafEffectuees: number
   nbPiafAttendues: number
 }

@@ -1,27 +1,5 @@
 import { gql } from "@apollo/client"
 
-export const LOGGED_IN_USER = gql`
-  query LOGGED_IN_USER($id: ID!) {
-    user(id: $id) {
-      id
-      username
-      rolesChouette {
-        id
-        roleUniqueId
-        libelle
-      }
-      nom
-      prenom
-      email
-      telephone
-      actif
-      statut
-      nbPiafEffectuees
-      nbPiafAttendues
-    }
-  }
-`
-
 export const SLOTS = gql`
   query SLOTS($id: ID!) {
     creneau(id: $id) {
@@ -122,19 +100,6 @@ export const REGISTRATION_UPDATE = gql`
   }
 `
 
-export const USER_UPDATE = gql`
-  mutation USER_UPDATE($idUser: ID!, $email: String, $telephone: String) {
-    updateUser(input: { id: $idUser, email: $email, telephone: $telephone }) {
-      user {
-        id
-        username
-        email
-        telephone
-      }
-    }
-  }
-`
-
 export const RESERVE_CREATE = gql`
   mutation RESERVE_CREATE($user: String, $informations: String, $creneauGenerique: [String]) {
     createReserve(input: { user: $user, informations: $informations, creneauGeneriques: $creneauGenerique }) {
@@ -204,6 +169,25 @@ export const CRENEAUX_GENERIQUES = gql`
         id
         role {
           libelle
+        }
+      }
+    }
+  }
+`
+
+export const PIAF_CREATE = gql`
+  mutation PIAF_CREATE($idCreneau: String!, $idRole: String) {
+    createPiaf(input: { creneau: $idCreneau, role: $idRole, visible: true }) {
+      piaf {
+        id
+        creneau {
+          id
+        }
+        piaffeur {
+          id
+        }
+        role {
+          id
         }
       }
     }

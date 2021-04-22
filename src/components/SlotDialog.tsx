@@ -8,12 +8,13 @@ import styled from "@emotion/styled/macro"
 import { startOfWeek, endOfWeek, startOfDay, endOfDay } from "date-fns"
 
 import { formatTime, formatDateLong } from "src/helpers/date"
-import { REGISTRATION_UPDATE, PIAFS_COUNT } from "src/graphql/queries"
+import { REGISTRATION_UPDATE, PIAFS_COUNT, PIAF_CREATE } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
 import PiafCircle, { getStatus } from "src/components/PiafCircle"
 import { handleError } from "src/helpers/errors"
 import { useDialog } from "src/providers/dialog"
+import { getIdRoleAccompagnateur, hasRole, hasRoleFormation } from "src/helpers/role"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
@@ -87,7 +88,8 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
 
     try {
       const roles = user?.rolesChouette
-      if (!roles || !roles.find(({ id }) => id === piaf.role.id)) {
+      if (!roles || !hasRole(piaf.role.roleUniqueId, roles)) {
+        setLoading(false)
         openDialog(`Pour t’inscrire à cette PIAF, tu dois d’abord passer la formation ${piaf.role.libelle}`)
         return
       }
@@ -96,12 +98,14 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
 
       const piafOfWeek = await getPiafCount(slot, userId, "week")
       if (piafOfWeek >= MAX_PIAF_PER_WEEK) {
+        setLoading(false)
         openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_WEEK} PIAF par semaine`)
         return
       }
 
       const piafOfDay = await getPiafCount(slot, userId, "day")
       if (piafOfDay >= MAX_PIAF_PER_DAY) {
+        setLoading(false)
         openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
         return
       }
@@ -112,6 +116,21 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
         mutation: REGISTRATION_UPDATE,
         variables: { piafId, userId, statut: "occupe" },
       })
+
+      if (hasRoleFormation(roles)) {
+        const idRoleAccompagnateur = getIdRoleAccompagnateur(piaf.role.id)
+        if (idRoleAccompagnateur) {
+          await apollo.mutate({
+            mutation: PIAF_CREATE,
+            variables: {
+              idCreneau: slot.id,
+              idRole: idRoleAccompagnateur,
+            },
+          })
+        } else {
+          console.error("PIAF formation sans role accompagnateur")
+        }
+      }
 
       openDialog("Inscription effectuée. Merci !")
     } catch (error) {

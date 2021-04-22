@@ -129,7 +129,7 @@ const PlanningPage = () => {
           </Grid>
           <Grid item xs={4}>
             <PiafIcon $status="available">CA</PiafIcon>
-            <div>Caissier·e</div>
+            <div>Caissier·ère</div>
           </Grid>
           <Grid item xs={4}>
             <PiafIcon $status="available">GH</PiafIcon>

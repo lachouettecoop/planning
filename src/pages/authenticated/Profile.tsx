@@ -6,7 +6,7 @@ import styled from "@emotion/styled/macro"
 import { useUser } from "src/providers/user"
 import { handleError } from "src/helpers/errors"
 import apollo from "src/helpers/apollo"
-import { USER_UPDATE } from "src/graphql/queries"
+import { USER_UPDATE } from "src/graphql/queriesUser"
 import { useDialog } from "src/providers/dialog"
 
 const Loading = styled.div`
