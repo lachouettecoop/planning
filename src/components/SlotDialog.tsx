@@ -83,17 +83,17 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const register = async (piaf: PIAF) => {
     setLoading(true)
 
-    // If there is a piaf with status "remplacement" and the same role,
-    // the user will be register in this piaf by default
-    let idPiaf = piaf.id
-    const piafReplacement = slot.piafs?.find(
-      ({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id
-    )
-    if (piafReplacement) {
-      idPiaf = piafReplacement.id
-    }
-
     try {
+      // If there is a piaf with status "remplacement" and the same role,
+      // the user will be register in this piaf by default
+      let idPiaf = piaf.id
+      const piafReplacement = slot.piafs?.find(
+        ({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id
+      )
+      if (piafReplacement) {
+        idPiaf = piafReplacement.id
+      }
+
       const roles = user?.rolesChouette
       if (!roles || !hasRole(piaf.role.id, roles)) {
         openDialog(`Pour t’inscrire à cette PIAF tu dois d’abord passer la formation ${piaf.role.libelle}`)
