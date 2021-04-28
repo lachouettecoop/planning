@@ -15,13 +15,9 @@ export const LOGGED_IN_USER = gql`
       email
       telephone
       actif
-      statuts {
-        id
-        libelle
-        actif
-        dateDebut
-        dateFin
-      }
+      statut
+      nbPiafEffectuees
+      nbPiafAttendues
     }
   }
 `
@@ -55,6 +51,7 @@ export const PIAFS = gql`
     piafs(piaffeur: $idPiaffeur, creneau_debut: { after: $after, before: $before }, statut: $statut) {
       id
       statut
+      pourvu
       creneau {
         id
         titre
