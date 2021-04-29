@@ -30,6 +30,16 @@ const getPiafCount = async (slot: ISlot, userId: string, type: "week" | "day") =
   return data.piafs.length
 }
 
+const getRegistrationPiafId = (slot: ISlot, piaf: PIAF) => {
+  const replacementPiaf = slot.piafs?.find(({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id)
+  if (replacementPiaf) {
+    // If there is a PIAF with status "remplacement" and the same role,
+    // the user will be registered to it instead of the requested one.
+    return replacementPiaf.id
+  }
+  return piaf.id
+}
+
 const CloseButton = styled(IconButton)`
   position: absolute;
   right: 8px;
@@ -78,7 +88,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
     try {
       const roles = user?.rolesChouette
       if (!roles || !roles.find(({ id }) => id === piaf.role.id)) {
-        openDialog(`Pour t’inscrire à cette PIAF tu dois d’abord passer la formation ${piaf.role.libelle}`)
+        openDialog(`Pour t’inscrire à cette PIAF, tu dois d’abord passer la formation ${piaf.role.libelle}`)
         return
       }
 
@@ -86,32 +96,24 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
 
       const piafOfWeek = await getPiafCount(slot, userId, "week")
       if (piafOfWeek >= MAX_PIAF_PER_WEEK) {
-        openDialog(`Il n’est pas possible de s’inscrire sur plus de ${MAX_PIAF_PER_WEEK} PIAF par semaine`)
+        openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_WEEK} PIAF par semaine`)
         return
       }
 
       const piafOfDay = await getPiafCount(slot, userId, "day")
       if (piafOfDay >= MAX_PIAF_PER_DAY) {
-        openDialog(`Il n’est pas possible de s’inscrire sur plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
+        openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
         return
       }
 
-      // If there is a piaf with status "remplacement" and the same role,
-      // the user will be register in this piaf by default
-      let idPiaf = piaf.id
-      const piafReplacement = slot.piafs?.find(
-        ({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id
-      )
-      if (piafReplacement) {
-        idPiaf = piafReplacement.id
-      }
+      const piafId = getRegistrationPiafId(slot, piaf)
 
       await apollo.mutate({
         mutation: REGISTRATION_UPDATE,
-        variables: { idPiaf, userId, statut: "occupe" },
+        variables: { piafId, userId, statut: "occupe" },
       })
 
-      openDialog("Inscription OK. Merci !")
+      openDialog("Inscription effectuée. Merci !")
     } catch (error) {
       handleError(error)
     }
@@ -127,10 +129,10 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
 
       await apollo.mutate({
         mutation: REGISTRATION_UPDATE,
-        variables: { idPiaf: piaf.id, userId, statut: "remplacement" },
+        variables: { piafId: piaf.id, userId, statut: "remplacement" },
       })
 
-      openDialog("Désinscription faite : la PIAF est désormais en recherche de remplacement")
+      openDialog("Désinscription effectuée : la PIAF est désormais en recherche de remplacement !")
     } catch (error) {
       handleError(error)
     }

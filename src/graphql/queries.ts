@@ -109,8 +109,8 @@ export const PLANNING = gql`
 `
 
 export const REGISTRATION_UPDATE = gql`
-  mutation REGISTRATION_UPDATE($idPiaf: ID!, $userId: String!, $statut: String!) {
-    updatePiaf(input: { id: $idPiaf, piaffeur: $userId, statut: $statut }) {
+  mutation REGISTRATION_UPDATE($piafId: ID!, $userId: String!, $statut: String!) {
+    updatePiaf(input: { id: $piafId, piaffeur: $userId, statut: $statut }) {
       piaf {
         id
         piaffeur {
