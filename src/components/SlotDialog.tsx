@@ -1,4 +1,4 @@
-import type { PIAF } from "src/types/model"
+import type { PIAF, User } from "src/types/model"
 import type { ISlot } from "src/types/app"
 
 import { useState } from "react"
@@ -8,14 +8,27 @@ import styled from "@emotion/styled/macro"
 import { startOfWeek, endOfWeek, startOfDay, endOfDay } from "date-fns"
 
 import { formatTime, formatDateLong } from "src/helpers/date"
-import { REGISTRATION_UPDATE, PIAFS } from "src/graphql/queries"
+import { REGISTRATION_UPDATE, PIAFS_COUNT } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
 import PiafCircle, { getStatus } from "src/components/PiafCircle"
 import { handleError } from "src/helpers/errors"
 import { useDialog } from "src/providers/dialog"
 
+const MAX_PIAF_PER_WEEK = 3
+const MAX_PIAF_PER_DAY = 2
+
 type Result = { piafs: PIAF[] }
+
+const getPiafCount = async (slot: ISlot, userId: string, type: "week" | "day") => {
+  const after = type === "day" ? startOfDay(slot.start) : startOfWeek(slot.start)
+  const before = type === "day" ? endOfDay(slot.start) : endOfWeek(slot.start)
+  const { data } = await apollo.query<Result>({
+    query: PIAFS_COUNT,
+    variables: { userId, after, before },
+  })
+  return data.piafs.length
+}
 
 const CloseButton = styled(IconButton)`
   position: absolute;
@@ -59,26 +72,6 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   const piafCurrentUser = slot.piafs?.find(({ piaffeur, statut }) => piaffeur?.id === user?.id && statut === "occupe")
   const hideButtons = slot.start.getTime() < Date.now()
 
-  const getPiafCountByWeek = async () => {
-    const after = startOfWeek(slot.start)
-    const before = endOfWeek(slot.start)
-    const result = await apollo.query<Result>({
-      query: PIAFS,
-      variables: { idPiaffeur: user?.id, after: after, before: before },
-    })
-    return result.data.piafs.length
-  }
-
-  const getPiafCountByDay = async () => {
-    const after = startOfDay(slot.start)
-    const before = endOfDay(slot.start)
-    const result = await apollo.query<Result>({
-      query: PIAFS,
-      variables: { idPiaffeur: user?.id, after: after, before: before },
-    })
-    return result.data.piafs.length
-  }
-
   const register = async (piaf: PIAF) => {
     setLoading(true)
 
@@ -89,14 +82,17 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
         return
       }
 
-      const piafOfWeek = await getPiafCountByWeek()
-      if (piafOfWeek >= 3) {
-        openDialog(`Il n'est pas possible de s'inscriresur plus de 3 PIAF par semaine`)
+      const userId = (user as User).id
+
+      const piafOfWeek = await getPiafCount(slot, userId, "week")
+      if (piafOfWeek >= MAX_PIAF_PER_WEEK) {
+        openDialog(`Il n’est pas possible de s’inscrire sur plus de ${MAX_PIAF_PER_WEEK} PIAF par semaine`)
         return
       }
-      const piafOfDay = await getPiafCountByDay()
-      if (piafOfDay >= 2) {
-        openDialog(`Il n'est pas possible de s'inscrire sur plus de 2 PIAF par jour`)
+
+      const piafOfDay = await getPiafCount(slot, userId, "day")
+      if (piafOfDay >= MAX_PIAF_PER_DAY) {
+        openDialog(`Il n’est pas possible de s’inscrire sur plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
         return
       }
 
@@ -112,7 +108,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
 
       await apollo.mutate({
         mutation: REGISTRATION_UPDATE,
-        variables: { idPiaf, idPiaffeur: user?.id, statut: "occupe" },
+        variables: { idPiaf, userId, statut: "occupe" },
       })
 
       openDialog("Inscription OK. Merci !")
@@ -127,9 +123,11 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
     setLoading(true)
 
     try {
+      const userId = (user as User).id
+
       await apollo.mutate({
         mutation: REGISTRATION_UPDATE,
-        variables: { idPiaf: piaf.id, idPiaffeur: user?.id, statut: "remplacement" },
+        variables: { idPiaf: piaf.id, userId, statut: "remplacement" },
       })
 
       openDialog("Désinscription faite : la PIAF est désormais en recherche de remplacement")

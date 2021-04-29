@@ -17,7 +17,7 @@ const UserPiafs = () => {
 
   const { loading, error, data } = useQuery<Result>(PIAFS, {
     variables: {
-      idPiaffeur: `/api/users/${auth.id}`,
+      userId: `/api/users/${auth.id}`,
       after: queryDate(startOfToday()),
     },
   })

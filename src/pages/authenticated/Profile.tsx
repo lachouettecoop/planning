@@ -85,7 +85,7 @@ const ProfilePage = () => {
         <Typography variant="h2">
           {user.prenom} {user.nom}
         </Typography>
-        <p>J’ai comme formations {roles || "(sans rôle)"}</p>
+        <p>{roles}</p>
         <TextField
           name="telephone"
           label="Téléphone"

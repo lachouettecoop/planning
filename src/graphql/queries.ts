@@ -47,8 +47,8 @@ export const SLOTS = gql`
 `
 
 export const PIAFS = gql`
-  query PIAFS($idPiaffeur: String, $after: String, $before: String, $statut: String) {
-    piafs(piaffeur: $idPiaffeur, creneau_debut: { after: $after, before: $before }, statut: $statut) {
+  query PIAFS($userId: String, $after: String, $before: String, $statut: String) {
+    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut) {
       id
       statut
       pourvu
@@ -69,6 +69,14 @@ export const PIAFS = gql`
         roleUniqueId
         libelle
       }
+    }
+  }
+`
+
+export const PIAFS_COUNT = gql`
+  query PIAFS_COUNT($userId: String, $after: String, $before: String, $statut: String) {
+    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut) {
+      id
     }
   }
 `
@@ -101,8 +109,8 @@ export const PLANNING = gql`
 `
 
 export const REGISTRATION_UPDATE = gql`
-  mutation REGISTRATION_UPDATE($idPiaf: ID!, $idPiaffeur: String!, $statut: String!) {
-    updatePiaf(input: { id: $idPiaf, piaffeur: $idPiaffeur, statut: $statut }) {
+  mutation REGISTRATION_UPDATE($idPiaf: ID!, $userId: String!, $statut: String!) {
+    updatePiaf(input: { id: $idPiaf, piaffeur: $userId, statut: $statut }) {
       piaf {
         id
         piaffeur {
