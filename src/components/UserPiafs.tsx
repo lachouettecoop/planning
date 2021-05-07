@@ -40,9 +40,14 @@ const UserPiafs = () => {
 
   return (
     <List>
-      {data.piafs.map((piaf) => (
-        <Piaf key={piaf.id} piaf={piaf} />
-      ))}
+      {data.piafs
+        .slice()
+        .sort((piafA, piafB) =>
+          new Date(piafA.creneau.debut).getTime() > new Date(piafB.creneau.debut).getTime() ? 1 : -1
+        )
+        .map((piaf) => (
+          <Piaf key={piaf.id} piaf={piaf} />
+        ))}
     </List>
   )
 }

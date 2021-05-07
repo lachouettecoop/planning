@@ -35,7 +35,11 @@ const ReplacementPiafs = () => {
     return null
   }
 
-  const otherPiafs = data.piafs.filter((piaf) => piaf.piaffeur?.id !== `/api/users/${auth.id}`)
+  const otherPiafs = data.piafs
+    .filter((piaf) => piaf.piaffeur?.id !== `/api/users/${auth.id}`)
+    .sort((piafA, piafB) =>
+      new Date(piafA.creneau.debut).getTime() > new Date(piafB.creneau.debut).getTime() ? 1 : -1
+    )
 
   if (!otherPiafs.length) {
     return <p>Aucun remplacement à venir n’est demandé.</p>

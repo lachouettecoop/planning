@@ -48,16 +48,7 @@ export default function UserDataGrid() {
 
   data?.users
     .slice()
-    .sort((userA, userB) => {
-      if (userA.nom > userB.nom) {
-        return 1
-      }
-      if (userA.nom < userB.nom) {
-        return -1
-      }
-      // a must be equal to b
-      return 0
-    })
+    .sort((userA, userB) => (userA.nom > userB.nom ? 1 : -1))
     .forEach((user) => {
       rows.push(
         createData(
@@ -71,7 +62,6 @@ export default function UserDataGrid() {
         )
       )
     })
-  console.log(data)
 
   const columns: GridColDef[] = [
     { field: "lastName", headerName: "Nom", width: 150 },
