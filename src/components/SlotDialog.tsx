@@ -28,7 +28,8 @@ const getPiafCount = async (slot: ISlot, userId: string, type: "week" | "day") =
     query: PIAFS_COUNT,
     variables: { userId, after, before },
   })
-  return data.piafs.length
+  //The filter by statut on the database does not work
+  return data.piafs.filter((p) => p.statut === "occupe").length
 }
 
 const getRegistrationPiafId = (slot: ISlot, piaf: PIAF) => {

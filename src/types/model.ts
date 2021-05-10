@@ -78,3 +78,15 @@ export interface PIAF {
   pourvu: boolean
   statut: "occupe" | "remplacement" | "" | null // empty = available
 }
+
+export interface userData {
+  id: string
+  name: string
+  lastName: string
+  status: string
+  roles: string
+  absenceWithPurchase: boolean
+  absenceWithoutPurchase: boolean
+  nbPiafEffectuees: number
+  nbPiafAttendues: number
+}

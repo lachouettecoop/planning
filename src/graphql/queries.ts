@@ -52,9 +52,14 @@ export const PIAFS = gql`
 `
 
 export const PIAFS_COUNT = gql`
-  query PIAFS_COUNT($userId: String, $after: String, $before: String, $statut: String) {
-    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut) {
+  query PIAFS_COUNT($userId: String, $after: String, $before: String) {
+    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }) {
       id
+      statut
+      creneau {
+        debut
+        fin
+      }
     }
   }
 `
