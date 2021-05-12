@@ -19,6 +19,7 @@ import { getIdRoleAccompagnateur, hasRole, hasRoleFormation } from "src/helpers/
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
+const PERCENTAGE_NEW_CHOUETTOS = 50
 
 type Result = { piafs: PIAF[] }
 
@@ -41,6 +42,20 @@ const getRegistrationPiafId = (slot: ISlot, piaf: PIAF) => {
     return replacementPiaf.id
   }
   return piaf.id
+}
+
+const checkMaximumNumberOfNewChouettos = (user: User | null, piaf: PIAF) => {
+  // There is a maximum percentage for PIAF of new Chouettos
+  if (user?.nbPiafEffectuees === 0) {
+    const piafeursCount = piaf.infoCreneau.piaffeursCount
+    const maxPiafeursFirstPiaf = Math.floor((piafeursCount * PERCENTAGE_NEW_CHOUETTOS) / 100)
+    const piafeursFirstPiaf = piaf.infoCreneau.piaffeursCountFirstPiaf
+
+    if (piafeursFirstPiaf >= maxPiafeursFirstPiaf) {
+      return false
+    }
+  }
+  return true
 }
 
 const CloseButton = styled(IconButton)`
@@ -109,6 +124,12 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
       if (piafOfDay >= MAX_PIAF_PER_DAY) {
         setLoading(false)
         openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
+        return
+      }
+
+      if (!checkMaximumNumberOfNewChouettos(user, piaf)) {
+        setLoading(false)
+        openDialog(`Il n’est pas possible d’avoir plus de ${PERCENTAGE_NEW_CHOUETTOS}% de nouveaux chouettos par PIAF`)
         return
       }
 

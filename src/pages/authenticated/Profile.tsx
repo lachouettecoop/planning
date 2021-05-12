@@ -5,11 +5,12 @@ import styled from "@emotion/styled/macro"
 
 import Loader from "src/components/Loader"
 import { useUser } from "src/providers/user"
-import { handleError } from "src/helpers/errors"
 import apollo from "src/helpers/apollo"
 import { USER_UPDATE } from "src/graphql/queriesUser"
 import { useDialog } from "src/providers/dialog"
+import { handleError } from "src/helpers/errors"
 import { formatRoles } from "src/helpers/role"
+import LongAbsence from "src/components/LongAbsence"
 
 const Loading = styled.div`
   height: 50vh;
@@ -34,6 +35,7 @@ const ProfilePage = () => {
   const { user } = useUser<true>()
   const [saving, setSaving] = useState(false)
   const { openDialog } = useDialog()
+  const [openAbsenceDialog, setOpenAbsenceDialog] = useState(false)
   const [values, setValues] = useState({
     email: user?.email || "",
     telephone: user?.telephone || "",
@@ -69,6 +71,14 @@ const ProfilePage = () => {
       handleError(error)
     }
     setSaving(false)
+  }
+
+  const handleOpenAbsenceDialog = () => {
+    setOpenAbsenceDialog(true)
+  }
+
+  const handleCloseAbsenceDialog = () => {
+    setOpenAbsenceDialog(false)
   }
 
   if (!user) {
@@ -121,7 +131,11 @@ const ProfilePage = () => {
         <Button color="primary" variant="contained" disabled={saving} type="submit">
           Enregistrer
         </Button>
+        <Button color="primary" variant="contained" disabled={saving} onClick={handleOpenAbsenceDialog}>
+          Informer d’une absence prolongée
+        </Button>
       </form>
+      <LongAbsence show={openAbsenceDialog} handleClose={handleCloseAbsenceDialog} />
     </Container>
   )
 }

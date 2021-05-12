@@ -79,6 +79,11 @@ export interface Creneau {
   piafs: PIAF[]
 }
 
+export interface InfoCreneau {
+  piaffeursCount: number
+  piaffeursCountFirstPiaf: number
+}
+
 export interface PIAF {
   id: ID
   role: Role
@@ -87,4 +92,5 @@ export interface PIAF {
   visible: boolean
   pourvu: boolean
   statut: "occupe" | "remplacement" | "" | null // empty = available
+  infoCreneau: InfoCreneau
 }

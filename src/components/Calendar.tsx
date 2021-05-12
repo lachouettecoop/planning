@@ -1,4 +1,6 @@
-import type { Creneau } from "src/types/model"
+import { useMediaQuery, useTheme } from "@material-ui/core"
+
+import type { Creneau, PIAF } from "src/types/model"
 import type { IWeek } from "src/types/app"
 
 import styled from "@emotion/styled/macro"
@@ -27,6 +29,9 @@ interface Props {
 }
 
 const Calendar = ({ start, end, list }: Props) => {
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.down("sm"))
+
   if (!list) {
     return null
   }
@@ -41,7 +46,31 @@ const Calendar = ({ start, end, list }: Props) => {
     const weekIndex = differenceInWeeks(date, weeks[0].start)
     const week = weeks[weekIndex]
     const day = (getDay(date) || 7) - 1 // Monday = 0, ..., Sunday = 6
-    const piafs = node.piafs.slice().sort((left, right) => (left.role.id > right.role.id ? 1 : -1))
+    const piaffeursCount = node.piafs.length
+    const piafeursCountFirstPiaf = node.piafs.filter((p) => p.piaffeur?.nbPiafEffectuees === 0).length
+
+    node.piafs.map((p) => {
+      const tempPiaf = JSON.parse(JSON.stringify(p))
+      const infoCreneau = {
+        piaffeursCount: piaffeursCount,
+        piaffeursCountFirstPiaf: piafeursCountFirstPiaf,
+      }
+      tempPiaf.infoCreneau = infoCreneau
+    })
+
+    const piafs: PIAF[] = []
+    node.piafs
+      .slice()
+      .sort((left, right) => (left.role.id > right.role.id ? 1 : -1))
+      .map((p) => {
+        const tempPiaf = JSON.parse(JSON.stringify(p))
+        const infoCreneau = {
+          piaffeursCount: piaffeursCount,
+          piaffeursCountFirstPiaf: piafeursCountFirstPiaf,
+        }
+        tempPiaf.infoCreneau = infoCreneau
+        piafs.push(tempPiaf)
+      })
 
     week.days[day].slots.push({
       id: node.id,
@@ -57,7 +86,11 @@ const Calendar = ({ start, end, list }: Props) => {
       {weeks.map((week, index) => (
         <WeekRow key={index}>
           {week.days.map((day, i) =>
-            day.start >= start && day.start < end ? <CalendarDay day={day} key={i} /> : <DayPlaceholder key={i} />
+            day.start >= start && day.start < end ? (
+              <CalendarDay day={day} key={i} />
+            ) : matches ? null : (
+              <DayPlaceholder key={i} />
+            )
           )}
         </WeekRow>
       ))}
