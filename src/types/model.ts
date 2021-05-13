@@ -1,11 +1,21 @@
 export type ID = string
 
-export type RoleUniqueId = "CH" | "GH" | "GHF" | "GHA" | "CA" | "CAF" | "CAA" | "MAG" | "BdM"
+export enum RoleId {
+  GrandHibou = "GH",
+  Chouettos = "CH",
+  Caissier = "CA",
+  GrandHibou_Formation = "GHF",
+  Caissier_Formation = "CAF",
+  GrandHibou_Acc = "GHA",
+  Caissier_Acc = "CAA",
+  AdminMag = "MAG",
+  AdminBdM = "BDM",
+}
 
 export interface Role {
   id: ID
   libelle: string
-  roleUniqueId: RoleUniqueId
+  roleUniqueId: RoleId
 }
 
 export interface CreneauGenerique {
@@ -77,16 +87,4 @@ export interface PIAF {
   visible: boolean
   pourvu: boolean
   statut: "occupe" | "remplacement" | "" | null // empty = available
-}
-
-export interface userData {
-  id: string
-  name: string
-  lastName: string
-  status: string
-  roles: string
-  absenceWithPurchase: boolean
-  absenceWithoutPurchase: boolean
-  nbPiafEffectuees: number
-  nbPiafAttendues: number
 }

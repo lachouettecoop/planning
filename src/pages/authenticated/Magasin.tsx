@@ -1,10 +1,12 @@
-import UserDatagrid from "src/components/UserDatagrid"
+import { Typography } from "@material-ui/core"
+
+import Users from "src/components/Users"
 
 const MagasinPage = () => {
   return (
     <>
-      <h1>Groupe MAG</h1>
-      <UserDatagrid></UserDatagrid>
+      <Typography variant="h2">Groupe MAG</Typography>
+      <Users />
     </>
   )
 }

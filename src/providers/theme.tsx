@@ -1,10 +1,10 @@
 import type { FC } from "react"
 
 import { createMuiTheme, ThemeProvider as MUIThemeProvider, Theme as MUITheme } from "@material-ui/core/styles"
-import { frFR as localeDataGrid } from "@material-ui/data-grid"
+import { frFR as dataGridLocale } from "@material-ui/data-grid"
 import { CssBaseline } from "@material-ui/core"
 import { ThemeProvider as EmotionThemeProvider } from "@emotion/react/macro"
-import { frFR } from "@material-ui/core/locale"
+import { frFR as coreLocale } from "@material-ui/core/locale"
 
 // see public/index.html
 const TITLE_FONT = "Montserrat, sans-serif" // https://style.lachouettecoop.fr/#/typographie?a=titres-et-sous-titres
@@ -78,8 +78,8 @@ const THEME = createMuiTheme(
       tonalOffset: 0.2,
     },
   },
-  frFR,
-  localeDataGrid
+  coreLocale,
+  dataGridLocale
 )
 
 const ThemeProvider: FC = ({ children }) => (

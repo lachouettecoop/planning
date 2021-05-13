@@ -34,7 +34,8 @@ import {
 
 import { useUser } from "src/providers/user"
 import Link from "src/components/Link"
-import { hasRole, RoleId } from "src/helpers/role"
+import { hasRole } from "src/helpers/role"
+import { RoleId } from "src/types/model"
 
 const DRAWER_WIDTH = 260
 
@@ -125,7 +126,7 @@ const ITEMS = [
     role: RoleId.Chouettos,
   },
   { title: "Mon profil", href: "/profile", Icon: PersonIcon, role: RoleId.Chouettos },
-  { title: "Groupe MAG", href: "/magasin", Icon: StorefrontIcon, role: RoleId.AdminMAG },
+  { title: "Groupe MAG", href: "/magasin", Icon: StorefrontIcon, role: RoleId.AdminMag },
   { title: "Groupe BdM", href: "/bdm", Icon: CardMembershipIcon, role: RoleId.AdminBdM },
   {
     title: "Espace membre",

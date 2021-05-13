@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
 import { Phone, Mail } from "@material-ui/icons"
-import { Button, CircularProgress, InputAdornment, TextField, Typography } from "@material-ui/core"
+import { Button, InputAdornment, TextField, Typography } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
 
+import Loader from "src/components/Loader"
 import { useUser } from "src/providers/user"
 import { handleError } from "src/helpers/errors"
 import apollo from "src/helpers/apollo"
 import { USER_UPDATE } from "src/graphql/queriesUser"
 import { useDialog } from "src/providers/dialog"
+import { formatRoles } from "src/helpers/role"
 
 const Loading = styled.div`
   height: 50vh;
@@ -72,12 +74,10 @@ const ProfilePage = () => {
   if (!user) {
     return (
       <Loading>
-        <CircularProgress />
+        <Loader />
       </Loading>
     )
   }
-
-  const roles = user.rolesChouette.map((r) => r.libelle).join(", ")
 
   return (
     <Container>
@@ -85,7 +85,7 @@ const ProfilePage = () => {
         <Typography variant="h2">
           {user.prenom} {user.nom}
         </Typography>
-        <p>{roles}</p>
+        <p>{formatRoles(user.rolesChouette)}</p>
         <TextField
           name="telephone"
           label="Téléphone"

@@ -1,16 +1,17 @@
-import type { PIAF, User } from "src/types/model"
 import type { ISlot } from "src/types/app"
 
 import { useState } from "react"
-import { Button, capitalize, Dialog, DialogContent, DialogTitle, IconButton, CircularProgress } from "@material-ui/core"
+import { Button, capitalize, Dialog, DialogContent, DialogTitle, IconButton } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 import { startOfWeek, endOfWeek, startOfDay, endOfDay } from "date-fns"
 
+import { PIAF, RoleId, User } from "src/types/model"
 import { formatTime, formatDateLong } from "src/helpers/date"
 import { REGISTRATION_UPDATE, PIAFS_COUNT, PIAF_CREATE } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
+import Loader from "src/components/Loader"
 import PiafCircle, { getStatus } from "src/components/PiafCircle"
 import { handleError } from "src/helpers/errors"
 import { useDialog } from "src/providers/dialog"
@@ -119,7 +120,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
       })
 
       if (hasRoleFormation(roles)) {
-        const idRoleAccompagnateur = getIdRoleAccompagnateur(piaf.role.id)
+        const idRoleAccompagnateur = getIdRoleAccompagnateur(piaf.role.roleUniqueId)
         if (idRoleAccompagnateur) {
           await apollo.mutate({
             mutation: PIAF_CREATE,
@@ -191,7 +192,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
                 </Status>
                 {status === "occupied" &&
                   piafCurrentUser &&
-                  piafCurrentUser.role.roleUniqueId === "GH" &&
+                  piafCurrentUser.role.roleUniqueId === RoleId.GrandHibou &&
                   piaffeur &&
                   piaffeur.id != user?.id && (
                     //Show info contacts only if the current user is the GH of the slot
@@ -215,7 +216,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
             )
           })
         ) : (
-          <CircularProgress />
+          <Loader />
         )}
       </DialogContent>
     </Dialog>
