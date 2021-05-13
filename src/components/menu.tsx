@@ -156,6 +156,8 @@ const Menu = () => {
     return null
   }
 
+  const userRoles = user?.rolesChouette || []
+
   return (
     <div className={classes.root}>
       <AppBar
@@ -213,19 +215,17 @@ const Menu = () => {
         </ListItem>
         <Divider />
         <List>
-          {ITEMS.map(({ href, title, Icon, role }) => {
+          {ITEMS.filter(({ role }) => hasRole(role, userRoles)).map(({ href, title, Icon }) => {
             const active = pathname === href
             return (
-              hasRole(role, user?.rolesChouette || []) && (
-                <Link className={active ? classes.activeItem : classes.menuItem} href={href} key={href}>
-                  <ListItem button>
-                    <ListItemIcon>
-                      <Icon color={active ? "primary" : "secondary"} />
-                    </ListItemIcon>
-                    <ListItemText primary={title} />
-                  </ListItem>
-                </Link>
-              )
+              <Link className={active ? classes.activeItem : classes.menuItem} href={href} key={href}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <Icon color={active ? "primary" : "secondary"} />
+                  </ListItemIcon>
+                  <ListItemText primary={title} />
+                </ListItem>
+              </Link>
             )
           })}
         </List>
