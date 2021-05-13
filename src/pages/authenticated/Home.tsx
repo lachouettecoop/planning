@@ -31,15 +31,18 @@ const Replacements = styled.div``
 const HomePage = () => {
   const { user } = useUser<true>()
 
+  const counter = `${user?.nbPiafEffectuees ?? "…"}/${user?.nbPiafAttendues ?? "…"}`
+  const status = user?.statut || "…"
+
   return (
     <Container>
       <Status>
         <Typography variant="h2">Mon statut</Typography>
         <Typography>
-          {user?.nbPiafEffectuees ?? "…"}/{user?.nbPiafAttendues ?? "…"} <span>PIAFs attendues</span>
+          {counter} <span>PIAFs attendues</span>
         </Typography>
         <Typography variant="h2">Je suis</Typography>
-        <Typography>{user?.statut || "…"}</Typography>
+        <Typography>{status}</Typography>
       </Status>
       <MyPlanning>
         <Typography variant="h2">Mes prochaines PIAFs</Typography>
