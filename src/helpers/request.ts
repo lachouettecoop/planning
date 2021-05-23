@@ -31,7 +31,7 @@ export const getParams = (search: string) => {
 }
 
 // TODO: use email templates and just pass a template ID with variables
-export const sendEmail = (recipient: string, subject: string, message: string) => {
+export const sendEmail = async (recipient: string, subject: string, message: string) => {
   const user = getStoredUser()
 
   if (!user) {
@@ -47,5 +47,5 @@ export const sendEmail = (recipient: string, subject: string, message: string) =
   data.append("email", recipient)
   data.append("corps", message)
 
-  return post("dist_api/send_email", data, headers)
+  return await post("dist_api/send_email", data, headers)
 }
