@@ -31,7 +31,7 @@ const Title = styled(DialogTitle)`
 
 interface Props {
   show: boolean
-  handleClose: (event: React.MouseEvent<HTMLButtonElement>) => void
+  handleClose: () => void
 }
 
 const LongAbsence = ({ show, handleClose }: Props) => {
@@ -52,9 +52,8 @@ const LongAbsence = ({ show, handleClose }: Props) => {
 
   const TEXT_MAIL = `Bonjour, je ne pourrais assurer une activité régulière à La Chouette Coop du ${values.dateIni}  au  ${values.dateFin}  en  raison  de ${values.reasonAbsence}. `
 
-  const handleSendEmail = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSendEmail = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log(process.env)
     if (!validateFields()) return
     if (!process.env.MAIL_BDM) {
       alert("Le mail du BdM n’est pas configuré. Contactez avec votre Admin IT")
@@ -62,7 +61,8 @@ const LongAbsence = ({ show, handleClose }: Props) => {
     }
 
     await sendEmail(process.env.MAIL_BDM, "Absence prolongée", TEXT_MAIL)
-    handleClose(event)
+    handleClose()
+
     openDialog("Un mail informatif a été envoyé au BdM. Votre absence sera bientôt validée.")
   }
 
@@ -79,8 +79,8 @@ const LongAbsence = ({ show, handleClose }: Props) => {
   }
 
   return (
-    <form autoComplete="off">
-      <Dialog open={show} onClose={handleClose}>
+    <Dialog open={show} onClose={handleClose}>
+      <form onSubmit={handleSendEmail} autoComplete="off">
         <CloseButton onClick={handleClose}>
           <Close />
         </CloseButton>
@@ -126,12 +126,12 @@ const LongAbsence = ({ show, handleClose }: Props) => {
           </Row>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" color="primary" variant="contained" onClick={handleSendEmail}>
+          <Button type="submit" color="primary" variant="contained">
             Confirmer au BdM
           </Button>
         </DialogActions>
-      </Dialog>
-    </form>
+      </form>
+    </Dialog>
   )
 }
 
