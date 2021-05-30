@@ -1,17 +1,14 @@
 import { Button } from "@material-ui/core"
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid } from "@material-ui/core"
-import { User } from "src/types/model"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
-import { formatRoles } from "src/helpers/role"
+import styled from "@emotion/styled/macro"
 
-// TODO: use @emotion/styled
-const useStyles = makeStyles(() =>
-  createStyles({
-    row: {
-      lineHeight: 4,
-    },
-  })
-)
+import { User } from "src/types/model"
+import { formatRoles } from "src/helpers/role"
+import UserPiafs from "src/components/UserPiafs"
+
+const RightCol = styled(Grid)`
+  lineheight: 4;
+`
 
 interface Props {
   open: boolean
@@ -20,8 +17,6 @@ interface Props {
 }
 
 const UserInfoDialog = ({ open, handleClose, data }: Props) => {
-  const classes = useStyles()
-
   if (!data) {
     return null
   }
@@ -42,33 +37,34 @@ const UserInfoDialog = ({ open, handleClose, data }: Props) => {
             <Grid item xs={6}>
               <h3>Roles</h3>
             </Grid>
-            <Grid className={classes.row} item xs={6}>
+            <RightCol item xs={6}>
               {formatRoles(data.rolesChouette)}
-            </Grid>
+            </RightCol>
             <Grid item xs={6}>
               <h3>Statut</h3>
             </Grid>
-            <Grid className={classes.row} item xs={6}>
+            <RightCol item xs={6}>
               {data.statut}
-            </Grid>
+            </RightCol>
             <Grid item xs={6}>
               <h3>Compteur PIAFS</h3>
             </Grid>
-            <Grid className={classes.row} item xs={6}>
+            <RightCol item xs={6}>
               {data.nbPiafEffectuees}/{data.nbPiafAttendues}
-            </Grid>
+            </RightCol>
             <Grid item xs={6}>
               <h3>Absence longue durée sans courses</h3>
             </Grid>
-            <Grid className={classes.row} item xs={6}>
+            <RightCol item xs={6}>
               {data.absenceLongueDureeSansCourses ? "oui" : "non"}
-            </Grid>
+            </RightCol>
             <Grid item xs={6}>
               <h3>Absence longue durée avec courses</h3>
             </Grid>
-            <Grid className={classes.row} item xs={6}>
+            <RightCol item xs={6}>
               {data.absenceLongueDureeCourses ? "oui" : "non"}
-            </Grid>
+            </RightCol>
+            <UserPiafs userId={data.id} allowValidate={true} />
           </Grid>
         </DialogContentText>
       </DialogContent>

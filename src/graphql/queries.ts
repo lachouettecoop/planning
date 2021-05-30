@@ -27,6 +27,8 @@ export const SLOTS = gql`
 export const PIAFS = gql`
   query PIAFS($userId: String, $after: String, $before: String, $statut: String) {
     piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut) {
+      #query PIAFS($userId: String, $after: String, $before: String, $statut: String, $validated: Boolean) {
+      # piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut, pourvu: $validated) {
       id
       statut
       pourvu
@@ -100,6 +102,19 @@ export const REGISTRATION_UPDATE = gql`
           id
         }
         statut
+      }
+    }
+  }
+`
+export const VALIDATE_PIAF = gql`
+  mutation VALIDATE_PIAF($piafId: ID!, $validate: Boolean) {
+    updatePiaf(input: { id: $piafId, pourvu: $validate }) {
+      piaf {
+        id
+        piaffeur {
+          id
+        }
+        pourvu
       }
     }
   }
