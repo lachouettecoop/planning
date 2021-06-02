@@ -72,7 +72,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
 
   return (
     <Grid container>
-      <Grid item xs={6}>
+      <Grid item xs={8}>
         <ListItem key={piaf.id} button onClick={handleClick}>
           <ListItemAvatar>
             <PiafCircle piaf={piaf} />
@@ -83,7 +83,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
           />
         </ListItem>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={4}>
         {allowValidate && (
           <FormControlLabel
             control={

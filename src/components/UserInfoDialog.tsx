@@ -7,7 +7,7 @@ import { formatRoles } from "src/helpers/role"
 import UserPiafs from "src/components/UserPiafs"
 
 const RightCol = styled(Grid)`
-  lineheight: 4;
+  line-height: 4;
 `
 
 interface Props {
@@ -64,7 +64,9 @@ const UserInfoDialog = ({ open, handleClose, data }: Props) => {
             <RightCol item xs={6}>
               {data.absenceLongueDureeCourses ? "oui" : "non"}
             </RightCol>
-            <UserPiafs userId={data.id} allowValidate={true} />
+            <Grid item xs={12}>
+              <UserPiafs userId={data.id} validated={false} allowValidate={true} />
+            </Grid>
           </Grid>
         </DialogContentText>
       </DialogContent>

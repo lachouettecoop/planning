@@ -25,10 +25,8 @@ export const SLOTS = gql`
 `
 
 export const PIAFS = gql`
-  query PIAFS($userId: String, $after: String, $before: String, $statut: String) {
-    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut) {
-      #query PIAFS($userId: String, $after: String, $before: String, $statut: String, $validated: Boolean) {
-      # piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut, pourvu: $validated) {
+  query PIAFS($userId: String, $after: String, $before: String, $statut: String, $validated: Boolean) {
+    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut, pourvu: $validated) {
       id
       statut
       pourvu
@@ -197,7 +195,7 @@ export const CRENEAUX_GENERIQUES = gql`
 
 export const PIAF_CREATE = gql`
   mutation PIAF_CREATE($idCreneau: String!, $idRole: String) {
-    createPiaf(input: { creneau: $idCreneau, role: $idRole, visible: true }) {
+    createPiaf(input: { creneau: $idCreneau, role: $idRole, visible: true, pourvu: false }) {
       piaf {
         id
         creneau {

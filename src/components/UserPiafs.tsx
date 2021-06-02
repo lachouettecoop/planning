@@ -12,14 +12,16 @@ type Result = { piafs: PIAF[] }
 interface Props {
   userId: string
   after?: string
+  validated?: boolean
   allowValidate?: boolean
 }
 
-const UserPiafs = ({ userId, after, allowValidate = false }: Props) => {
+const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: Props) => {
   const { loading, error, data } = useQuery<Result>(PIAFS, {
     variables: {
       userId: `${userId}`,
       after: after,
+      validated: validated,
     },
   })
 
