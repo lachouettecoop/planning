@@ -9,7 +9,7 @@ import { formatDateLong, formatTime } from "src/helpers/date"
 import PiafCircle from "src/components/PiafCircle"
 import SlotDialog from "src/components/SlotDialog"
 import { SLOTS } from "src/graphql/queries"
-import { TypeDialog, useDialog } from "src/providers/dialog"
+import { useDialog } from "src/providers/dialog"
 import { VALIDATE_PIAF } from "src/graphql/queries"
 import apollo from "src/helpers/apollo"
 import { handleError } from "src/helpers/errors"
@@ -41,25 +41,26 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
     setOpen(false)
   }
 
-  const handleOnValidatePiaf = async (piafId: string) => {
-    //TODO to check the answer of the question and do the validation ONLY if yes
-    openDialog("Êtes-vous sûr de vouloir valider cette PIAF ?", "", TypeDialog.YesNo)
+  const handleValidate = async (piafId: string) => {
+    openDialog("Êtes-vous sûr·e de vouloir valider cette PIAF ?", "", async (ok) => {
+      if (ok) {
+        const variables: Record<string, any> = {
+          piafId,
+          validate: true,
+        }
 
-    const variables: Record<string, any> = {
-      piafId: piafId,
-      validate: true,
-    }
+        try {
+          await apollo.mutate({
+            mutation: VALIDATE_PIAF,
+            variables,
+          })
 
-    try {
-      await apollo.mutate({
-        mutation: VALIDATE_PIAF,
-        variables,
-      })
-
-      openDialog("La PIAF a été validé")
-    } catch (error) {
-      handleError(error)
-    }
+          openDialog("La PIAF a été validée")
+        } catch (error) {
+          handleError(error)
+        }
+      }
+    })
   }
 
   const slot: ISlot = {
@@ -91,7 +92,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
                 checked={piaf.pourvu}
                 name="validatePIAF"
                 onChange={() => {
-                  handleOnValidatePiaf(piaf.id)
+                  handleValidate(piaf.id)
                 }}
               />
             }

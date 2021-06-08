@@ -1,5 +1,5 @@
 import Button from "@material-ui/core/Button"
-import Dialog from "@material-ui/core/Dialog"
+import MuiDialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
@@ -10,23 +10,19 @@ interface Props {
   handleClose: () => void
   title: string
   message: string
-  onConfirm: () => void
+  callback?: (ok: boolean) => void
 }
 
-const YesNoDialog = ({ open, handleClose, title, message, onConfirm }: Props) => {
-  const handleYes = () => {
-    onConfirm()
+const Dialog = ({ open, handleClose, title, message, callback }: Props) => {
+  const handleConfirm = (ok: boolean) => () => {
+    if (callback) {
+      callback(ok)
+    }
     handleClose()
-    return true
-  }
-
-  const handleNo = () => {
-    handleClose()
-    return false
   }
 
   return (
-    <Dialog
+    <MuiDialog
       open={open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
@@ -36,16 +32,24 @@ const YesNoDialog = ({ open, handleClose, title, message, onConfirm }: Props) =>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">{message}</DialogContentText>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleYes} color="primary">
-          Oui
-        </Button>
-        <Button onClick={handleNo} color="primary">
-          Non
-        </Button>
-      </DialogActions>
-    </Dialog>
+      {callback ? (
+        <DialogActions>
+          <Button onClick={handleConfirm(true)} color="primary">
+            Oui
+          </Button>
+          <Button onClick={handleConfirm(false)} color="primary">
+            Non
+          </Button>
+        </DialogActions>
+      ) : (
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      )}
+    </MuiDialog>
   )
 }
 
-export default YesNoDialog
+export default Dialog
