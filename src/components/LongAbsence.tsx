@@ -1,8 +1,7 @@
+import React, { useState } from "react"
 import { Button, Dialog, TextField, DialogContent, DialogActions, IconButton, DialogTitle } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
-
-import React, { useState } from "react"
 
 import { sendEmail } from "src/helpers/request"
 import { useDialog } from "src/providers/dialog"
@@ -54,28 +53,25 @@ const LongAbsence = ({ show, handleClose }: Props) => {
 
   const handleSendEmail = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!validateFields()) return
-    if (!process.env.MAIL_BDM) {
-      alert("Le mail du BdM n’est pas configuré. Contactez avec votre Admin IT")
+
+    if (!process.env.REACT_APP_MAIL_BDM) {
+      alert("L’adresse  e-mail du BdM n’est pas configurée. Contactez votre administrateur.")
       return
     }
 
-    await sendEmail(process.env.MAIL_BDM, "Absence prolongée", TEXT_MAIL)
-    handleClose()
-
-    openDialog("Un mail informatif a été envoyé au BdM. Votre absence sera bientôt validée.")
-  }
-
-  const validateFields = (): boolean => {
     if (!values.dateIni || !values.dateFin || !values.reasonAbsence) {
       openDialog("Tous les champs sont obligatoires.")
-      return false
+      return
     }
     if (values.dateIni > values.dateFin) {
       openDialog("La date de début ne peut pas être postérieure à la date de fin.")
-      return false
+      return
     }
-    return true
+
+    await sendEmail(process.env.REACT_APP_MAIL_BDM, "Absence prolongée", TEXT_MAIL)
+    handleClose()
+
+    openDialog("Un mail informatif a été envoyé au BdM. Votre absence sera bientôt validée.")
   }
 
   return (
