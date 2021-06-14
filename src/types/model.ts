@@ -1,6 +1,16 @@
 export type ID = string
 
-export type RoleId = "CH" | "GH" | "CA"
+export enum RoleId {
+  GrandHibou = "GH",
+  Chouettos = "CH",
+  Caissier = "CA",
+  GrandHibou_Formation = "GHF",
+  Caissier_Formation = "CAF",
+  GrandHibou_Acc = "GHA",
+  Caissier_Acc = "CAA",
+  AdminMag = "MAG",
+  AdminBdM = "BDM",
+}
 
 export interface Role {
   id: ID
@@ -53,6 +63,8 @@ export interface User {
   poste: Poste
   statut: string
   reserve: Reserve
+  absenceLongueDureeCourses: boolean
+  absenceLongueDureeSansCourses: boolean
   nbPiafEffectuees: number
   nbPiafAttendues: number
 }
@@ -67,6 +79,11 @@ export interface Creneau {
   piafs: PIAF[]
 }
 
+export interface InfoCreneau {
+  piaffeursCount: number
+  piaffeursCountFirstPiaf: number
+}
+
 export interface PIAF {
   id: ID
   role: Role
@@ -75,4 +92,5 @@ export interface PIAF {
   visible: boolean
   pourvu: boolean
   statut: "occupe" | "remplacement" | "" | null // empty = available
+  infoCreneau: InfoCreneau
 }

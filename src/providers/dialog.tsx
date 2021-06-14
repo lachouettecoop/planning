@@ -1,9 +1,16 @@
 import { createContext, useContext, useState, FC } from "react"
 
-import InfoDialog from "src/components/InfoDialog"
+import Dialog from "src/components/Dialog"
+
+export enum TypeDialog {
+  YesNo,
+  Information,
+}
+
+type Callback = (choice: boolean) => void
 
 interface IDialogContext {
-  openDialog: (message: string, title?: string) => void
+  openDialog: (message: string, title?: string, callback?: Callback) => void
   closeDialog: () => void
 }
 
@@ -13,10 +20,12 @@ export const DialogProvider: FC = ({ children }) => {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [message, setMessage] = useState("")
+  const [callback, setCallback] = useState<Callback>()
 
-  const openDialog = (newMessage: string, newTitle = "") => {
+  const openDialog = (newMessage: string, newTitle = "", newCallback?: Callback) => {
     setMessage(newMessage)
     setTitle(newTitle)
+    setCallback(() => newCallback)
     setOpen(true)
   }
 
@@ -27,7 +36,7 @@ export const DialogProvider: FC = ({ children }) => {
   return (
     <DialogContext.Provider value={{ openDialog, closeDialog }}>
       {children}
-      <InfoDialog open={open} handleClose={closeDialog} title={title} message={message}></InfoDialog>
+      <Dialog open={open} handleClose={closeDialog} title={title} message={message} callback={callback} />
     </DialogContext.Provider>
   )
 }

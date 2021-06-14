@@ -1,13 +1,13 @@
-import type { Creneau } from "src/types/model"
-
 import { useQuery } from "@apollo/client"
-import { Button, CircularProgress, Grid, Typography, useMediaQuery, useTheme } from "@material-ui/core"
+import { Button, Grid, Typography, useMediaQuery, useTheme } from "@material-ui/core"
 import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 import { isSameMonth } from "date-fns"
 
+import { Creneau, RoleId } from "src/types/model"
 import { useDatePlanning } from "src/providers/datePlanning"
 import { PLANNING } from "src/graphql/queries"
+import Loader from "src/components/Loader"
 import Calendar from "src/components/Calendar"
 import { PiafIcon } from "src/components/PiafCircle"
 import { formatMonthYear } from "src/helpers/date"
@@ -36,7 +36,6 @@ const CaptionTitle = styled.h3`
 `
 const Nav = styled.nav`
   display: flex;
-  align-items: center;
   margin-bottom: 1rem;
   button:not(:first-of-type) {
     margin-left: 1rem;
@@ -98,7 +97,7 @@ const PlanningPage = () => {
       </Nav>
       {loading ? (
         <Loading>
-          <CircularProgress />
+          <Loader />
         </Loading>
       ) : (
         <Calendar start={start} end={end} list={data?.creneaus} />
@@ -122,14 +121,14 @@ const PlanningPage = () => {
         <br />
         <Grid container>
           <Grid item xs={4}>
-            <PiafIcon $status="available" $role="CH">
+            <PiafIcon $status="available" $role={RoleId.Chouettos}>
                
             </PiafIcon>
             <div>Chouettos</div>
           </Grid>
           <Grid item xs={4}>
             <PiafIcon $status="available">CA</PiafIcon>
-            <div>Caissier·e</div>
+            <div>Caissier·ère</div>
           </Grid>
           <Grid item xs={4}>
             <PiafIcon $status="available">GH</PiafIcon>

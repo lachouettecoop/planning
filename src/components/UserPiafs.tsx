@@ -1,29 +1,32 @@
 import type { PIAF } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
-import { startOfToday } from "date-fns"
-import { CircularProgress, List } from "@material-ui/core"
+import { List } from "@material-ui/core"
 
-import { useUser } from "src/providers/user"
 import { PIAFS } from "src/graphql/queries"
-import { queryDate } from "src/helpers/date"
 import { ErrorMessage } from "src/helpers/errors"
+import Loader from "src/components/Loader"
 import Piaf from "src/components/Piaf"
 
 type Result = { piafs: PIAF[] }
+interface Props {
+  userId: string
+  after?: string
+  validated?: boolean
+  allowValidate?: boolean
+}
 
-const UserPiafs = () => {
-  const { auth } = useUser<true>()
-
+const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: Props) => {
   const { loading, error, data } = useQuery<Result>(PIAFS, {
     variables: {
-      userId: `/api/users/${auth.id}`,
-      after: queryDate(startOfToday()),
+      userId: `${userId}`,
+      after: after,
+      validated: validated,
     },
   })
 
   if (loading) {
-    return <CircularProgress />
+    return <Loader />
   }
 
   if (error) {
@@ -34,14 +37,22 @@ const UserPiafs = () => {
     return null
   }
 
-  if (!data.piafs.length) {
+  if (!data.piafs.length && !allowValidate) {
     return <p>Aucune PIAF à venir. Inscrivez-vous sur le planning !</p>
   }
 
+  if (!data.piafs.length && allowValidate) {
+    return <p>Aucune PIAF à valider.</p>
+  }
+
+  const piafs = data.piafs.slice().sort((left, right) => (left.creneau.debut > right.creneau.debut ? 1 : -1))
+
   return (
     <List>
-      {data.piafs.map((piaf) => (
-        <Piaf key={piaf.id} piaf={piaf} />
+      {piafs.map((piaf) => (
+        <>
+          <Piaf key={piaf.id} piaf={piaf} allowValidate={allowValidate} />
+        </>
       ))}
     </List>
   )

@@ -1,9 +1,11 @@
 import styled from "@emotion/styled/macro"
 import { Typography } from "@material-ui/core"
+import { startOfToday } from "date-fns"
 
 import { useUser } from "src/providers/user"
 import UserPiafs from "src/components/UserPiafs"
 import ReplacementPiafs from "src/components/ReplacementPiafs"
+import { queryDate } from "src/helpers/date"
 
 const Container = styled.div`
   display: flex;
@@ -30,6 +32,7 @@ const Replacements = styled.div``
 
 const HomePage = () => {
   const { user } = useUser<true>()
+  const userId = user?.id || ""
 
   const counter = `${user?.nbPiafEffectuees ?? "…"}/${user?.nbPiafAttendues ?? "…"}`
   const status = user?.statut || "…"
@@ -46,7 +49,7 @@ const HomePage = () => {
       </Status>
       <MyPlanning>
         <Typography variant="h2">Mes prochaines PIAFs</Typography>
-        <UserPiafs />
+        <UserPiafs userId={userId} after={queryDate(startOfToday())} />
       </MyPlanning>
       <Replacements>
         <Typography variant="h2">Remplacements</Typography>

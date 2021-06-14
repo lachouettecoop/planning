@@ -1,22 +1,25 @@
-import type { PIAF, User } from "src/types/model"
 import type { ISlot } from "src/types/app"
 
 import { useState } from "react"
-import { Button, capitalize, Dialog, DialogContent, DialogTitle, IconButton, CircularProgress } from "@material-ui/core"
+import { Button, capitalize, Dialog, DialogContent, DialogTitle, IconButton } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 import { startOfWeek, endOfWeek, startOfDay, endOfDay } from "date-fns"
 
+import { PIAF, RoleId, User } from "src/types/model"
 import { formatTime, formatDateLong } from "src/helpers/date"
-import { REGISTRATION_UPDATE, PIAFS_COUNT } from "src/graphql/queries"
+import { REGISTRATION_UPDATE, PIAFS_COUNT, PIAF_CREATE } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
+import Loader from "src/components/Loader"
 import PiafCircle, { getStatus } from "src/components/PiafCircle"
 import { handleError } from "src/helpers/errors"
 import { useDialog } from "src/providers/dialog"
+import { getIdRoleAccompagnateur, hasRole, hasRoleFormation } from "src/helpers/role"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
+const PERCENTAGE_NEW_CHOUETTOS = 50
 
 type Result = { piafs: PIAF[] }
 
@@ -27,7 +30,8 @@ const getPiafCount = async (slot: ISlot, userId: string, type: "week" | "day") =
     query: PIAFS_COUNT,
     variables: { userId, after, before },
   })
-  return data.piafs.length
+  //The filter by statut on the database does not work
+  return data.piafs.filter((p) => p.statut === "occupe").length
 }
 
 const getRegistrationPiafId = (slot: ISlot, piaf: PIAF) => {
@@ -38,6 +42,20 @@ const getRegistrationPiafId = (slot: ISlot, piaf: PIAF) => {
     return replacementPiaf.id
   }
   return piaf.id
+}
+
+const checkMaximumNumberOfNewChouettos = (user: User | null, piaf: PIAF) => {
+  // There is a maximum percentage for PIAF of new Chouettos
+  if (user?.nbPiafEffectuees === 0) {
+    const piafeursCount = piaf.infoCreneau.piaffeursCount
+    const maxPiafeursFirstPiaf = Math.floor((piafeursCount * PERCENTAGE_NEW_CHOUETTOS) / 100)
+    const piafeursFirstPiaf = piaf.infoCreneau.piaffeursCountFirstPiaf
+
+    if (piafeursFirstPiaf >= maxPiafeursFirstPiaf) {
+      return false
+    }
+  }
+  return true
 }
 
 const CloseButton = styled(IconButton)`
@@ -87,7 +105,8 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
 
     try {
       const roles = user?.rolesChouette
-      if (!roles || !roles.find(({ id }) => id === piaf.role.id)) {
+      if (!roles || !hasRole(piaf.role.roleUniqueId, roles)) {
+        setLoading(false)
         openDialog(`Pour t’inscrire à cette PIAF, tu dois d’abord passer la formation ${piaf.role.libelle}`)
         return
       }
@@ -96,13 +115,21 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
 
       const piafOfWeek = await getPiafCount(slot, userId, "week")
       if (piafOfWeek >= MAX_PIAF_PER_WEEK) {
+        setLoading(false)
         openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_WEEK} PIAF par semaine`)
         return
       }
 
       const piafOfDay = await getPiafCount(slot, userId, "day")
       if (piafOfDay >= MAX_PIAF_PER_DAY) {
+        setLoading(false)
         openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
+        return
+      }
+
+      if (!checkMaximumNumberOfNewChouettos(user, piaf)) {
+        setLoading(false)
+        openDialog(`Il n’est pas possible d’avoir plus de ${PERCENTAGE_NEW_CHOUETTOS}% de nouveaux chouettos par PIAF`)
         return
       }
 
@@ -112,6 +139,21 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
         mutation: REGISTRATION_UPDATE,
         variables: { piafId, userId, statut: "occupe" },
       })
+
+      if (hasRoleFormation(roles)) {
+        const idRoleAccompagnateur = getIdRoleAccompagnateur(piaf.role.roleUniqueId)
+        if (idRoleAccompagnateur) {
+          await apollo.mutate({
+            mutation: PIAF_CREATE,
+            variables: {
+              idCreneau: slot.id,
+              idRole: idRoleAccompagnateur,
+            },
+          })
+        } else {
+          console.error("PIAF formation sans role accompagnateur")
+        }
+      }
 
       openDialog("Inscription effectuée. Merci !")
     } catch (error) {
@@ -171,7 +213,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
                 </Status>
                 {status === "occupied" &&
                   piafCurrentUser &&
-                  piafCurrentUser.role.roleUniqueId === "GH" &&
+                  piafCurrentUser.role.roleUniqueId === RoleId.GrandHibou &&
                   piaffeur &&
                   piaffeur.id != user?.id && (
                     //Show info contacts only if the current user is the GH of the slot
@@ -195,7 +237,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
             )
           })
         ) : (
-          <CircularProgress />
+          <Loader />
         )}
       </DialogContent>
     </Dialog>

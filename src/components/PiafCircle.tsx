@@ -1,8 +1,8 @@
-import type { PIAF, RoleId } from "src/types/model"
 import type { IStatus } from "src/types/app"
 
 import styled from "@emotion/styled/macro"
 
+import { PIAF, RoleId } from "src/types/model"
 import chouettos from "src/images/chouettos.png"
 
 const STATUS_COLORS: Record<IStatus, string> = {
@@ -12,7 +12,7 @@ const STATUS_COLORS: Record<IStatus, string> = {
 }
 
 const IMAGES: Partial<Record<RoleId, string>> = {
-  CH: chouettos,
+  [RoleId.Chouettos]: chouettos,
 }
 
 const getImg = (role?: RoleId) => {

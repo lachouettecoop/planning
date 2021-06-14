@@ -2,7 +2,7 @@ import type { User } from "src/types/model"
 
 import { createContext, useContext, useState, FC, useEffect } from "react"
 
-import { LOGGED_IN_USER } from "src/graphql/queries"
+import { LOGGED_IN_USER } from "src/graphql/queriesUser"
 import apollo from "src/helpers/apollo"
 
 export interface Auth {

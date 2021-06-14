@@ -1,27 +1,5 @@
 import { gql } from "@apollo/client"
 
-export const LOGGED_IN_USER = gql`
-  query LOGGED_IN_USER($id: ID!) {
-    user(id: $id) {
-      id
-      username
-      rolesChouette {
-        id
-        roleUniqueId
-        libelle
-      }
-      nom
-      prenom
-      email
-      telephone
-      actif
-      statut
-      nbPiafEffectuees
-      nbPiafAttendues
-    }
-  }
-`
-
 export const SLOTS = gql`
   query SLOTS($id: ID!) {
     creneau(id: $id) {
@@ -47,8 +25,8 @@ export const SLOTS = gql`
 `
 
 export const PIAFS = gql`
-  query PIAFS($userId: String, $after: String, $before: String, $statut: String) {
-    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut) {
+  query PIAFS($userId: String, $after: String, $before: String, $statut: String, $validated: Boolean) {
+    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut, pourvu: $validated) {
       id
       statut
       pourvu
@@ -74,9 +52,14 @@ export const PIAFS = gql`
 `
 
 export const PIAFS_COUNT = gql`
-  query PIAFS_COUNT($userId: String, $after: String, $before: String, $statut: String) {
-    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }, statut: $statut) {
+  query PIAFS_COUNT($userId: String, $after: String, $before: String) {
+    piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }) {
       id
+      statut
+      creneau {
+        debut
+        fin
+      }
     }
   }
 `
@@ -121,15 +104,15 @@ export const REGISTRATION_UPDATE = gql`
     }
   }
 `
-
-export const USER_UPDATE = gql`
-  mutation USER_UPDATE($idUser: ID!, $email: String, $telephone: String) {
-    updateUser(input: { id: $idUser, email: $email, telephone: $telephone }) {
-      user {
+export const VALIDATE_PIAF = gql`
+  mutation VALIDATE_PIAF($piafId: ID!, $validate: Boolean) {
+    updatePiaf(input: { id: $piafId, pourvu: $validate }) {
+      piaf {
         id
-        username
-        email
-        telephone
+        piaffeur {
+          id
+        }
+        pourvu
       }
     }
   }
@@ -204,6 +187,25 @@ export const CRENEAUX_GENERIQUES = gql`
         id
         role {
           libelle
+        }
+      }
+    }
+  }
+`
+
+export const PIAF_CREATE = gql`
+  mutation PIAF_CREATE($idCreneau: String!, $idRole: String) {
+    createPiaf(input: { creneau: $idCreneau, role: $idRole, visible: true, pourvu: false }) {
+      piaf {
+        id
+        creneau {
+          id
+        }
+        piaffeur {
+          id
+        }
+        role {
+          id
         }
       }
     }

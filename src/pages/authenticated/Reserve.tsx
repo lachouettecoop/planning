@@ -2,18 +2,11 @@ import { CreneauGenerique, Reserve } from "src/types/model"
 import { IReserve } from "src/types/app"
 
 import { useEffect, useState, ChangeEvent } from "react"
-import {
-  Button,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  CircularProgress,
-  TextField,
-  Typography,
-} from "@material-ui/core"
+import { Button, FormGroup, FormControlLabel, Checkbox, TextField, Typography } from "@material-ui/core"
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled/macro"
 
+import Loader from "src/components/Loader"
 import apollo from "src/helpers/apollo"
 import { handleError } from "src/helpers/errors"
 import { RESERVE_CREATE, RESERVE_UPDATE, CRENEAUX_GENERIQUES, RESERVE_USER } from "src/graphql/queries"
@@ -171,7 +164,7 @@ const ReservePage = () => {
       <Typography variant="h2">Réserve</Typography>
       {loading ? (
         <Loading>
-          <CircularProgress />
+          <Loader />
         </Loading>
       ) : (
         <>

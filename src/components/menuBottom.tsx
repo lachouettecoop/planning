@@ -12,15 +12,11 @@ import {
   Toolbar,
   IconButton,
 } from "@material-ui/core"
-import {
-  MoreVert as MoreIcon,
-  Group as GroupIcon,
-  Person as PersonIcon,
-  Replay as ReplayIcon,
-  ArrowBack as ArrowBackIcon,
-  Event as EventIcon,
-  Home as HomeIcon,
-} from "@material-ui/icons"
+import { MoreVert as MoreIcon, Group as GroupIcon, Event as EventIcon, Home as HomeIcon } from "@material-ui/icons"
+
+import { RoleId } from "src/types/model"
+import { hasRole } from "src/helpers/role"
+import { useUser } from "src/providers/user"
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -74,18 +70,21 @@ const useStyles = makeStyles((theme) =>
 )
 
 const MAIN_ITEMS = [
-  { title: "Accueil", href: "/home", Icon: HomeIcon },
-  { title: "Planning", href: "/planning", Icon: EventIcon },
-  { title: "Réserve", href: "/reserve", Icon: GroupIcon },
+  { title: "Accueil", href: "/home", Icon: HomeIcon, role: RoleId.Chouettos },
+  { title: "Planning", href: "/planning", Icon: EventIcon, role: RoleId.Chouettos },
+  { title: "Réserve", href: "/reserve", Icon: GroupIcon, role: RoleId.Chouettos },
 ]
 const EXTRA_ITEMS = [
-  { title: "Auto", href: "/auto", Icon: ReplayIcon },
-  { title: "Mon profil", href: "/profile", Icon: PersonIcon },
-  { title: "Espace membre", href: "/member", Icon: ArrowBackIcon },
+  { title: "Auto", href: "/auto", role: RoleId.Chouettos },
+  { title: "Mon profil", href: "/profile", role: RoleId.Chouettos },
+  { title: "Espace membre", href: "/member", role: RoleId.Chouettos },
+  { title: "Groupe MAG", href: "/magasin", role: RoleId.AdminMag },
+  { title: "Groupe BdM", href: "/bdm", role: RoleId.AdminBdM },
 ]
 
 export default function BottomAppBar() {
   const classes = useStyles()
+  const { user, logout } = useUser<true>()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
   const { pathname } = useLocation()
@@ -99,6 +98,8 @@ export default function BottomAppBar() {
     setAnchorEl(null)
   }
 
+  const userRoles = user?.rolesChouette || []
+
   if (!matches) {
     return null
   }
@@ -107,7 +108,7 @@ export default function BottomAppBar() {
     <>
       <AppBar position="fixed" color="primary" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
-          {MAIN_ITEMS.map(({ href, title, Icon }) => {
+          {MAIN_ITEMS.filter(({ role }) => hasRole(role, userRoles)).map(({ href, title, Icon }) => {
             const active = pathname === href
             return (
               <ListItem button className={classes.label} key={title} component={Link} to={href}>
@@ -126,7 +127,7 @@ export default function BottomAppBar() {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            {EXTRA_ITEMS.map(({ href, title }) => {
+            {EXTRA_ITEMS.filter(({ role }) => hasRole(role, userRoles)).map(({ href, title }) => {
               const active = pathname === href
               return (
                 <MenuItem
@@ -140,6 +141,10 @@ export default function BottomAppBar() {
                 </MenuItem>
               )
             })}
+
+            <MenuItem onClick={logout} key="Logout" className={classes.menuItem} color="inherit">
+              Déconnexion
+            </MenuItem>
           </Menu>
           <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} edge="end" color="inherit">
             <MoreIcon />
