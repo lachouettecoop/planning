@@ -75,7 +75,7 @@ const MAIN_ITEMS = [
   { title: "Réserve", href: "/reserve", Icon: GroupIcon, role: RoleId.Chouettos },
 ]
 const EXTRA_ITEMS = [
-  { title: "Auto", href: "/auto", role: RoleId.Chouettos },
+  //{ title: "Auto", href: "/auto", role: RoleId.Chouettos },
   { title: "Mon profil", href: "/profile", role: RoleId.Chouettos },
   { title: "Espace membre", href: "/member", role: RoleId.Chouettos },
   { title: "Groupe MAG", href: "/magasin", role: RoleId.AdminMag },

@@ -66,6 +66,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
   const slot: ISlot = {
     id: creneau.id,
     title: creneau.titre,
+    information: creneau.informations,
     start: new Date(creneau.debut),
     end: new Date(creneau.fin),
     piafs: data?.creneau.piafs,

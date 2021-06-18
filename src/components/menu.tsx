@@ -24,7 +24,7 @@ import {
   ChevronRight as ChevronRightIcon,
   Group as GroupIcon,
   Person as PersonIcon,
-  Replay as ReplayIcon,
+  // Replay as ReplayIcon,
   ArrowBack as ArrowBackIcon,
   Home as HomeIcon,
   Event as EventIcon,
@@ -119,12 +119,12 @@ const ITEMS = [
   { title: "Accueil", href: "/home", Icon: HomeIcon, role: RoleId.Chouettos },
   { title: "Planning", href: "/planning", Icon: EventIcon, role: RoleId.Chouettos },
   { title: "Réserve", href: "/reserve", Icon: GroupIcon, role: RoleId.Chouettos },
-  {
+  /* {
     title: "Réservation automatique",
     href: "/auto",
     Icon: ReplayIcon,
     role: RoleId.Chouettos,
-  },
+  },*/
   { title: "Mon profil", href: "/profile", Icon: PersonIcon, role: RoleId.Chouettos },
   { title: "Groupe MAG", href: "/magasin", Icon: StorefrontIcon, role: RoleId.AdminMag },
   { title: "Groupe BdM", href: "/bdm", Icon: CardMembershipIcon, role: RoleId.AdminBdM },

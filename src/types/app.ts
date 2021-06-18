@@ -3,6 +3,7 @@ import { CreneauGenerique, PIAF } from "src/types/model"
 export interface ISlot {
   id: string
   title: string
+  information: string
   start: Date
   end: Date
   piafs?: PIAF[] // undefined = loading

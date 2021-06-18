@@ -75,6 +75,7 @@ const Calendar = ({ start, end, list }: Props) => {
     week.days[day].slots.push({
       id: node.id,
       title: node.titre,
+      information: node.informations,
       start: date,
       end: new Date(node.fin),
       piafs,

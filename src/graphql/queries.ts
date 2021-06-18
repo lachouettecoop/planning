@@ -4,6 +4,7 @@ export const SLOTS = gql`
   query SLOTS($id: ID!) {
     creneau(id: $id) {
       titre
+      informations
       debut
       fin
       piafs {
@@ -71,6 +72,7 @@ export const PLANNING = gql`
       debut
       fin
       titre
+      informations
       piafs {
         id
         statut

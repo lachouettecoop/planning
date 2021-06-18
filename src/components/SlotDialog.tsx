@@ -195,6 +195,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
             {formatTime(slot.start)}–{formatTime(slot.end)}
           </strong>
           <span>{slot.title}</span>
+          <div>{slot.information}</div>
         </Title>
       </DialogTitle>
       <DialogContent>
