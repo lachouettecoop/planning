@@ -17,6 +17,8 @@ export const LOGGED_IN_USER = gql`
       statut
       nbPiafEffectuees
       nbPiafAttendues
+      nbPiafGH
+      nbPiafCaisse
     }
   }
 `
@@ -60,6 +62,8 @@ export const USERS = gql`
       absenceLongueDureeSansCourses
       nbPiafEffectuees
       nbPiafAttendues
+      nbPiafGH
+      nbPiafCaisse
     }
   }
 `

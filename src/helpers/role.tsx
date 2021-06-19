@@ -1,6 +1,6 @@
-import { Role, RoleId } from "src/types/model"
+import { Role, RoleId, User } from "src/types/model"
 
-export const getIdRoleAccompagnateur = (id: RoleId) => {
+export const getTrainerRoleId = (id: RoleId) => {
   switch (id) {
     case RoleId.Caissier:
       return RoleId.Caissier_Acc
@@ -12,23 +12,18 @@ export const getIdRoleAccompagnateur = (id: RoleId) => {
 }
 
 export const hasRole = (id: RoleId, roles: Role[]) => {
-  switch (id) {
-    case RoleId.Caissier:
-      return roles.find(
-        ({ roleUniqueId }) => roleUniqueId === RoleId.Caissier || roleUniqueId === RoleId.Caissier_Formation
-      )
-    case RoleId.GrandHibou:
-      return roles.find(
-        ({ roleUniqueId }) => roleUniqueId === RoleId.GrandHibou || roleUniqueId === RoleId.GrandHibou_Formation
-      )
-    default:
-      return roles.find(({ roleUniqueId }) => roleUniqueId === id)
-  }
+  return roles.find(({ roleUniqueId }) => roleUniqueId === id)
 }
 
-const FORMATION_ROLES = [RoleId.Caissier_Formation, RoleId.GrandHibou_Formation]
-
-export const hasRoleFormation = (roles: Role[]) =>
-  roles.find(({ roleUniqueId }) => FORMATION_ROLES.includes(roleUniqueId))
+export const needsTraining = (user: User | null, roleId: RoleId) => {
+  if (user) {
+    if (roleId == RoleId.GrandHibou) {
+      return !user.nbPiafGH || user.nbPiafGH == 0
+    } else if (roleId == RoleId.Caissier) {
+      return !user.nbPiafGH || user.nbPiafGH == 0
+    }
+  }
+  return false
+}
 
 export const formatRoles = (roles: Role[]) => roles.map(({ libelle }) => libelle).join(", ")

@@ -8,9 +8,10 @@ import { startOfWeek, endOfWeek, startOfDay, endOfDay, isPast } from "date-fns"
 import { PIAF, User, RoleId } from "src/types/model"
 import PiafCircle from "src/components/PiafCircle"
 import { useDialog } from "src/providers/dialog"
+import { useRoles } from "src/providers/roles"
 import { PIAFS_COUNT, PIAF_CREATE, REGISTRATION_UPDATE } from "src/graphql/queries"
 import apollo from "src/helpers/apollo"
-import { getIdRoleAccompagnateur, hasRole, hasRoleFormation } from "src/helpers/role"
+import { getTrainerRoleId, hasRole, needsTraining } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
 import { isTaken } from "src/helpers/piaf"
 
@@ -88,6 +89,7 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
   const currentUserIsInSlot = slot.piafs?.find(
     ({ piaffeur, statut }) => piaffeur?.id === user?.id && statut === "occupe"
   )
+  const rolesBD = useRoles()
 
   const handleInputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInfo(target.value)
@@ -97,8 +99,8 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
     setLoading(true)
 
     try {
-      const roles = user?.rolesChouette
-      if (!roles || !hasRole(piaf.role.roleUniqueId, roles)) {
+      const userRoles = user?.rolesChouette
+      if (!userRoles || !hasRole(piaf.role.roleUniqueId, userRoles)) {
         setLoading(false)
         openDialog(`Pour t’inscrire à cette PIAF, tu dois d’abord passer la formation ${piaf.role.libelle}`)
         return
@@ -138,27 +140,39 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
         },
       })
 
-      if (hasRoleFormation(roles)) {
-        const idRoleAccompagnateur = getIdRoleAccompagnateur(piaf.role.roleUniqueId)
-        if (idRoleAccompagnateur) {
-          await apollo.mutate({
-            mutation: PIAF_CREATE,
-            variables: {
-              idCreneau: slot.id,
-              idRole: idRoleAccompagnateur,
-            },
-          })
-        } else {
-          console.error("PIAF formation sans role accompagnateur")
-        }
+      let registerOK = true
+      if (needsTraining(user, piaf.role.roleUniqueId)) {
+        registerOK = await addTrainerPiaf(piaf.role.roleUniqueId)
       }
-
-      openDialog("Inscription effectuée. Merci !")
+      if (registerOK) openDialog("Inscription effectuée. Merci !")
     } catch (error) {
       handleError(error)
     }
 
     setLoading(false)
+  }
+
+  const addTrainerPiaf = async (roleUniqueId: RoleId) => {
+    const idRoleTrainer = getTrainerRoleId(roleUniqueId)
+    if (idRoleTrainer) {
+      const roleTrainer = rolesBD.find((r) => r.roleUniqueId == idRoleTrainer)
+      if (roleTrainer) {
+        await apollo.mutate({
+          mutation: PIAF_CREATE,
+          variables: {
+            idCreneau: slot.id,
+            idRole: roleTrainer.id,
+          },
+        })
+      } else {
+        openDialog(`Le role ${idRoleTrainer} n'a pas pu être trouvé. Svp, contactez votre administrateur`)
+        return false
+      }
+    } else {
+      openDialog(`Il n'y a pas un role formateur pour ${roleUniqueId}. Svp, contactez votre administrateur`)
+      return false
+    }
+    return true
   }
 
   const unregister = async () => {
@@ -175,7 +189,13 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
         variables: { piafId: piaf.id, userId, statut: "remplacement", informations: null },
       })
 
-      openDialog("Désinscription effectuée : la PIAF est désormais en recherche de remplacement !")
+      if (needsTraining(user, piaf.role.roleUniqueId)) {
+        openDialog(
+          "Désinscription effectuée ! Svp, mettez vous en contact avec le BdM pour enlever la PIAF accompagnateur·trice"
+        )
+      } else {
+        openDialog("Désinscription effectuée : la PIAF est désormais en recherche de remplacement !")
+      }
     } catch (error) {
       handleError(error)
     }
