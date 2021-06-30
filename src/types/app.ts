@@ -29,5 +29,3 @@ export interface IReserve {
   day: number
   slots: ISlotReserve[]
 }
-
-export type IStatus = "available" | "replacement" | "occupied"

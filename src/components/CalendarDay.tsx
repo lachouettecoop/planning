@@ -9,7 +9,7 @@ import { formatDateShort } from "src/helpers/date"
 type TimeStatus = "past" | "present" | "future"
 
 const Container = styled.div<{ $when: TimeStatus }>`
-  opacity: ${({ $when }) => ($when === "past" ? 0.5 : 1)};
+  opacity: ${({ $when }) => ($when === "past" ? 0.25 : 1)};
   border: 1px solid gray;
   min-height: 80px;
   background-color: ${({ $when }) => ($when === "present" ? "#d0d9d0" : "#eee")};

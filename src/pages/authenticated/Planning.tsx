@@ -1,15 +1,15 @@
 import { useQuery } from "@apollo/client"
-import { Button, Grid, Typography, useMediaQuery, useTheme } from "@material-ui/core"
+import { Button, Typography, useMediaQuery, useTheme } from "@material-ui/core"
 import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 import { isSameMonth } from "date-fns"
 
-import { Creneau, RoleId } from "src/types/model"
+import { Creneau } from "src/types/model"
 import { useDatePlanning } from "src/providers/datePlanning"
 import { PLANNING } from "src/graphql/queries"
-import Loader from "src/components/Loader"
 import Calendar from "src/components/Calendar"
-import { PiafIcon } from "src/components/PiafCircle"
+import Loader from "src/components/Loader"
+import IconsCaption from "src/components/IconsCaption"
 import { formatMonthYear } from "src/helpers/date"
 import { ErrorBlock } from "src/helpers/errors"
 
@@ -21,18 +21,6 @@ const Loading = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
-const Caption = styled.div`
-  border: 1px solid gray;
-  border-radius: 10px;
-  max-width: 500px;
-  margin: 20px 0 100px auto;
-  padding: 10px;
-  text-align: center;
-`
-const CaptionTitle = styled.h3`
-  text-align: left;
-  margin-top: 0;
 `
 const Nav = styled.nav`
   display: flex;
@@ -102,40 +90,7 @@ const PlanningPage = () => {
       ) : (
         <Calendar start={start} end={end} list={data?.creneaus} />
       )}
-      <Caption>
-        <CaptionTitle>Légende</CaptionTitle>
-        <Grid container>
-          <Grid item xs={4}>
-            <PiafIcon $status="available" />
-            <div>PIAF disponible</div>
-          </Grid>
-          <Grid item xs={4}>
-            <PiafIcon $status="replacement" />
-            <div>Cherche remplaçant·e</div>
-          </Grid>
-          <Grid item xs={4}>
-            <PiafIcon $status="occupied" />
-            <div>PIAF occupée</div>
-          </Grid>
-        </Grid>
-        <br />
-        <Grid container>
-          <Grid item xs={4}>
-            <PiafIcon $status="available" $role={RoleId.Chouettos}>
-               
-            </PiafIcon>
-            <div>Chouettos</div>
-          </Grid>
-          <Grid item xs={4}>
-            <PiafIcon $status="available">CA</PiafIcon>
-            <div>Caissier·ère</div>
-          </Grid>
-          <Grid item xs={4}>
-            <PiafIcon $status="available">GH</PiafIcon>
-            <div>Grand Hibou</div>
-          </Grid>
-        </Grid>
-      </Caption>
+      <IconsCaption />
     </>
   )
 }

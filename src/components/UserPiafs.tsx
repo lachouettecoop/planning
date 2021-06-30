@@ -50,9 +50,7 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
   return (
     <List>
       {piafs.map((piaf) => (
-        <>
-          <Piaf key={piaf.id} piaf={piaf} allowValidate={allowValidate} />
-        </>
+        <Piaf key={piaf.id} piaf={piaf} allowValidate={allowValidate} />
       ))}
     </List>
   )

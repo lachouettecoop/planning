@@ -1,64 +1,42 @@
-import type { IStatus } from "src/types/app"
-
 import styled from "@emotion/styled/macro"
 
 import { PIAF, RoleId } from "src/types/model"
-import chouettos from "src/images/chouettos.png"
+import ICONS from "src/images/icons"
 
-const STATUS_COLORS: Record<IStatus, string> = {
-  available: "white",
-  replacement: "orange",
-  occupied: "green",
-}
-
-const IMAGES: Partial<Record<RoleId, string>> = {
-  [RoleId.Chouettos]: chouettos,
+export const isTaken = (piaf: PIAF) => {
+  if (piaf.statut === "remplacement") {
+    return false
+  }
+  return Boolean(piaf.piaffeur)
 }
 
 const getImg = (role?: RoleId) => {
   if (role) {
-    const img = IMAGES[role]
+    const img = ICONS[role]
     if (img) {
       return `url(${img})`
     }
   }
+  return "none" // TODO
 }
 
-export const PiafIcon = styled.span<{ $status: IStatus; $role?: RoleId }>`
+export const PiafIcon = styled.span<{ $taken?: boolean; $role?: RoleId }>`
   flex-shrink: 0;
   display: inline-block;
-  margin: 2px;
-  width: 2rem;
-  height: 2rem;
-  border: 2px solid ${({ $status }) => STATUS_COLORS[$status]};
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.palette.grey[300]};
-  background-image: ${({ $role }) => getImg($role) || "none"};
-  background-position: center;
-  background-size: 24px;
+  margin: 3px;
+  width: 24px;
+  height: 24px;
+  background-image: ${({ $role }) => getImg($role)};
+  background-size: 100%;
+  background-position: center center;
   background-repeat: no-repeat;
-  line-height: 28px;
-  text-align: center;
+  opacity: ${({ $taken }) => ($taken ? 0.25 : 1)};
 `
-
-export const getStatus = (piaf: PIAF): IStatus => {
-  if (piaf.statut === "remplacement") {
-    return "replacement"
-  }
-  if (piaf.piaffeur) {
-    return "occupied"
-  }
-  return "available"
-}
 
 interface Props {
   piaf: PIAF
 }
 
-const PiafCircle = ({ piaf }: Props) => (
-  <PiafIcon $status={getStatus(piaf)} $role={piaf.role.roleUniqueId}>
-    {getImg(piaf.role.roleUniqueId) ? "" : piaf.role.roleUniqueId}
-  </PiafIcon>
-)
+const PiafCircle = ({ piaf }: Props) => <PiafIcon $taken={isTaken(piaf)} $role={piaf.role.roleUniqueId} />
 
 export default PiafCircle

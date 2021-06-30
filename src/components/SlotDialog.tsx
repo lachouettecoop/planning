@@ -12,7 +12,7 @@ import { REGISTRATION_UPDATE, PIAFS_COUNT, PIAF_CREATE } from "src/graphql/queri
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
 import Loader from "src/components/Loader"
-import PiafCircle, { getStatus } from "src/components/PiafCircle"
+import PiafCircle, { isTaken } from "src/components/PiafCircle"
 import { handleError } from "src/helpers/errors"
 import { useDialog } from "src/providers/dialog"
 import { getIdRoleAccompagnateur, hasRole, hasRoleFormation } from "src/helpers/role"
@@ -202,17 +202,17 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
         {slot.piafs ? (
           slot.piafs.map((piaf) => {
             const { id, role, piaffeur } = piaf
-            const status = getStatus(piaf)
+            const taken = isTaken(piaf)
 
             return (
               <PiafRow key={id}>
                 <PiafCircle piaf={piaf} />
                 <Status>
-                  {status === "occupied" && piaffeur ? `${piaffeur.prenom} ${piaffeur.nom}` : "Place disponible"}
+                  {taken && piaffeur ? `${piaffeur.prenom} ${piaffeur.nom}` : "Place disponible"}
                   <br />
                   <span>{role.libelle}</span>
                 </Status>
-                {status === "occupied" &&
+                {taken &&
                   piafCurrentUser &&
                   piafCurrentUser.role.roleUniqueId === RoleId.GrandHibou &&
                   piaffeur &&
@@ -224,7 +224,7 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
                       <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
                     </Contact>
                   )}
-                {status !== "occupied" && !piafCurrentUser && !hideButtons && (
+                {!taken && !piafCurrentUser && !hideButtons && (
                   <Button disabled={loading} color="primary" variant="contained" onClick={() => register(piaf)}>
                     S’inscrire
                   </Button>
