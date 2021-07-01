@@ -67,6 +67,8 @@ export interface User {
   absenceLongueDureeSansCourses: boolean
   nbPiafEffectuees: number
   nbPiafAttendues: number
+  nbPiafGH?: number
+  nbPiafCaisse?: number
 }
 
 export interface Creneau {

@@ -5,7 +5,7 @@ import styled from "@emotion/styled/macro"
 
 import SlotDialog from "src/components/SlotDialog"
 import { formatTime } from "src/helpers/date"
-import PiafCircle from "src/components/PiafCircle"
+import PiafCircle, { PiafIcon } from "src/components/PiafCircle"
 
 const SELECTED_COLOR = "#FFFFAA"
 
@@ -33,6 +33,10 @@ const List = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin: 0 -2px;
+  ${PiafIcon} {
+    width: 24px;
+    height: 24px;
+  }
 `
 
 interface Props {

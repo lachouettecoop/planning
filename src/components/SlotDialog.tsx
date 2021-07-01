@@ -10,12 +10,13 @@ import { PIAF, RoleId, User } from "src/types/model"
 import { formatTime, formatDateLong } from "src/helpers/date"
 import { REGISTRATION_UPDATE, PIAFS_COUNT, PIAF_CREATE } from "src/graphql/queries"
 import { useUser } from "src/providers/user"
-import apollo from "src/helpers/apollo"
-import Loader from "src/components/Loader"
-import PiafCircle, { isTaken } from "src/components/PiafCircle"
-import { handleError } from "src/helpers/errors"
 import { useDialog } from "src/providers/dialog"
+import apollo from "src/helpers/apollo"
+import { handleError } from "src/helpers/errors"
+import { isTaken } from "src/helpers/piaf"
 import { getIdRoleAccompagnateur, hasRole, hasRoleFormation } from "src/helpers/role"
+import Loader from "src/components/Loader"
+import PiafCircle from "src/components/PiafCircle"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2

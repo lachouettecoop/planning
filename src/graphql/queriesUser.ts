@@ -4,7 +4,6 @@ export const LOGGED_IN_USER = gql`
   query LOGGED_IN_USER($id: ID!) {
     user(id: $id) {
       id
-      username
       rolesChouette {
         id
         roleUniqueId
@@ -26,7 +25,6 @@ export const USER_UPDATE = gql`
     updateUser(input: { id: $idUser, email: $email, telephone: $telephone }) {
       user {
         id
-        username
         email
         telephone
       }

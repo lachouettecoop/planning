@@ -7,66 +7,65 @@ import { RoleId } from "src/types/model"
 const Container = styled.div`
   border: 1px solid gray;
   border-radius: 10px;
-  max-width: 600px;
+  max-width: 664px;
   margin: 20px 0 100px auto;
-  padding: 10px;
+  padding: 20px 10px;
   text-align: center;
-  ${PiafIcon} {
-    width: 32px;
-    height: 32px;
-  }
 `
-const CaptionTitle = styled.h3`
-  text-align: left;
+const Title = styled.h3`
   margin-top: 0;
+`
+const Caption = styled.figcaption`
+  word-wrap: break-word;
+  padding: 0 4px;
 `
 
 const IconsCaption = () => {
   return (
     <Container>
-      <CaptionTitle>Légende</CaptionTitle>
+      <Title>Légende</Title>
       <Grid container>
-        <Grid item xs={3}>
+        <Grid item xs={3} component="figure">
           <PiafIcon $role={RoleId.Chouettos} />
-          <div>PIAF disponible</div>
+          <Caption>PIAF disponible</Caption>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={3} component="figure">
           <PiafIcon $role={RoleId.Chouettos} $taken />
-          <div>PIAF occupée</div>
+          <Caption>PIAF occupée</Caption>
         </Grid>
       </Grid>
       <br />
       <Grid container>
-        <Grid item xs={3}>
+        <Grid item xs={3} component="figure">
           <PiafIcon $role={RoleId.Chouettos} />
-          <div>Chouettos</div>
+          <Caption>Chouettos</Caption>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={3} component="figure">
           <PiafIcon $role={RoleId.Caissier} />
-          <div>Caissier·ère</div>
+          <Caption>Caissier·ère</Caption>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={3} component="figure">
           <PiafIcon $role={RoleId.GrandHibou} />
-          <div>Grand Hibou</div>
+          <Caption>Grand Hibou</Caption>
         </Grid>
       </Grid>
       <br />
       <Grid container>
-        <Grid item xs={3}>
-          <PiafIcon $role={RoleId.Caissier_Acc} />
-          <div>Caissier·ère accompagnateur·rice</div>
-        </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={3} component="figure">
           <PiafIcon $role={RoleId.Caissier_Formation} />
-          <div>Caissier·ère en formation</div>
+          <Caption>Caissier·ère en formation</Caption>
         </Grid>
-        <Grid item xs={3}>
-          <PiafIcon $role={RoleId.GrandHibou_Acc} />
-          <div>Grand Hibou accompagnateur·rice</div>
+        <Grid item xs={3} component="figure">
+          <PiafIcon $role={RoleId.Caissier_Acc} />
+          <Caption>Caissier·ère accompagnateur·rice</Caption>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={3} component="figure">
           <PiafIcon $role={RoleId.GrandHibou_Formation} />
-          <div>Grand Hibou en formation</div>
+          <Caption>Grand Hibou en formation</Caption>
+        </Grid>
+        <Grid item xs={3} component="figure">
+          <PiafIcon $role={RoleId.GrandHibou_Acc} />
+          <Caption>Grand Hibou accompagnateur·rice</Caption>
         </Grid>
       </Grid>
     </Container>

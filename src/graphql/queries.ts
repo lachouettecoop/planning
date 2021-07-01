@@ -17,8 +17,12 @@ export const SLOTS = gql`
         }
         piaffeur {
           id
-          prenom
           nom
+          prenom
+          email
+          telephone
+          nbPiafGH
+          nbPiafCaisse
         }
       }
     }
@@ -39,9 +43,12 @@ export const PIAFS = gql`
       }
       piaffeur {
         id
-        prenom
         nom
-        username
+        prenom
+        email
+        telephone
+        nbPiafGH
+        nbPiafCaisse
       }
       role {
         id
@@ -87,6 +94,8 @@ export const PLANNING = gql`
           prenom
           email
           telephone
+          nbPiafGH
+          nbPiafCaisse
         }
       }
     }
@@ -128,7 +137,6 @@ export const RESERVE_CREATE = gql`
         informations
         user {
           id
-          username
         }
         creneauGeneriques {
           id
@@ -150,7 +158,6 @@ export const RESERVE_UPDATE = gql`
         informations
         user {
           id
-          username
         }
         creneauGeneriques {
           id

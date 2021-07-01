@@ -1,14 +1,10 @@
+import type { PIAF, RoleId } from "src/types/model"
+
 import styled from "@emotion/styled/macro"
 
-import { PIAF, RoleId } from "src/types/model"
-import ICONS from "src/images/icons"
+import { getPiafRole, isTaken } from "src/helpers/piaf"
 
-export const isTaken = (piaf: PIAF) => {
-  if (piaf.statut === "remplacement") {
-    return false
-  }
-  return Boolean(piaf.piaffeur)
-}
+import ICONS from "src/images/icons"
 
 const getImg = (role?: RoleId) => {
   if (role) {
@@ -24,8 +20,8 @@ export const PiafIcon = styled.span<{ $taken?: boolean; $role?: RoleId }>`
   flex-shrink: 0;
   display: inline-block;
   margin: 3px;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   background-image: ${({ $role }) => getImg($role)};
   background-size: 100%;
   background-position: center center;
@@ -37,6 +33,6 @@ interface Props {
   piaf: PIAF
 }
 
-const PiafCircle = ({ piaf }: Props) => <PiafIcon $taken={isTaken(piaf)} $role={piaf.role.roleUniqueId} />
+const PiafCircle = ({ piaf }: Props) => <PiafIcon $taken={isTaken(piaf)} $role={getPiafRole(piaf)} />
 
 export default PiafCircle
