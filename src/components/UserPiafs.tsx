@@ -45,7 +45,10 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
     return <p>Aucune PIAF à valider.</p>
   }
 
-  const piafs = data.piafs.slice().sort((left, right) => (left.creneau.debut > right.creneau.debut ? 1 : -1))
+  const piafs = data.piafs
+    .slice()
+    .sort((left, right) => (left.creneau.debut > right.creneau.debut ? 1 : -1))
+    .filter((p) => p.statut !== "remplacement")
 
   return (
     <List>

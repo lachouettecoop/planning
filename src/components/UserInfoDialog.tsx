@@ -7,7 +7,8 @@ import { formatRoles } from "src/helpers/role"
 import UserPiafs from "src/components/UserPiafs"
 
 const RightCol = styled(Grid)`
-  line-height: 4;
+  display: flex;
+  align-items: center;
 `
 
 interface Props {
