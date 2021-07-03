@@ -17,6 +17,7 @@ import {
   ListItemText,
   Button,
   Box,
+  Chip,
 } from "@material-ui/core"
 import {
   Menu as MenuIcon,
@@ -35,6 +36,7 @@ import {
 import Link from "src/components/Link"
 import { useUser } from "src/providers/user"
 import { hasRole } from "src/helpers/role"
+import { TEST } from "src/helpers/apollo"
 import { RoleId } from "src/types/model"
 
 const DRAWER_WIDTH = 260
@@ -179,7 +181,7 @@ const Menu = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Planning
+            Planning {TEST && <Chip label="TEST" />}
           </Typography>
           <Spacer />
           <Button onClick={logout} color="inherit">

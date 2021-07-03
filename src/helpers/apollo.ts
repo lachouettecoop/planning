@@ -3,8 +3,16 @@ import { setContext } from "@apollo/client/link/context"
 
 import { getStoredUser } from "src/providers/user"
 
+const API_URL = process.env.REACT_APP_API
+
+if (!API_URL) {
+  throw new Error("You must compile the app with a REACT_APP_API environment variable - see example.env")
+}
+
+export const TEST = API_URL.includes("test")
+
 const link = createHttpLink({
-  uri: `${process.env.REACT_APP_API}/api/graphql`,
+  uri: `${API_URL}/api/graphql`,
 })
 
 const authLink = setContext((_, previous) => {
