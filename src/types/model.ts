@@ -94,5 +94,6 @@ export interface PIAF {
   visible: boolean
   pourvu: boolean
   statut: "occupe" | "remplacement" | "" | null // empty = available
+  informations: string
   infoCreneau: InfoCreneau
 }

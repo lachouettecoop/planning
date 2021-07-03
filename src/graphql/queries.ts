@@ -10,6 +10,7 @@ export const SLOTS = gql`
       piafs {
         id
         statut
+        informations
         role {
           id
           roleUniqueId
@@ -35,6 +36,7 @@ export const PIAFS = gql`
       id
       statut
       pourvu
+      informations
       creneau {
         id
         titre
@@ -83,6 +85,7 @@ export const PLANNING = gql`
       piafs {
         id
         statut
+        informations
         role {
           id
           roleUniqueId
@@ -103,14 +106,15 @@ export const PLANNING = gql`
 `
 
 export const REGISTRATION_UPDATE = gql`
-  mutation REGISTRATION_UPDATE($piafId: ID!, $userId: String!, $statut: String!) {
-    updatePiaf(input: { id: $piafId, piaffeur: $userId, statut: $statut }) {
+  mutation REGISTRATION_UPDATE($piafId: ID!, $userId: String!, $statut: String!, $informations: String) {
+    updatePiaf(input: { id: $piafId, piaffeur: $userId, statut: $statut, informations: $informations }) {
       piaf {
         id
         piaffeur {
           id
         }
         statut
+        informations
       }
     }
   }
