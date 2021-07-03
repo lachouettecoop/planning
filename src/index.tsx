@@ -6,6 +6,7 @@ import { ErrorBoundary } from "src/helpers/errors"
 import apollo from "src/helpers/apollo"
 import { UserProvider } from "src/providers/user"
 import ThemeProvider from "src/providers/theme"
+import { RolesProvider } from "src/providers/roles"
 import App from "src/App"
 
 ReactDOM.render(
@@ -14,7 +15,9 @@ ReactDOM.render(
       <ThemeProvider>
         <ApolloProvider client={apollo}>
           <UserProvider>
-            <App />
+            <RolesProvider>
+              <App />
+            </RolesProvider>
           </UserProvider>
         </ApolloProvider>
       </ThemeProvider>

@@ -230,3 +230,13 @@ export const PIAF_CREATE = gql`
     }
   }
 `
+
+export const ROLES = gql`
+  query ROLES {
+    roles {
+      id
+      libelle
+      roleUniqueId
+    }
+  }
+`
