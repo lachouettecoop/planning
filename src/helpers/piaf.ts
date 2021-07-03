@@ -18,3 +18,5 @@ export const isTaken = (piaf: PIAF) => {
   }
   return Boolean(piaf.piaffeur)
 }
+
+export const orderPiafsByDate = (left: PIAF, right: PIAF) => (left.creneau.debut > right.creneau.debut ? 1 : -1)

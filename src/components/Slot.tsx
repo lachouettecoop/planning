@@ -4,8 +4,8 @@ import { useState } from "react"
 import styled from "@emotion/styled/macro"
 
 import SlotDialog from "src/components/SlotDialog"
-import { formatTime } from "src/helpers/date"
 import PiafCircle, { PiafIcon } from "src/components/PiafCircle"
+import { formatTime } from "src/helpers/date"
 
 const SELECTED_COLOR = "#FFFFAA"
 

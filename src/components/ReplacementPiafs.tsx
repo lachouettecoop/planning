@@ -1,15 +1,17 @@
 import type { PIAF } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
-import { startOfToday, addDays } from "date-fns"
+import { startOfToday, addMonths } from "date-fns"
 import { List } from "@material-ui/core"
 
+import Loader from "src/components/Loader"
+import Piaf from "src/components/Piaf"
 import { useUser } from "src/providers/user"
 import { PIAFS } from "src/graphql/queries"
 import { queryDate } from "src/helpers/date"
 import { ErrorMessage } from "src/helpers/errors"
-import Loader from "src/components/Loader"
-import Piaf from "src/components/Piaf"
+import { orderPiafsByDate } from "src/helpers/piaf"
+import { getId } from "src/helpers/apollo"
 
 type Result = { piafs: PIAF[] }
 
@@ -19,7 +21,7 @@ const ReplacementPiafs = () => {
   const { loading, error, data } = useQuery<Result>(PIAFS, {
     variables: {
       after: queryDate(startOfToday()),
-      before: queryDate(addDays(startOfToday(), 700)),
+      before: queryDate(addMonths(startOfToday(), 2)),
       statut: "remplacement",
     },
   })
@@ -36,11 +38,7 @@ const ReplacementPiafs = () => {
     return null
   }
 
-  const otherPiafs = data.piafs
-    .filter((piaf) => piaf.piaffeur?.id !== `/api/users/${auth.id}`)
-    .sort((piafA, piafB) =>
-      new Date(piafA.creneau.debut).getTime() > new Date(piafB.creneau.debut).getTime() ? 1 : -1
-    )
+  const otherPiafs = data.piafs.filter((piaf) => getId(piaf.piaffeur?.id) !== auth.id).sort(orderPiafsByDate)
 
   if (!otherPiafs.length) {
     return <p>Aucun remplacement à venir n’est demandé.</p>

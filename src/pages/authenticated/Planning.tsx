@@ -3,10 +3,10 @@ import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons
 import styled from "@emotion/styled/macro"
 import { isSameMonth } from "date-fns"
 
-import { useDatePlanning } from "src/providers/datePlanning"
 import Loader from "src/components/Loader"
 import Calendar from "src/components/Calendar"
-import IconsCaption from "src/components/IconsCaption"
+import IconsCaption, { CaptionDialog } from "src/components/IconsCaption"
+import { useDatePlanning } from "src/providers/datePlanning"
 import { formatMonthYear } from "src/helpers/date"
 import { ErrorBlock } from "src/helpers/errors"
 
@@ -28,10 +28,16 @@ const Nav = styled.nav`
     text-transform: capitalize;
   }
 `
-
 const ButtonArea = styled.div`
   display: flex;
   justify-content: end;
+`
+const BottomCaption = styled.div`
+  max-width: 500px;
+  margin: 20px 0 100px auto;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 20px 10px;
 `
 
 const PlanningPage = () => {
@@ -81,7 +87,10 @@ const PlanningPage = () => {
       ) : (
         <Calendar start={start} end={end} list={data?.creneaus} />
       )}
-      <IconsCaption />
+      <BottomCaption>
+        <IconsCaption />
+      </BottomCaption>
+      <CaptionDialog />
     </>
   )
 }

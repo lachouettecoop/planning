@@ -4,10 +4,10 @@ import { capitalize, Dialog, DialogContent, DialogTitle, IconButton } from "@mat
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 
-import { formatTime, formatDateLong } from "src/helpers/date"
-import { useUser } from "src/providers/user"
 import Loader from "src/components/Loader"
 import PiafRow from "src/components/PiafRow"
+import { formatTime, formatDateLong } from "src/helpers/date"
+import { useUser } from "src/providers/user"
 
 const CloseButton = styled(IconButton)`
   position: absolute;

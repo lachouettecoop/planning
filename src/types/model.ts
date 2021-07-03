@@ -10,6 +10,10 @@ export enum RoleId {
   Caissier_Acc = "CAA",
   AdminMag = "MAG",
   AdminBdM = "BDM",
+  // only for icons:
+  PIAF = "P",
+  Formation = "F",
+  Acc = "A",
 }
 
 export interface Role {

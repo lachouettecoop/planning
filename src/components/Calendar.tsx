@@ -1,8 +1,7 @@
-import { useMediaQuery, useTheme } from "@material-ui/core"
-
 import type { Creneau, PIAF } from "src/types/model"
 import type { IWeek } from "src/types/app"
 
+import { useMediaQuery, useTheme } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
 import { addDays, differenceInWeeks, eachWeekOfInterval, getDay } from "date-fns"
 

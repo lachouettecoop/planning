@@ -1,5 +1,5 @@
 const BdMPage = () => {
-  return <>BdM</>
+  return <>BdM - en construction</>
 }
 
 export default BdMPage

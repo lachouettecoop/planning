@@ -3,10 +3,11 @@ import type { PIAF } from "src/types/model"
 import { useQuery } from "@apollo/client"
 import { List } from "@material-ui/core"
 
-import { PIAFS } from "src/graphql/queries"
-import { ErrorMessage } from "src/helpers/errors"
 import Loader from "src/components/Loader"
 import Piaf from "src/components/Piaf"
+import { PIAFS } from "src/graphql/queries"
+import { ErrorMessage } from "src/helpers/errors"
+import { orderPiafsByDate } from "src/helpers/piaf"
 
 type Result = { piafs: PIAF[] }
 interface Props {
@@ -18,14 +19,11 @@ interface Props {
 
 const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: Props) => {
   const { loading, error, data } = useQuery<Result>(PIAFS, {
-    variables: {
-      userId: `${userId}`,
-      after: after,
-      validated: validated,
-    },
+    variables: { userId, after, validated },
+    skip: !userId,
   })
 
-  if (loading) {
+  if (loading || !userId) {
     return <Loader />
   }
 
@@ -45,10 +43,7 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
     return <p>Aucune PIAF à valider.</p>
   }
 
-  const piafs = data.piafs
-    .slice()
-    .sort((left, right) => (left.creneau.debut > right.creneau.debut ? 1 : -1))
-    .filter((p) => p.statut !== "remplacement")
+  const piafs = data.piafs.filter(({ statut }) => statut !== "remplacement").sort(orderPiafsByDate)
 
   return (
     <List>

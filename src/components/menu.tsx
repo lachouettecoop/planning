@@ -32,8 +32,8 @@ import {
   CardMembership as CardMembershipIcon,
 } from "@material-ui/icons"
 
-import { useUser } from "src/providers/user"
 import Link from "src/components/Link"
+import { useUser } from "src/providers/user"
 import { hasRole } from "src/helpers/role"
 import { RoleId } from "src/types/model"
 

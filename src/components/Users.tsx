@@ -1,13 +1,13 @@
-import { DataGrid, GridColumns, GridRowData, GridValueFormatterParams } from "@material-ui/data-grid"
+import type { Role, User } from "src/types/model"
 
-import { useQuery } from "@apollo/client"
 import { useState } from "react"
+import { DataGrid, GridColumns, GridRowData, GridValueFormatterParams } from "@material-ui/data-grid"
+import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled/macro"
 
-import { Role, User } from "src/types/model"
-import { USERS } from "src/graphql/queriesUser"
 import Loader from "src/components/Loader"
 import UserInfoDialog from "src/components/UserInfoDialog"
+import { USERS } from "src/graphql/queriesUser"
 import { ErrorMessage } from "src/helpers/errors"
 import { formatRoles } from "src/helpers/role"
 

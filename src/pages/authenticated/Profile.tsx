@@ -4,13 +4,13 @@ import { Button, InputAdornment, TextField, Typography } from "@material-ui/core
 import styled from "@emotion/styled/macro"
 
 import Loader from "src/components/Loader"
+import LongAbsence from "src/components/LongAbsence"
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"
 import { USER_UPDATE } from "src/graphql/queriesUser"
 import { useDialog } from "src/providers/dialog"
 import { handleError } from "src/helpers/errors"
 import { formatRoles } from "src/helpers/role"
-import LongAbsence from "src/components/LongAbsence"
 
 const Loading = styled.div`
   height: 50vh;

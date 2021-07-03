@@ -27,3 +27,16 @@ const client = new ApolloClient({
 })
 
 export default client
+
+export const getId = (id?: string | number) => {
+  if (typeof id === "number") {
+    return id
+  }
+  if (typeof id === "string") {
+    const matches = id.match(/api\/\w+\/(\d+)/)
+    if (matches) {
+      return Number(matches[1])
+    }
+  }
+  return null
+}

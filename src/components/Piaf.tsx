@@ -5,12 +5,12 @@ import { useState } from "react"
 import { ListItem, ListItemAvatar, ListItemText, Checkbox, FormControlLabel, Grid } from "@material-ui/core"
 import { useLazyQuery } from "@apollo/client"
 
-import { formatDateLong, formatTime } from "src/helpers/date"
 import PiafCircle from "src/components/PiafCircle"
 import SlotDialog from "src/components/SlotDialog"
 import { SLOTS } from "src/graphql/queries"
 import { useDialog } from "src/providers/dialog"
 import { VALIDATE_PIAF } from "src/graphql/queries"
+import { formatDateLong, formatTime } from "src/helpers/date"
 import apollo from "src/helpers/apollo"
 import { handleError } from "src/helpers/errors"
 

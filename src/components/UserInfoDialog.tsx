@@ -1,10 +1,11 @@
+import type { User } from "src/types/model"
+
 import { Button } from "@material-ui/core"
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
 
-import { User } from "src/types/model"
-import { formatRoles } from "src/helpers/role"
 import UserPiafs from "src/components/UserPiafs"
+import { formatRoles } from "src/helpers/role"
 
 const RightCol = styled(Grid)`
   display: flex;
