@@ -39,6 +39,7 @@ const Calendar = ({ start, end, list }: Props) => {
   const weeks: IWeek[] = eachWeekOfInterval({ start, end }, { weekStartsOn: 1 }).map((date) => ({
     start: date,
     days: [0, 1, 2, 3, 4, 5, 6].map((i) => ({ start: addDays(date, i), slots: [] })),
+    weekNumber: 0,
   }))
 
   list.forEach((node) => {
@@ -80,6 +81,8 @@ const Calendar = ({ start, end, list }: Props) => {
       end: new Date(node.fin),
       piafs,
     })
+
+    week.weekNumber = parseInt(node.creneauGenerique.frequence)
   })
 
   return (
@@ -88,7 +91,7 @@ const Calendar = ({ start, end, list }: Props) => {
         <WeekRow key={index}>
           {week.days.map((day, i) =>
             day.start >= start && day.start < end ? (
-              <CalendarDay day={day} key={i} />
+              <CalendarDay day={day} key={i} weekNumber={week.weekNumber} />
             ) : matches ? null : (
               <DayPlaceholder key={i} />
             )

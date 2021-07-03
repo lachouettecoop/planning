@@ -7,6 +7,9 @@ export const SLOTS = gql`
       informations
       debut
       fin
+      creneauGenerique {
+        frequence
+      }
       piafs {
         id
         statut
@@ -82,6 +85,9 @@ export const PLANNING = gql`
       fin
       titre
       informations
+      creneauGenerique {
+        frequence
+      }
       piafs {
         id
         statut

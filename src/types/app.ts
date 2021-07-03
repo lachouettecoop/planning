@@ -17,6 +17,7 @@ export interface IDay {
 export interface IWeek {
   start: Date
   days: IDay[]
+  weekNumber: number
 }
 
 export interface ISlotReserve {
