@@ -49,8 +49,6 @@ const LongAbsence = ({ show, handleClose }: Props) => {
     })
   }
 
-  const TEXT_MAIL = `Bonjour, je ne pourrais assurer une activité régulière à La Chouette Coop du ${values.dateIni}  au  ${values.dateFin}  en  raison  de ${values.reasonAbsence}. `
-
   const handleSendEmail = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -68,7 +66,11 @@ const LongAbsence = ({ show, handleClose }: Props) => {
       return
     }
 
-    await sendEmail(process.env.REACT_APP_MAIL_BDM, "Absence prolongée", TEXT_MAIL)
+    await sendEmail(
+      process.env.REACT_APP_MAIL_BDM,
+      "Absence prolongée",
+      `Bonjour, je ne pourrai pas assurer une activité régulière à La Chouette Coop du ${values.dateIni} au ${values.dateFin} en raison de ${values.reasonAbsence}.`
+    )
     handleClose()
 
     openDialog("Un mail informatif a été envoyé au BdM. Votre absence sera bientôt validée.")
