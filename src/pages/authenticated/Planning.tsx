@@ -1,19 +1,14 @@
-import { useQuery } from "@apollo/client"
 import { Button, Typography, useMediaQuery, useTheme } from "@material-ui/core"
 import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 import { isSameMonth } from "date-fns"
 
-import { Creneau } from "src/types/model"
 import { useDatePlanning } from "src/providers/datePlanning"
-import { PLANNING } from "src/graphql/queries"
 import Loader from "src/components/Loader"
 import Calendar from "src/components/Calendar"
 import IconsCaption from "src/components/IconsCaption"
 import { formatMonthYear } from "src/helpers/date"
 import { ErrorBlock } from "src/helpers/errors"
-
-type Result = { creneaus: Creneau[] }
 
 const Loading = styled.div`
   border: 2px solid gray;
@@ -40,16 +35,12 @@ const ButtonArea = styled.div`
 `
 
 const PlanningPage = () => {
-  const { goBack, goForward, goToday, start, end } = useDatePlanning()
+  const { goBack, goForward, goToday, start, end, data, error, loading } = useDatePlanning()
   const theme = useTheme()
   const matches = useMediaQuery(theme.breakpoints.up("sm"))
   const textTodayButton = matches ? "Aujourd’hui" : ""
   const textBeforeButton = matches ? "Précédent" : ""
   const textAfterButton = matches ? "Suivant" : ""
-
-  const { data, loading, error } = useQuery<Result>(PLANNING, {
-    variables: { after: start, before: end },
-  })
 
   if (error) {
     return <ErrorBlock error={error} />

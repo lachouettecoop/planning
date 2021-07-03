@@ -13,7 +13,8 @@ import { PIAFS_COUNT, PIAF_CREATE, REGISTRATION_UPDATE } from "src/graphql/queri
 import apollo from "src/helpers/apollo"
 import { getTrainerRoleId, hasRole, needsTraining } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
-import { isTaken } from "src/helpers/piaf"
+import { isTaken, getPiafRole } from "src/helpers/piaf"
+import { useDatePlanning } from "src/providers/datePlanning"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
@@ -90,6 +91,7 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
     ({ piaffeur, statut }) => piaffeur?.id === user?.id && statut === "occupe"
   )
   const rolesBD = useRoles()
+  const { refetch } = useDatePlanning()
 
   const handleInputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInfo(target.value)
@@ -164,6 +166,7 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
             idRole: roleTrainer.id,
           },
         })
+        refetch()
       } else {
         openDialog(`Le role ${idRoleTrainer} n'a pas pu être trouvé. Svp, contactez votre administrateur`)
         return false
@@ -203,16 +206,18 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
     setLoading(false)
   }
 
-  const { id, role, piaffeur } = piaf
+  const { id, piaffeur } = piaf
   const taken = isTaken(piaf)
+
+  const roleUser = rolesBD.find((r) => r.roleUniqueId == getPiafRole(piaf))
 
   return (
     <Row key={id}>
       <PiafCircle piaf={piaf} />
       <Status>
-        {status === "occupied" && piaffeur ? `${piaffeur.prenom} ${piaffeur.nom}` : "Place disponible"}
+        {taken && piaffeur ? `${piaffeur.prenom} ${piaffeur.nom}` : "Place disponible"}
         <br />
-        <span>{role.libelle}</span>
+        <span> {roleUser?.libelle}</span>
       </Status>
       {taken &&
         currentUserIsInSlot &&
