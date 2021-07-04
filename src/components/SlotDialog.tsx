@@ -1,6 +1,6 @@
 import type { ISlot } from "src/types/app"
 
-import { capitalize, Dialog, DialogContent, DialogTitle, IconButton } from "@material-ui/core"
+import { capitalize, Dialog, DialogContent, DialogTitle, IconButton, Typography } from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 
@@ -15,9 +15,17 @@ const CloseButton = styled(IconButton)`
   top: 8px;
 `
 const Title = styled.div`
+  h3 {
+    font-size: 1.5em;
+    margin-bottom: 8px;
+  }
+  h4 {
+    font-size: 1.2em;
+  }
   span {
     color: ${({ theme }) => theme.palette.grey[600]};
     margin-left: 5px;
+    font-weight: 500;
   }
 `
 
@@ -27,7 +35,7 @@ interface Props {
   handleClose: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-const SlotInfo = ({ slot, show, handleClose }: Props) => {
+const SlotDialog = ({ slot, show, handleClose }: Props) => {
   const { user } = useUser<true>()
 
   return (
@@ -35,14 +43,15 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
       <CloseButton onClick={handleClose}>
         <Close />
       </CloseButton>
-      <DialogTitle>
-        {capitalize(formatDateLong(slot.start))}
-        <br />
+      <DialogTitle disableTypography>
         <Title>
-          <strong>
-            {formatTime(slot.start)}–{formatTime(slot.end)}
-          </strong>
-          <span>{slot.title}</span>
+          <Typography variant="h3">{capitalize(formatDateLong(slot.start))}</Typography>
+          <Typography variant="h4">
+            <strong>
+              {formatTime(slot.start)}–{formatTime(slot.end)}
+            </strong>
+            <span>{slot.title}</span>
+          </Typography>
           <div>{slot.information}</div>
         </Title>
       </DialogTitle>
@@ -57,4 +66,4 @@ const SlotInfo = ({ slot, show, handleClose }: Props) => {
   )
 }
 
-export default SlotInfo
+export default SlotDialog
