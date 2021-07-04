@@ -1,5 +1,5 @@
 import type { Creneau, PIAF } from "src/types/model"
-import type { IWeek } from "src/types/app"
+import type { IWeek, IWeekNumber } from "src/types/app"
 
 import { useMediaQuery, useTheme } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
@@ -38,7 +38,7 @@ const Calendar = ({ start, end, list }: Props) => {
   const weeks: IWeek[] = eachWeekOfInterval({ start, end }, { weekStartsOn: 1 }).map((date) => ({
     start: date,
     days: [0, 1, 2, 3, 4, 5, 6].map((i) => ({ start: addDays(date, i), slots: [] })),
-    weekNumber: 0,
+    weekNumber: 1,
   }))
 
   list.forEach((node) => {
@@ -81,7 +81,7 @@ const Calendar = ({ start, end, list }: Props) => {
       piafs,
     })
 
-    week.weekNumber = parseInt(node.creneauGenerique.frequence)
+    week.weekNumber = Number(node.creneauGenerique.frequence) as IWeekNumber
   })
 
   return (

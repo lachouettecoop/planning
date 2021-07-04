@@ -5,13 +5,14 @@ import { frFR as dataGridLocale } from "@material-ui/data-grid"
 import { CssBaseline } from "@material-ui/core"
 import { ThemeProvider as EmotionThemeProvider } from "@emotion/react/macro"
 import { frFR as coreLocale } from "@material-ui/core/locale"
+import { grey } from "@material-ui/core/colors"
 
 // see public/index.html
 const TITLE_FONT = "Montserrat, sans-serif" // https://style.lachouettecoop.fr/#/typographie?a=titres-et-sous-titres
 const TEXT_FONT = "Cabin, sans-serif" // https://style.lachouettecoop.fr/#/typographie?a=texte
 
-const MAIN_COLOR = "#445448" // https://style.lachouettecoop.fr/#/couleurs
-const SECONDARY_COLOR = "#9e9e9e" // material grey 500
+const MAIN_COLOR = "#3A5447" // https://style.lachouettecoop.fr/#/couleurs
+const SECONDARY_COLOR = grey[500]
 
 declare module "@emotion/react" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -48,6 +49,8 @@ const THEME = createMuiTheme(
       },
       h3: {
         fontFamily: TITLE_FONT,
+        fontWeight: 600,
+        color: MAIN_COLOR,
       },
       h4: {
         fontFamily: TITLE_FONT,

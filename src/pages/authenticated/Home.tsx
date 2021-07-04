@@ -16,7 +16,7 @@ const Container = styled.div`
   }
 `
 const Status = styled.div`
-  p {
+  h3 {
     font-size: 2.5rem;
     &::first-letter {
       text-transform: uppercase;
@@ -41,11 +41,11 @@ const HomePage = () => {
     <Container>
       <Status>
         <Typography variant="h2">Mon statut</Typography>
-        <Typography>
+        <Typography variant="h3">
           {counter} <span>PIAFs attendues</span>
         </Typography>
         <Typography variant="h2">Je suis</Typography>
-        <Typography>{status}</Typography>
+        <Typography variant="h3">{status}</Typography>
       </Status>
       <MyPlanning>
         <Typography variant="h2">Mes prochaines PIAFs</Typography>
