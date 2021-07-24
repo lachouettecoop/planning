@@ -47,9 +47,8 @@ const ReplacementPiafs = () => {
   return (
     <>
       <p>
-        Les créneaux ci dessous ne peuvent plus être effectués par un Chouettos, ils sont disponibles pour un
-        remplacement. N’hésites pas à te positionner, la personne que tu remplaces sera avertie par e-mail
-        instantanément !
+        Les créneaux suivants sont vacants et donc disponibles pour un remplacement. N’hésites pas à te positionner, la
+        personne que tu remplaces sera avertie par e-mail instantanément !
       </p>
       <List>
         {otherPiafs.map((piaf) => (

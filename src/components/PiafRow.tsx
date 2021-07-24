@@ -15,6 +15,8 @@ import { getTrainerRoleId, hasRole, needsTraining } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
 import { isTaken, getPiafRole } from "src/helpers/piaf"
 import { useDatePlanning } from "src/providers/datePlanning"
+import { sendEmail } from "src/helpers/request"
+import { formatDateLong, formatTime } from "src/helpers/date"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
@@ -60,9 +62,9 @@ const getPiafCount = async (slot: ISlot, userId: string, type: "week" | "day") =
   return data.piafs.filter((p) => p.statut === "occupe").length
 }
 
-const checkMaximumNumberOfNewChouettos = (user: User | null, piaf: PIAF) => {
+const checkMaximumNumberOfNewChouettos = (user: User, piaf: PIAF) => {
   // There is a maximum percentage for PIAF of new Chouettos
-  if (user?.nbPiafEffectuees === 0) {
+  if (user.nbPiafEffectuees === 0) {
     const piafeursCount = piaf.infoCreneau.piaffeursCount
     const maxPiafeursFirstPiaf = Math.floor((piafeursCount * PERCENTAGE_NEW_CHOUETTOS) / 100)
     const piafeursFirstPiaf = piaf.infoCreneau.piaffeursCountFirstPiaf
@@ -73,14 +75,48 @@ const checkMaximumNumberOfNewChouettos = (user: User | null, piaf: PIAF) => {
   }
   return true
 }
-const getRegistrationPiafId = (slot: ISlot, piaf: PIAF) => {
+const getRegistrationPiaf = (slot: ISlot, piaf: PIAF) => {
   const replacementPiaf = slot.piafs?.find(({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id)
   if (replacementPiaf) {
     // If there is a PIAF with status "remplacement" and the same role,
-    // the user will be registered to it instead of the requested one.
-    return replacementPiaf.id
+    // the user will be registered in it instead of the requested one.
+    return replacementPiaf
   }
-  return piaf.id
+  return piaf
+}
+
+const getGHEmail = (slot: ISlot) => {
+  const GHPiaf = slot.piafs?.find(({ statut, role }) => statut === "occupe" && role.id === RoleId.GrandHibou)
+  if (GHPiaf) {
+    return GHPiaf.piaffeur?.email
+  }
+  return ""
+}
+
+const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
+  const replacedUserMail = (piaf.piaffeur as User).email
+  console.log(replacedUserMail)
+  if (replacedUserMail) {
+    sendEmail(
+      replacedUserMail,
+      "PIAF remplacée",
+      `Votre PIAF du ${formatDateLong(slot.start)}  à ${formatTime(
+        slot.start
+      )} a été pourvue. Vous n'êtes plus en charge de cette PIAF.`
+    )
+  }
+
+  if (piaf.role.roleUniqueId != RoleId.GrandHibou) {
+    const ghEmail = getGHEmail(slot)
+    if (ghEmail) {
+      sendEmail(
+        ghEmail,
+        "PIAF remplacée",
+        `La PIAF du ${formatDateLong(slot.start)}  à ${formatTime(slot.start)}  a été pourvue.
+        ${user.prenom} ${user.nom} est maintenant inscrit pour cette PIAF.`
+      )
+    }
+  }
 }
 
 const PiafRow = ({ piaf, user, slot }: Props) => {
@@ -98,6 +134,7 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
   }
 
   const register = async () => {
+    console.log(slot)
     setLoading(true)
 
     try {
@@ -108,35 +145,39 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
         return
       }
 
-      const userId = (user as User).id
+      const loggedUser = user as User
 
-      const piafOfWeek = await getPiafCount(slot, userId, "week")
+      const piafOfWeek = await getPiafCount(slot, loggedUser.id, "week")
       if (piafOfWeek >= MAX_PIAF_PER_WEEK) {
         setLoading(false)
         openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_WEEK} PIAF par semaine`)
         return
       }
 
-      const piafOfDay = await getPiafCount(slot, userId, "day")
+      const piafOfDay = await getPiafCount(slot, loggedUser.id, "day")
       if (piafOfDay >= MAX_PIAF_PER_DAY) {
         setLoading(false)
         openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
         return
       }
 
-      if (!checkMaximumNumberOfNewChouettos(user, piaf)) {
+      if (!checkMaximumNumberOfNewChouettos(loggedUser, piaf)) {
         setLoading(false)
         openDialog(`Il n’est pas possible d’avoir plus de ${PERCENTAGE_NEW_CHOUETTOS}% de nouveaux chouettos par PIAF`)
         return
       }
 
-      const piafId = getRegistrationPiafId(slot, piaf)
+      const registrationPiaf = getRegistrationPiaf(slot, piaf)
+      console.log(registrationPiaf.statut)
+      if (registrationPiaf.statut === "remplacement") {
+        sendEmailReplacedPiaf(registrationPiaf, slot, loggedUser)
+      }
 
       await apollo.mutate({
         mutation: REGISTRATION_UPDATE,
         variables: {
-          piafId,
-          userId,
+          piafId: registrationPiaf.id,
+          userId: loggedUser.id,
           statut: "occupe",
           informations: info,
         },
