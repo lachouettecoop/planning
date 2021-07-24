@@ -95,7 +95,6 @@ const getGHEmail = (slot: ISlot) => {
 
 const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
   const replacedUserMail = (piaf.piaffeur as User).email
-  console.log(replacedUserMail)
   if (replacedUserMail) {
     sendEmail(
       replacedUserMail,
@@ -134,7 +133,6 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
   }
 
   const register = async () => {
-    console.log(slot)
     setLoading(true)
 
     try {
@@ -168,7 +166,6 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
       }
 
       const registrationPiaf = getRegistrationPiaf(slot, piaf)
-      console.log(registrationPiaf.statut)
       if (registrationPiaf.statut === "remplacement") {
         sendEmailReplacedPiaf(registrationPiaf, slot, loggedUser)
       }
