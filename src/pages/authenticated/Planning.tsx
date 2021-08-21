@@ -85,7 +85,7 @@ const PlanningPage = () => {
           <Loader />
         </Loading>
       ) : (
-        <Calendar start={start} end={end} list={data?.creneaus} />
+        <Calendar start={start} end={end} list={data?.creneaus.slice().sort((a, b) => (a.debut > b.debut ? 1 : -1))} />
       )}
       <BottomCaption>
         <IconsCaption />
