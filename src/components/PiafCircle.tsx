@@ -16,6 +16,10 @@ const getImg = (role?: RoleId) => {
   return "none" // TODO
 }
 
+const getRoleText = (role?: string) => {
+  if (getImg(role as RoleId) === "none") return role
+}
+
 export const PiafIcon = styled.span<{ $taken?: boolean; $role?: RoleId }>`
   flex-shrink: 0;
   display: inline-block;
@@ -33,6 +37,10 @@ interface Props {
   piaf: PIAF
 }
 
-const PiafCircle = ({ piaf }: Props) => <PiafIcon $taken={isTaken(piaf)} $role={getPiafRole(piaf)} />
+const PiafCircle = ({ piaf }: Props) => (
+  <PiafIcon $taken={isTaken(piaf)} $role={getPiafRole(piaf)}>
+    {getRoleText(getPiafRole(piaf))}
+  </PiafIcon>
+)
 
 export default PiafCircle
