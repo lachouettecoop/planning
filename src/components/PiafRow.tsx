@@ -59,7 +59,7 @@ const getPiafCount = async (slot: ISlot, userId: string, type: "week" | "day") =
     variables: { userId, after, before },
   })
   //The filter by statut on the database does not work
-  return data.piafs.filter((p) => p.statut === "occupe").length
+  return data.piafs.filter((p) => p.statut === "occupe" && p.nonPourvu === false).length
 }
 
 const checkMaximumNumberOfNewChouettos = (user: User, piaf: PIAF) => {

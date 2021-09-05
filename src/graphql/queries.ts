@@ -39,6 +39,7 @@ export const PIAFS = gql`
       id
       statut
       pourvu
+      nonPourvu
       informations
       creneau {
         id
@@ -69,6 +70,7 @@ export const PIAFS_COUNT = gql`
     piafs(piaffeur: $userId, creneau_debut: { after: $after, before: $before }) {
       id
       statut
+      nonPourvu
       creneau {
         debut
         fin
@@ -134,6 +136,21 @@ export const VALIDATE_PIAF = gql`
           id
         }
         pourvu
+      }
+    }
+  }
+`
+
+export const PIAF_NON_POURVU = gql`
+  mutation PIAF_NON_POURVU($piafId: ID!, $nonPourvu: Boolean) {
+    updatePiaf(input: { id: $piafId, nonPourvu: $nonPourvu }) {
+      piaf {
+        id
+        piaffeur {
+          id
+        }
+        pourvu
+        nonPourvu
       }
     }
   }
@@ -214,7 +231,7 @@ export const CRENEAUX_GENERIQUES = gql`
 
 export const PIAF_CREATE = gql`
   mutation PIAF_CREATE($idCreneau: String!, $idRole: String) {
-    createPiaf(input: { creneau: $idCreneau, role: $idRole, visible: true, pourvu: false }) {
+    createPiaf(input: { creneau: $idCreneau, role: $idRole, visible: true, pourvu: false, nonPourvu: false }) {
       piaf {
         id
         creneau {
