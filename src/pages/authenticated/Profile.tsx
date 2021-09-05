@@ -68,7 +68,7 @@ const ProfilePage = () => {
       })
       openDialog("Vos informations ont bien été mises à jour")
     } catch (error) {
-      handleError(error)
+      handleError(error as Error)
     }
     setSaving(false)
   }

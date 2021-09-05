@@ -64,7 +64,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
 
           openDialog("La PIAF a été validée")
         } catch (error) {
-          handleError(error)
+          handleError(error as Error)
         }
       }
     })
@@ -86,7 +86,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
 
           openDialog("La PIAF a été indiqué comme non pourvue")
         } catch (error) {
-          handleError(error)
+          handleError(error as Error)
         }
       }
     })

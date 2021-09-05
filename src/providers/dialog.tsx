@@ -2,11 +2,6 @@ import { createContext, useContext, useState, FC } from "react"
 
 import Dialog from "src/components/Dialog"
 
-export enum TypeDialog {
-  YesNo,
-  Information,
-}
-
 type Callback = (choice: boolean) => void
 
 interface IDialogContext {

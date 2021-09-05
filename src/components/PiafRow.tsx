@@ -182,11 +182,22 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
 
       let registerOK = true
       if (needsTraining(user, piaf.role.roleUniqueId)) {
-        registerOK = await addTrainerPiaf(piaf.role.roleUniqueId)
+        let addTrainerPIAF = true
+        if (piaf.role.roleUniqueId === RoleId.Caissier) {
+          await openDialog(
+            `Voulez vous avoir une personne en appui pour votre première PIAF comme ${piaf.role.libelle} ?`,
+            "",
+            async (ok) => {
+              addTrainerPIAF = ok
+            }
+          )
+        }
+
+        if (addTrainerPIAF) registerOK = await addTrainerPiaf(piaf.role.roleUniqueId)
       }
       if (registerOK) openDialog("Inscription effectuée. Merci !")
     } catch (error) {
-      handleError(error)
+      handleError(error as Error)
     }
 
     setLoading(false)
@@ -238,7 +249,7 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
         openDialog("Désinscription effectuée : la PIAF est désormais en recherche de remplacement !")
       }
     } catch (error) {
-      handleError(error)
+      handleError(error as Error)
     }
 
     setLoading(false)
