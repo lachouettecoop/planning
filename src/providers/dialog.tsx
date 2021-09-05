@@ -5,7 +5,8 @@ import Dialog from "src/components/Dialog"
 type Callback = (choice: boolean) => void
 
 interface IDialogContext {
-  openDialog: (message: string, title?: string, callback?: Callback) => void
+  openDialog: (message: string, title?: string) => void
+  openQuestion: (message: string, title?: string) => Promise<boolean>
   closeDialog: () => void
 }
 
@@ -17,11 +18,20 @@ export const DialogProvider: FC = ({ children }) => {
   const [message, setMessage] = useState("")
   const [callback, setCallback] = useState<Callback>()
 
-  const openDialog = (newMessage: string, newTitle = "", newCallback?: Callback) => {
+  const openDialog = (newMessage: string, newTitle = "") => {
     setMessage(newMessage)
     setTitle(newTitle)
-    setCallback(() => newCallback)
+    setCallback(undefined)
     setOpen(true)
+  }
+
+  const openQuestion = (newMessage: string, newTitle = "") => {
+    setMessage(newMessage)
+    setTitle(newTitle)
+    return new Promise((resolve: Callback) => {
+      setCallback(() => resolve)
+      setOpen(true)
+    })
   }
 
   const closeDialog = () => {
@@ -29,7 +39,7 @@ export const DialogProvider: FC = ({ children }) => {
   }
 
   return (
-    <DialogContext.Provider value={{ openDialog, closeDialog }}>
+    <DialogContext.Provider value={{ openDialog, openQuestion, closeDialog }}>
       {children}
       <Dialog open={open} handleClose={closeDialog} title={title} message={message} callback={callback} />
     </DialogContext.Provider>

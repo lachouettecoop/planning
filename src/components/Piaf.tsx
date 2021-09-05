@@ -33,7 +33,7 @@ interface Props {
 const Piaf = ({ piaf, allowValidate = false }: Props) => {
   const { creneau } = piaf
   const [open, setOpen] = useState(false)
-  const { openDialog } = useDialog()
+  const { openQuestion, openDialog } = useDialog()
 
   const [load, { data }] = useLazyQuery<Result>(SLOTS, {
     variables: { id: creneau.id },
@@ -49,47 +49,51 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
   }
 
   const handleValidate = async (piafId: string) => {
-    openDialog("Êtes-vous sûr·e de vouloir valider cette PIAF ?", "", async (ok) => {
-      if (ok) {
-        const variables: Record<string, any> = {
-          piafId,
-          validate: true,
-        }
+    const ok = await openQuestion("Êtes-vous sûr·e de vouloir valider cette PIAF ?")
 
-        try {
-          await apollo.mutate({
-            mutation: VALIDATE_PIAF,
-            variables,
-          })
+    if (!ok) {
+      return
+    }
 
-          openDialog("La PIAF a été validée")
-        } catch (error) {
-          handleError(error as Error)
-        }
-      }
-    })
+    const variables: Record<string, any> = {
+      piafId,
+      validate: true,
+    }
+
+    try {
+      await apollo.mutate({
+        mutation: VALIDATE_PIAF,
+        variables,
+      })
+
+      openDialog("La PIAF a été validée")
+    } catch (error) {
+      handleError(error as Error)
+    }
   }
 
   const handleNonPourvue = async (piafId: string) => {
-    openDialog("Êtes-vous sûr·e de vouloir indiquer cette PIAF comme non pourvue?", "", async (ok) => {
-      if (ok) {
-        const variables: Record<string, any> = {
-          piafId,
-          nonPourvu: true,
-        }
+    const ok = await openQuestion("Êtes-vous sûr·e de vouloir indiquer cette PIAF comme non pourvue?")
 
-        try {
-          await apollo.mutate({
-            mutation: PIAF_NON_POURVU,
-            variables,
-          })
+    if (!ok) {
+      return
+    }
 
-          openDialog("La PIAF a été indiqué comme non pourvue")
-        } catch (error) {
-          handleError(error as Error)
-        }
-      }
-    })
+    const variables: Record<string, any> = {
+      piafId,
+      nonPourvu: true,
+    }
+
+    try {
+      await apollo.mutate({
+        mutation: PIAF_NON_POURVU,
+        variables,
+      })
+
+      openDialog("La PIAF a été indiqué comme non pourvue")
+    } catch (error) {
+      handleError(error as Error)
+    }
   }
 
   const slot: ISlot = {

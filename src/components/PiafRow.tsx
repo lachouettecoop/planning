@@ -22,6 +22,8 @@ const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
 const PERCENTAGE_NEW_CHOUETTOS = 50
 
+const OPTIONAL_SUPPORT_ROLES = [RoleId.Caissier]
+
 const Row = styled.div`
   margin: 0 0 1rem 0;
   display: flex;
@@ -121,7 +123,7 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
 const PiafRow = ({ piaf, user, slot }: Props) => {
   const [loading, setLoading] = useState(false)
   const [info, setInfo] = useState("")
-  const { openDialog } = useDialog()
+  const { openDialog, openQuestion } = useDialog()
   const currentUserIsInSlot = slot.piafs?.find(
     ({ piaffeur, statut }) => piaffeur?.id === user?.id && statut === "occupe"
   )
@@ -181,21 +183,22 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
       })
 
       let registerOK = true
+
       if (needsTraining(user, piaf.role.roleUniqueId)) {
         let addTrainerPIAF = true
-        if (piaf.role.roleUniqueId === RoleId.Caissier) {
-          await openDialog(
-            `Voulez vous avoir une personne en appui pour votre première PIAF comme ${piaf.role.libelle} ?`,
-            "",
-            async (ok) => {
-              addTrainerPIAF = ok
-            }
+        if (OPTIONAL_SUPPORT_ROLES.includes(piaf.role.roleUniqueId)) {
+          addTrainerPIAF = await openQuestion(
+            `Voulez vous avoir une personne en appui pour votre première PIAF comme ${piaf.role.libelle} ?`
           )
         }
-
-        if (addTrainerPIAF) registerOK = await addTrainerPiaf(piaf.role.roleUniqueId)
+        if (addTrainerPIAF) {
+          registerOK = await addTrainerPiaf(piaf.role.roleUniqueId)
+        }
       }
-      if (registerOK) openDialog("Inscription effectuée. Merci !")
+
+      if (registerOK) {
+        openDialog("Inscription effectuée. Merci !")
+      }
     } catch (error) {
       handleError(error as Error)
     }
