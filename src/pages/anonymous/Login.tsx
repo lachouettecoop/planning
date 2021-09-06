@@ -7,6 +7,7 @@ import { post } from "src/helpers/request"
 import { handleError } from "src/helpers/errors"
 
 import { ReactComponent as Logo } from "src/images/logo_white.svg"
+import HttpError from "standard-http-error"
 
 const Header = styled.div`
   text-align: center;
@@ -34,7 +35,11 @@ const LoginPage = () => {
       }
       login(auth)
     } catch (error) {
-      handleError(error)
+      if (error instanceof HttpError && error.code === 401) {
+        alert("Identifiant ou mot de passe incorrect")
+      } else {
+        handleError(error)
+      }
       setLoading(false)
     }
   }

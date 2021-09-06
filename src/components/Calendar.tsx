@@ -6,6 +6,7 @@ import styled from "@emotion/styled/macro"
 import { addDays, differenceInWeeks, eachWeekOfInterval, getDay } from "date-fns"
 
 import CalendarDay, { DayPlaceholder } from "src/components/CalendarDay"
+import { orderPiafsByRoleId } from "src/helpers/piaf"
 
 const Container = styled.div`
   border: 1px solid gray;
@@ -46,31 +47,17 @@ const Calendar = ({ start, end, list }: Props) => {
     const weekIndex = differenceInWeeks(date, weeks[0].start)
     const week = weeks[weekIndex]
     const day = (getDay(date) || 7) - 1 // Monday = 0, ..., Sunday = 6
+
     const piaffeursCount = node.piafs.length
-    const piafeursCountFirstPiaf = node.piafs.filter((p) => p.piaffeur?.nbPiafEffectuees === 0).length
+    const piaffeursCountFirstPiaf = node.piafs.filter(({ piaffeur }) => piaffeur?.nbPiafEffectuees === 0).length
+    const infoCreneau = { piaffeursCount, piaffeursCountFirstPiaf }
 
-    node.piafs.map((p) => {
-      const tempPiaf = JSON.parse(JSON.stringify(p))
-      const infoCreneau = {
-        piaffeursCount: piaffeursCount,
-        piaffeursCountFirstPiaf: piafeursCountFirstPiaf,
-      }
-      tempPiaf.infoCreneau = infoCreneau
-    })
-
-    const piafs: PIAF[] = []
-    node.piafs
-      .slice()
-      .sort((left, right) => (left.role.id > right.role.id ? 1 : -1))
-      .map((p) => {
-        const tempPiaf = JSON.parse(JSON.stringify(p))
-        const infoCreneau = {
-          piaffeursCount: piaffeursCount,
-          piaffeursCountFirstPiaf: piafeursCountFirstPiaf,
-        }
-        tempPiaf.infoCreneau = infoCreneau
-        piafs.push(tempPiaf)
-      })
+    const piafs: PIAF[] = node.piafs
+      .map((piaf) => ({
+        ...piaf,
+        infoCreneau,
+      }))
+      .sort(orderPiafsByRoleId)
 
     week.days[day].slots.push({
       id: node.id,

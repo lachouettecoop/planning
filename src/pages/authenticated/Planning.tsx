@@ -1,3 +1,5 @@
+import type { Creneau } from "src/types/model"
+
 import { Button, Typography, useMediaQuery, useTheme } from "@material-ui/core"
 import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
@@ -40,6 +42,8 @@ const BottomCaption = styled.div`
   padding: 20px 10px;
 `
 
+const orderSlotsByDate = (left: Creneau, right: Creneau) => (left.debut > right.debut ? 1 : -1)
+
 const PlanningPage = () => {
   const { goBack, goForward, goToday, start, end, data, error, loading } = useDatePlanning()
   const theme = useTheme()
@@ -51,6 +55,8 @@ const PlanningPage = () => {
   if (error) {
     return <ErrorBlock error={error} />
   }
+
+  const slots = data?.creneaus.slice().sort(orderSlotsByDate)
 
   return (
     <>
@@ -85,7 +91,7 @@ const PlanningPage = () => {
           <Loader />
         </Loading>
       ) : (
-        <Calendar start={start} end={end} list={data?.creneaus.slice().sort((a, b) => (a.debut > b.debut ? 1 : -1))} />
+        <Calendar start={start} end={end} list={slots} />
       )}
       <BottomCaption>
         <IconsCaption />
