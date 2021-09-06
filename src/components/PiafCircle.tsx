@@ -7,17 +7,10 @@ import { getPiafRole, isTaken } from "src/helpers/piaf"
 import ICONS from "src/images/icons"
 
 const getImg = (role?: RoleId) => {
-  if (role) {
-    const img = ICONS[role]
-    if (img) {
-      return `url(${img})`
-    }
+  if (!role) {
+    return "none" // TODO
   }
-  return "none" // TODO
-}
-
-const getRoleText = (role?: string) => {
-  if (getImg(role as RoleId) === "none") return role
+  return `url(${ICONS[role] || ICONS.CH})`
 }
 
 export const PiafIcon = styled.span<{ $taken?: boolean; $role?: RoleId }>`
@@ -37,10 +30,6 @@ interface Props {
   piaf: PIAF
 }
 
-const PiafCircle = ({ piaf }: Props) => (
-  <PiafIcon $taken={isTaken(piaf)} $role={getPiafRole(piaf)}>
-    {getRoleText(getPiafRole(piaf))}
-  </PiafIcon>
-)
+const PiafCircle = ({ piaf }: Props) => <PiafIcon $taken={isTaken(piaf)} $role={getPiafRole(piaf)} />
 
 export default PiafCircle
