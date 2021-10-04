@@ -3,7 +3,6 @@ import { ISlot } from "src/types/app"
 
 import { useState } from "react"
 import { ListItem, ListItemAvatar, ListItemText, Checkbox, FormControlLabel, Grid, FormGroup } from "@material-ui/core"
-import styled from "@emotion/styled/macro"
 import { useLazyQuery } from "@apollo/client"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
 
