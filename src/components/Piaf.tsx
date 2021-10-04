@@ -5,6 +5,7 @@ import { useState } from "react"
 import { ListItem, ListItemAvatar, ListItemText, Checkbox, FormControlLabel, Grid, FormGroup } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
 import { useLazyQuery } from "@apollo/client"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 
 import PiafCircle from "src/components/PiafCircle"
 import SlotDialog from "src/components/SlotDialog"
@@ -15,11 +16,15 @@ import { formatDateLong, formatTime } from "src/helpers/date"
 import apollo from "src/helpers/apollo"
 import { handleError } from "src/helpers/errors"
 
-const Container = styled(Grid)`
-  border: 1px solid gray;
-  border-radius: 5px;
-  margin-bottom: 2px;
-`
+const useStyles = makeStyles(() =>
+  createStyles({
+    container: {
+      border: "1px solid gray",
+      borderRadius: "5px",
+      marginBottom: "2px",
+    },
+  })
+)
 
 interface Result {
   creneau: Creneau
@@ -31,6 +36,7 @@ interface Props {
 }
 
 const Piaf = ({ piaf, allowValidate = false }: Props) => {
+  const classes = useStyles()
   const { creneau } = piaf
   const [open, setOpen] = useState(false)
   const { openQuestion, openDialog } = useDialog()
@@ -106,7 +112,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
   }
 
   return (
-    <Container container>
+    <Grid container className={allowValidate ? classes.container : ""}>
       <Grid item xs={8}>
         <ListItem key={piaf.id} button onClick={handleClick}>
           <ListItemAvatar>
@@ -149,7 +155,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
         )}
       </Grid>
       <SlotDialog show={open} slot={slot} handleClose={handleClose} />
-    </Container>
+    </Grid>
   )
 }
 
