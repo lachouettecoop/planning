@@ -43,7 +43,9 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
     return <p>Aucune PIAF à valider.</p>
   }
 
-  const piafs = data.piafs.filter(({ statut }) => statut !== "remplacement").sort(orderPiafsByDate)
+  const piafs = data.piafs
+    .filter(({ statut, nonPourvu }) => statut !== "remplacement" && nonPourvu == false)
+    .sort(orderPiafsByDate)
 
   return (
     <List>

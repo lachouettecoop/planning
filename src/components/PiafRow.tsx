@@ -22,6 +22,8 @@ const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
 const PERCENTAGE_NEW_CHOUETTOS = 50
 
+const OPTIONAL_SUPPORT_ROLES = [RoleId.Caissier]
+
 const Row = styled.div`
   margin: 0 0 1rem 0;
   display: flex;
@@ -59,7 +61,7 @@ const getPiafCount = async (slot: ISlot, userId: string, type: "week" | "day") =
     variables: { userId, after, before },
   })
   //The filter by statut on the database does not work
-  return data.piafs.filter((p) => p.statut === "occupe").length
+  return data.piafs.filter((p) => p.statut === "occupe" && p.nonPourvu === false).length
 }
 
 const checkMaximumNumberOfNewChouettos = (user: User, piaf: PIAF) => {
@@ -121,7 +123,7 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
 const PiafRow = ({ piaf, user, slot }: Props) => {
   const [loading, setLoading] = useState(false)
   const [info, setInfo] = useState("")
-  const { openDialog } = useDialog()
+  const { openDialog, openQuestion } = useDialog()
   const currentUserIsInSlot = slot.piafs?.find(
     ({ piaffeur, statut }) => piaffeur?.id === user?.id && statut === "occupe"
   )
@@ -181,12 +183,24 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
       })
 
       let registerOK = true
+
       if (needsTraining(user, piaf.role.roleUniqueId)) {
-        registerOK = await addTrainerPiaf(piaf.role.roleUniqueId)
+        let addTrainerPIAF = true
+        if (OPTIONAL_SUPPORT_ROLES.includes(piaf.role.roleUniqueId)) {
+          addTrainerPIAF = await openQuestion(
+            `Voulez vous avoir une personne en appui pour votre première PIAF comme ${piaf.role.libelle} ?`
+          )
+        }
+        if (addTrainerPIAF) {
+          registerOK = await addTrainerPiaf(piaf.role.roleUniqueId)
+        }
       }
-      if (registerOK) openDialog("Inscription effectuée. Merci !")
+
+      if (registerOK) {
+        openDialog("Inscription effectuée. Merci !")
+      }
     } catch (error) {
-      handleError(error)
+      handleError(error as Error)
     }
 
     setLoading(false)
@@ -238,7 +252,7 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
         openDialog("Désinscription effectuée : la PIAF est désormais en recherche de remplacement !")
       }
     } catch (error) {
-      handleError(error)
+      handleError(error as Error)
     }
 
     setLoading(false)

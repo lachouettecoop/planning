@@ -18,7 +18,7 @@ interface Props {
 const Dialog = ({ open, handleClose, title, message, callback }: Props) => {
   const handleConfirm = (ok: boolean) => () => {
     if (callback) {
-      callback(ok)
+      setTimeout(callback, 300, ok)
     }
     handleClose()
   }

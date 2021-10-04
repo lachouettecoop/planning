@@ -153,7 +153,7 @@ const ReservePage = () => {
           : "Vous êtes désormais inscrit·e à la reserve.") + " Merci !"
       )
     } catch (error) {
-      handleError(error)
+      handleError(error as Error)
     }
 
     setSaving(false)
