@@ -16,8 +16,11 @@ import LegalPage from "src/pages/Legal"
 
 const Content = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(4),
-  // marginBottom: theme.spacing(14),
   paddingLeft: theme.spacing(1),
+  marginBottom: theme.spacing(4),
+  [theme.breakpoints.down("sm")]: {
+    marginBottom: theme.spacing(12),
+  },
   [theme.breakpoints.up("sm")]: {
     paddingLeft: theme.spacing(12),
   },

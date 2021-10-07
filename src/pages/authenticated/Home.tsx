@@ -24,7 +24,7 @@ const StatusText = styled(Typography)<{ $status?: string }>`
 `
 
 const Container = styled.div`
-  min-height: calc(100vh - 130px);
+  min-height: calc(100vh - 132px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
