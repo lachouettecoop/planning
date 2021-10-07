@@ -168,8 +168,8 @@ const ReservePage = () => {
         </Loading>
       ) : (
         <>
-          Jours pour lesquels je peux parfois me rendre disponible. Si un créneau est libre moins de 48h avant, un mail
-          sera envoyé à tous les inscrits·es
+          Jours pour lesquels je peux parfois me rendre disponible. Si un créneau est libre moins de 48h avant, un
+          e-mail sera envoyé à tou·te·s les inscrit·te·s.
           <ReserveGrid>
             {slotList.map((reserve) => (
               <FormGroup key={reserve.day}>
