@@ -1,5 +1,5 @@
 import { Redirect, Route, Switch, useLocation } from "react-router-dom"
-import { styled, Container } from "@material-ui/core"
+import styled from "@emotion/styled/macro"
 
 import { DatePlanningProvider } from "src/providers/datePlanning"
 import Menu from "src/components/menu"
@@ -14,17 +14,15 @@ import MagasinPage from "src/pages/authenticated/Magasin"
 import BdMPage from "src/pages/authenticated/BdM"
 import LegalPage from "src/pages/Legal"
 
-const Content = styled(Container)(({ theme }) => ({
-  marginTop: theme.spacing(4),
-  paddingLeft: theme.spacing(1),
-  marginBottom: theme.spacing(4),
-  [theme.breakpoints.down("sm")]: {
-    marginBottom: theme.spacing(12),
-  },
-  [theme.breakpoints.up("sm")]: {
-    paddingLeft: theme.spacing(12),
-  },
-}))
+const Content = styled.div`
+  margin: ${({ theme }) => theme.spacing(3)}px;
+  ${({ theme }) => theme.breakpoints.down("xs")} {
+    margin-bottom: ${({ theme }) => theme.spacing(12)}px;
+  }
+  ${({ theme }) => theme.breakpoints.up("sm")} {
+    margin-left: ${({ theme }) => theme.spacing(12)}px;
+  }
+`
 
 const Authenticated = () => {
   const { search } = useLocation()
