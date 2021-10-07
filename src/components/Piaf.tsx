@@ -15,7 +15,7 @@ import { formatDateLong, formatTime } from "src/helpers/date"
 import apollo from "src/helpers/apollo"
 import { handleError } from "src/helpers/errors"
 
-const Container = styled(Grid)`
+const Bordered = styled(Grid)`
   border: 1px solid gray;
   border-radius: 5px;
   margin-bottom: 2px;
@@ -104,6 +104,8 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
     end: new Date(creneau.fin),
     piafs: data?.creneau.piafs,
   }
+
+  const Container = allowValidate ? Bordered : Grid
 
   return (
     <Container container>
