@@ -1,13 +1,39 @@
 import styled from "@emotion/styled/macro"
 import { Typography } from "@material-ui/core"
 import { startOfToday } from "date-fns"
+import { Link } from "react-router-dom"
 
 import { useUser } from "src/providers/user"
 import UserPiafs from "src/components/UserPiafs"
 import ReplacementPiafs from "src/components/ReplacementPiafs"
 import { queryDate } from "src/helpers/date"
 
+// https://style.lachouettecoop.fr/#/couleurs
+// TODO: use constants
+// https://github.com/lachouettecoop/chouette-admin-chouettos/blob/master/src/Controller/PlanningController.php#L99-L105
+const COLORS: Record<string, string> = {
+  "très chouette": "#2ECC40",
+  chouette: "#FF851B",
+  "chouette en alerte": "#FF4136",
+}
+const StatusText = styled(Typography)<{ $status?: string }>`
+  color: ${({ $status, theme }) => ($status && COLORS[$status]) || theme.palette.secondary.main};
+  &::first-letter {
+    text-transform: uppercase;
+  }
+`
+
 const Container = styled.div`
+  min-height: calc(100vh - 130px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`
+const Bottom = styled.div`
+  font-size: 0.85em;
+  margin-top: ${({ theme }) => theme.spacing(4)}px;
+`
+const Content = styled.div`
   display: flex;
   flex-wrap: wrap;
   > div {
@@ -18,9 +44,6 @@ const Container = styled.div`
 const Status = styled.div`
   h3 {
     font-size: 2.5rem;
-    &::first-letter {
-      text-transform: uppercase;
-    }
     span {
       font-size: 0.5em;
     }
@@ -39,22 +62,30 @@ const HomePage = () => {
 
   return (
     <Container>
-      <Status>
-        <Typography variant="h2">Mon statut</Typography>
-        <Typography variant="h3">
-          {counter} <span>PIAFs attendues</span>
-        </Typography>
-        <Typography variant="h2">Je suis</Typography>
-        <Typography variant="h3">{status}</Typography>
-      </Status>
-      <MyPlanning>
-        <Typography variant="h2">Mes prochaines PIAFs</Typography>
-        <UserPiafs userId={userId} after={queryDate(startOfToday())} />
-      </MyPlanning>
-      <Replacements>
-        <Typography variant="h2">Remplacements</Typography>
-        <ReplacementPiafs />
-      </Replacements>
+      <Content>
+        <Status>
+          <Typography variant="h2">Mon statut</Typography>
+          <Typography variant="h3">
+            {counter} <span>PIAFs attendues</span>
+          </Typography>
+          <Typography variant="h2">Je suis</Typography>
+          <StatusText variant="h3" $status={user?.statut}>
+            {status}
+          </StatusText>
+        </Status>
+        <MyPlanning>
+          <Typography variant="h2">Mes prochaines PIAFs</Typography>
+          <UserPiafs userId={userId} after={queryDate(startOfToday())} />
+        </MyPlanning>
+        <Replacements>
+          <Typography variant="h2">Remplacements</Typography>
+          <ReplacementPiafs />
+        </Replacements>
+      </Content>
+      <Bottom>
+        <Link to="/legal">Politique de traitement des données personnelles</Link>
+        <p>Ce site n’utilise pas de cookies tiers</p>
+      </Bottom>
     </Container>
   )
 }
