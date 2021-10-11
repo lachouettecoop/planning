@@ -45,6 +45,12 @@ interface Props {
   handleClose: () => void
 }
 
+const ITEMS_ABSENCE_REASON = [
+  { title: "Je ne pourrai pas assurer ma PIAF", id: "noPiaf" },
+  { title: " Je ne pourrai pas assurer ma PIAF ni effectuer mes courses", id: "noBuy" },
+  { title: " Autres (spécifier en comentaire)", id: "other" },
+]
+
 const LongAbsence = ({ show, handleClose }: Props) => {
   const { openDialog } = useDialog()
   const [values, setValues] = useState({
@@ -92,11 +98,19 @@ const LongAbsence = ({ show, handleClose }: Props) => {
     await sendEmail(
       process.env.REACT_APP_MAIL_BDM,
       "Absence prolongée",
-      `Bonjour, ${values.reasonAbsence} à La Chouette Coop du ${values.dateIni} au ${values.dateFin} en raison de ${values.otherInfo}.`
+      `Raison de l'absence : ${values.reasonAbsence} <br /> Période : ${values.dateIni} au ${
+        values.dateFin
+      } <br /> Autre information : ${values.otherInfo != "" ? values.otherInfo : "[RAS]"}.`
     )
     handleClose()
 
     openDialog("Un e-mail informatif a été envoyé au BdM. Votre absence sera bientôt validée.")
+  }
+
+  const commentRequired = () => {
+    const itemFound = ITEMS_ABSENCE_REASON.filter((i) => i.id == "other")
+    if (itemFound.length > 0) return values.reasonAbsence == itemFound[0].title
+    else return true
   }
 
   return (
@@ -142,25 +156,24 @@ const LongAbsence = ({ show, handleClose }: Props) => {
                 value={values.reasonAbsence}
                 label="Type de changement"
                 name="reasonAbsence"
+                required
                 onChange={handleReasonChange}
               >
-                <MenuItem id="NoPiaf" value={"Je ne pourrai pas assurer ma PIAF"}>
-                  Je ne pourrai pas assurer ma PIAF
-                </MenuItem>
-                <MenuItem id="NoBuy" value={"Je ne pourrais pas assurer ma PIAF ni effectuer mes courses"}>
-                  Je ne pourrai pas assurer ma PIAF ni effectuer mes courses
-                </MenuItem>
-                <MenuItem id="Other" value={"Autres (especifier en comentaire)"}>
-                  Autres (spécifier en comentaire)
-                </MenuItem>
+                {ITEMS_ABSENCE_REASON.map(({ id, title }) => {
+                  return (
+                    <MenuItem id={id} value={title} key={id}>
+                      {title}
+                    </MenuItem>
+                  )
+                })}
               </Select>
             </FormControl>
           </Row>
           <Row>
             <TextInput
-              name="other"
+              name="otherInfo"
               multiline
-              required
+              required={commentRequired()}
               label="Commentaire aditionel"
               value={values.otherInfo}
               onChange={handleInputChange}
