@@ -132,7 +132,7 @@ const ProfilePage = () => {
           Enregistrer
         </Button>
         <Button color="primary" variant="contained" disabled={saving} onClick={handleOpenAbsenceDialog}>
-          Informer d’une absence prolongée
+          Informer d’un changement de ma situation
         </Button>
       </form>
       <LongAbsence show={openAbsenceDialog} handleClose={handleCloseAbsenceDialog} />

@@ -18,6 +18,7 @@ import {
   Button,
   Box,
   Chip,
+  Tooltip,
 } from "@material-ui/core"
 import {
   Menu as MenuIcon,
@@ -221,12 +222,14 @@ const Menu = () => {
             const active = pathname === href
             return (
               <Link className={active ? classes.activeItem : classes.menuItem} href={href} key={href}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <Icon color={active ? "primary" : "secondary"} />
-                  </ListItemIcon>
-                  <ListItemText primary={title} />
-                </ListItem>
+                <Tooltip title={title}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Icon color={active ? "primary" : "secondary"} />
+                    </ListItemIcon>
+                    <ListItemText primary={title} />
+                  </ListItem>
+                </Tooltip>
               </Link>
             )
           })}

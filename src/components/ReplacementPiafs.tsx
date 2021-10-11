@@ -11,12 +11,13 @@ import { PIAFS } from "src/graphql/queries"
 import { queryDate } from "src/helpers/date"
 import { ErrorMessage } from "src/helpers/errors"
 import { orderPiafsByDate } from "src/helpers/piaf"
+import { hasRole } from "src/helpers/role"
 import { getId } from "src/helpers/apollo"
 
 type Result = { piafs: PIAF[] }
 
 const ReplacementPiafs = () => {
-  const { auth } = useUser<true>()
+  const { auth, user } = useUser<true>()
 
   const { loading, error, data } = useQuery<Result>(PIAFS, {
     variables: {
@@ -38,7 +39,12 @@ const ReplacementPiafs = () => {
     return null
   }
 
-  const otherPiafs = data.piafs.filter((piaf) => getId(piaf.piaffeur?.id) !== auth.id).sort(orderPiafsByDate)
+  const userRoles = user?.rolesChouette || []
+
+  const otherPiafs = data.piafs
+    .filter((piaf) => getId(piaf.piaffeur?.id) !== auth.id)
+    .filter((piaf) => hasRole(piaf.role.roleUniqueId, userRoles))
+    .sort(orderPiafsByDate)
 
   if (!otherPiafs.length) {
     return <p>Aucun remplacement à venir n’est demandé.</p>

@@ -1,5 +1,17 @@
-import React, { useState } from "react"
-import { Button, Dialog, TextField, DialogContent, DialogActions, IconButton, DialogTitle } from "@material-ui/core"
+import React, { ChangeEvent, useState } from "react"
+import {
+  Button,
+  Dialog,
+  TextField,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  DialogTitle,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@material-ui/core"
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 
@@ -37,6 +49,7 @@ const LongAbsence = ({ show, handleClose }: Props) => {
   const { openDialog } = useDialog()
   const [values, setValues] = useState({
     reasonAbsence: "",
+    otherInfo: "",
     dateIni: new Date(),
     dateFin: new Date(),
   })
@@ -46,6 +59,16 @@ const LongAbsence = ({ show, handleClose }: Props) => {
     setValues({
       ...values,
       [name]: value,
+    })
+  }
+
+  const handleReasonChange = (event: ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
+    let { name } = event.target
+    if (!name) name = ""
+
+    setValues({
+      ...values,
+      [name]: event.target.value,
     })
   }
 
@@ -69,7 +92,7 @@ const LongAbsence = ({ show, handleClose }: Props) => {
     await sendEmail(
       process.env.REACT_APP_MAIL_BDM,
       "Absence prolongée",
-      `Bonjour, je ne pourrai pas assurer une activité régulière à La Chouette Coop du ${values.dateIni} au ${values.dateFin} en raison de ${values.reasonAbsence}.`
+      `Bonjour, ${values.reasonAbsence} à La Chouette Coop du ${values.dateIni} au ${values.dateFin} en raison de ${values.otherInfo}.`
     )
     handleClose()
 
@@ -82,7 +105,7 @@ const LongAbsence = ({ show, handleClose }: Props) => {
         <CloseButton onClick={handleClose}>
           <Close />
         </CloseButton>
-        <Title>Informer d’une absence prolongée</Title>
+        <Title>Informer d’un changement de ma situation</Title>
         <DialogContent>
           <Row>
             <TextField
@@ -113,14 +136,41 @@ const LongAbsence = ({ show, handleClose }: Props) => {
             />
           </Row>
           <Row>
+            <FormControl fullWidth>
+              <InputLabel>Type de changement</InputLabel>
+              <Select
+                value={values.reasonAbsence}
+                label="Type de changement"
+                name="reasonAbsence"
+                onChange={handleReasonChange}
+              >
+                <MenuItem id="NoPiaf" value={"Je ne pourrai pas assurer ma PIAF"}>
+                  Je ne pourrai pas assurer ma PIAF
+                </MenuItem>
+                <MenuItem id="NoBuy" value={"Je ne pourrais pas assurer ma PIAF ni effectuer mes courses"}>
+                  Je ne pourrai pas assurer ma PIAF ni effectuer mes courses
+                </MenuItem>
+                <MenuItem id="Other" value={"Autres (especifier en comentaire)"}>
+                  Autres (spécifier en comentaire)
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Row>
+          <Row>
             <TextInput
-              name="reasonAbsence"
+              name="other"
               multiline
               required
-              label="Motif de l’absence"
-              value={values.reasonAbsence}
+              label="Commentaire aditionel"
+              value={values.otherInfo}
               onChange={handleInputChange}
             ></TextInput>
+          </Row>
+          <Row>
+            <span>
+              Pour plus d’informations il est possible de consulter le manuel du•de la coopérateur•ice{" "}
+              <a href="https://espace-membres.lachouettecoop.fr/page/les-documents">ici</a>
+            </span>
           </Row>
         </DialogContent>
         <DialogActions>
