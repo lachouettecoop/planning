@@ -14,7 +14,7 @@ const Container = styled.div`
   padding: 0;
 `
 const WeekRow = styled.div`
-  @media screen and (min-width: 800px) {
+  @media (min-width: 800px) {
     display: flex;
     > div {
       flex: 1 0 14.29%;

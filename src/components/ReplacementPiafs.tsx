@@ -42,8 +42,7 @@ const ReplacementPiafs = () => {
   const userRoles = user?.rolesChouette || []
 
   const otherPiafs = data.piafs
-    .filter((piaf) => getId(piaf.piaffeur?.id) !== auth.id)
-    .filter((piaf) => hasRole(piaf.role.roleUniqueId, userRoles))
+    .filter((piaf) => getId(piaf.piaffeur?.id) !== auth.id && hasRole(piaf.role.roleUniqueId, userRoles))
     .sort(orderPiafsByDate)
 
   if (!otherPiafs.length) {

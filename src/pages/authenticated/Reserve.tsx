@@ -23,7 +23,7 @@ const Loading = styled.div`
 `
 const ReserveGrid = styled.div`
   margin-top: 2rem;
-  @media screen and (min-width: 980px) {
+  @media (min-width: 980px) {
     display: flex;
     > div {
       flex: 1 0 14.29%;

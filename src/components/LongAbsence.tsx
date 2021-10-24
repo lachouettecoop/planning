@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react"
+import { FormEvent, ChangeEvent, useState } from "react"
 import {
   Button,
   Dialog,
@@ -15,15 +15,24 @@ import {
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 
-import { sendEmail } from "src/helpers/request"
 import { useDialog } from "src/providers/dialog"
+import { formatDateInterval } from "src/helpers/date"
+import { sendEmail } from "src/helpers/request"
 
 const Row = styled.div`
-  margin: 0 0 1rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  > * {
+    margin-bottom: 1rem;
+    @media (min-width: 400px) {
+      flex: 1;
+      &:not(:first-of-type) {
+        margin-left: ${({ theme }) => theme.spacing(3)}px;
+      }
+    }
+  }
 `
 
 const CloseButton = styled(IconButton)`
@@ -37,30 +46,38 @@ const TextInput = styled(TextField)`
 `
 
 const Title = styled(DialogTitle)`
-  margin-right: 30px;
+  margin-right: 32px;
 `
+
+const REASONS = {
+  noPiaf: "Je ne pourrai pas assurer ma PIAF",
+  noBuy: "Je ne pourrai pas assurer ma PIAF ni effectuer mes courses",
+  other: "Autre (spécifier en commentaire)",
+}
 
 interface Props {
   show: boolean
   handleClose: () => void
 }
 
-const ITEMS_ABSENCE_REASON = [
-  { title: "Je ne pourrai pas assurer ma PIAF", id: "noPiaf" },
-  { title: " Je ne pourrai pas assurer ma PIAF ni effectuer mes courses", id: "noBuy" },
-  { title: " Autres (spécifier en comentaire)", id: "other" },
-]
+interface State {
+  reason: keyof typeof REASONS | ""
+  comment: string
+  startDate: string
+  endDate: string
+}
 
 const LongAbsence = ({ show, handleClose }: Props) => {
   const { openDialog } = useDialog()
-  const [values, setValues] = useState({
-    reasonAbsence: "",
-    otherInfo: "",
-    dateIni: new Date(),
-    dateFin: new Date(),
+  const [values, setValues] = useState<State>({
+    reason: "",
+    comment: "",
+    startDate: "",
+    endDate: "",
   })
+  const [loading, setLoading] = useState(false)
 
-  const handleInputChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = target
     setValues({
       ...values,
@@ -68,17 +85,15 @@ const LongAbsence = ({ show, handleClose }: Props) => {
     })
   }
 
-  const handleReasonChange = (event: ChangeEvent<{ name?: string | undefined; value: unknown }>) => {
-    let { name } = event.target
-    if (!name) name = ""
-
+  const handleReasonChange = ({ target }: ChangeEvent<{ name?: string; value: unknown }>) => {
+    const { name, value } = target
     setValues({
       ...values,
-      [name]: event.target.value,
+      [name as string]: value,
     })
   }
 
-  const handleSendEmail = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSendEmail = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     if (!process.env.REACT_APP_MAIL_BDM) {
@@ -86,31 +101,32 @@ const LongAbsence = ({ show, handleClose }: Props) => {
       return
     }
 
-    if (!values.dateIni || !values.dateFin || !values.reasonAbsence) {
+    if (!values.startDate || !values.endDate || !values.reason) {
       openDialog("Tous les champs sont obligatoires.")
       return
     }
-    if (values.dateIni > values.dateFin) {
+    if (values.startDate > values.endDate) {
       openDialog("La date de début ne peut pas être postérieure à la date de fin.")
       return
     }
 
-    await sendEmail(
-      process.env.REACT_APP_MAIL_BDM,
-      "Absence prolongée",
-      `Raison de l'absence : ${values.reasonAbsence} <br /> Période : ${values.dateIni} au ${
-        values.dateFin
-      } <br /> Autre information : ${values.otherInfo != "" ? values.otherInfo : "[RAS]"}.`
-    )
+    setLoading(true)
+
+    const content = [
+      `Raison de l'absence : ${REASONS[values.reason]}`,
+      `Période : ${formatDateInterval(values.startDate, values.endDate)}`,
+    ]
+    if (values.comment) {
+      content.push(`Commentaire : ${values.comment}`)
+    }
+
+    await sendEmail(process.env.REACT_APP_MAIL_BDM, "Absence prolongée", content.join("<br />"))
+
     handleClose()
 
     openDialog("Un e-mail informatif a été envoyé au BdM. Votre absence sera bientôt validée.")
-  }
 
-  const commentRequired = () => {
-    const itemFound = ITEMS_ABSENCE_REASON.filter((i) => i.id == "other")
-    if (itemFound.length > 0) return values.reasonAbsence == itemFound[0].title
-    else return true
+    setLoading(false)
   }
 
   return (
@@ -123,26 +139,26 @@ const LongAbsence = ({ show, handleClose }: Props) => {
         <DialogContent>
           <Row>
             <TextField
-              id="dateIni"
-              label="Date debut"
-              name="dateIni"
+              id="startDate"
+              label="Date de début"
+              name="startDate"
               type="date"
+              fullWidth
               required
-              value={values.dateIni}
+              value={values.startDate}
               onChange={handleInputChange}
               InputLabelProps={{
                 shrink: true,
               }}
             />
-          </Row>
-          <Row>
             <TextField
-              id="dateFin"
-              label="Date fin"
-              name="dateFin"
+              id="endDate"
+              label="Date de fin"
+              name="endDate"
               type="date"
+              fullWidth
               required
-              value={values.dateFin}
+              value={values.endDate}
               onChange={handleInputChange}
               InputLabelProps={{
                 shrink: true,
@@ -153,41 +169,42 @@ const LongAbsence = ({ show, handleClose }: Props) => {
             <FormControl fullWidth>
               <InputLabel>Type de changement</InputLabel>
               <Select
-                value={values.reasonAbsence}
+                value={values.reason}
                 label="Type de changement"
-                name="reasonAbsence"
+                name="reason"
                 required
                 onChange={handleReasonChange}
               >
-                {ITEMS_ABSENCE_REASON.map(({ id, title }) => {
-                  return (
-                    <MenuItem id={id} value={title} key={id}>
-                      {title}
-                    </MenuItem>
-                  )
-                })}
+                {Object.keys(REASONS).map((key) => (
+                  <MenuItem value={key} key={key}>
+                    {REASONS[key]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Row>
           <Row>
             <TextInput
-              name="otherInfo"
+              name="comment"
               multiline
-              required={commentRequired()}
-              label="Commentaire aditionel"
-              value={values.otherInfo}
+              required={values.reason === "other"}
+              label="Commentaire additionnel"
+              value={values.comment}
               onChange={handleInputChange}
             ></TextInput>
           </Row>
           <Row>
             <span>
-              Pour plus d’informations il est possible de consulter le manuel du•de la coopérateur•ice{" "}
-              <a href="https://espace-membres.lachouettecoop.fr/page/les-documents">ici</a>
+              Pour plus d’informations,{" "}
+              <a href="https://espace-membres.lachouettecoop.fr/page/les-documents" target="_blank" rel="noopener">
+                consultez le manuel du•de la coopérateur•ice
+              </a>
+              .
             </span>
           </Row>
         </DialogContent>
         <DialogActions>
-          <Button type="submit" color="primary" variant="contained">
+          <Button type="submit" color="primary" variant="contained" disabled={loading}>
             Confirmer au BdM
           </Button>
         </DialogActions>

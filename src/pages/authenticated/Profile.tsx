@@ -131,7 +131,7 @@ const ProfilePage = () => {
         <Button color="primary" variant="contained" disabled={saving} type="submit">
           Enregistrer
         </Button>
-        <Button color="primary" variant="contained" disabled={saving} onClick={handleOpenAbsenceDialog}>
+        <Button color="primary" disabled={saving} onClick={handleOpenAbsenceDialog}>
           Informer d’un changement de ma situation
         </Button>
       </form>
