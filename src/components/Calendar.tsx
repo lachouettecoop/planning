@@ -68,7 +68,9 @@ const Calendar = ({ start, end, list }: Props) => {
       piafs,
     })
 
-    week.weekNumber = Number(node.creneauGenerique.frequence) as IWeekNumber
+    if (node.creneauGenerique) {
+      week.weekNumber = Number(node.creneauGenerique.frequence) as IWeekNumber
+    }
   })
 
   return (

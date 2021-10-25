@@ -78,7 +78,7 @@ export interface User {
 export interface Creneau {
   id: ID
   titre: string
-  creneauGenerique: CreneauGenerique
+  creneauGenerique: CreneauGenerique | null
   debut: string // ISO datetime
   fin: string // ISO datetime
   informations: string
