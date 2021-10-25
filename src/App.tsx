@@ -11,11 +11,11 @@ const App = () => {
   const { auth } = useUser()
 
   useEffect(() => {
-    const redirect = window.confirm(`ATTENTION ! Cet outil n'est pas encore le planning officiel de La Chouette Coop !
-Il s'agit pour l'instant d'une version de développement, avec des données de test.
-Cliquez sur OK pour être redirigé·e vers la page de l'espace membre sur laquelle se trouve le lien vers le planning actuel.`)
+    const ok = window.confirm(`Tu es sur le point d'accéder au nouvel outil de participation.
+Si tu souhaites t'inscrire pour une PIAF à partir du 29 novembre, tu es sur la bonne voie, clique sur OK pour accéder à l'outil !
+Si tu souhaites t'inscrire pour une PIAF avant le 29 novembre, il faut pour le moment continuer à utiliser le planning historique : clique sur Annuler pour être redirigé·e vers ce planning !`)
 
-    if (redirect) {
+    if (!ok) {
       window.location.href = "https://espace-membres.lachouettecoop.fr/page/tafs"
     }
   }, [])
