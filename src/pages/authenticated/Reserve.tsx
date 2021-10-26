@@ -174,21 +174,23 @@ const ReservePage = () => {
             {slotList.map((reserve) => (
               <FormGroup key={reserve.day}>
                 {getDayOfWeek(reserve.day)}
-                {reserve.slots.map(({ slotDisplayed }) => (
-                  <FormControlLabel
-                    key={slotDisplayed.id}
-                    control={
-                      <Checkbox
-                        color="default"
-                        checked={slots.includes(slotDisplayed.id)}
-                        onChange={({ target }) => {
-                          handleCheckboxChange(slotDisplayed.id, target.checked)
-                        }}
-                      />
-                    }
-                    label={`${formatTime(slotDisplayed.heureDebut)} - ${formatTime(slotDisplayed.heureFin)}`}
-                  />
-                ))}
+                {reserve.slots
+                  .sort((left, right) => (left.time > right.time ? 1 : -1))
+                  .map(({ slotDisplayed }) => (
+                    <FormControlLabel
+                      key={slotDisplayed.id}
+                      control={
+                        <Checkbox
+                          color="default"
+                          checked={slots.includes(slotDisplayed.id)}
+                          onChange={({ target }) => {
+                            handleCheckboxChange(slotDisplayed.id, target.checked)
+                          }}
+                        />
+                      }
+                      label={`${formatTime(slotDisplayed.heureDebut)} - ${formatTime(slotDisplayed.heureFin)}`}
+                    />
+                  ))}
               </FormGroup>
             ))}
           </ReserveGrid>
