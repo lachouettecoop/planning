@@ -52,7 +52,7 @@ const LoginPage = () => {
       </Header>
       <form onSubmit={handleSubmit}>
         <p>
-          Cette application permet de gérer le planning des PIAFs du magasin. Connectez-vous avec vos identifiants
+          Cette application permet de gérer le planning des PIAF du magasin. Connectez-vous avec vos identifiants
           habituels.
         </p>
         <TextField type="email" name="username" label="E-mail" fullWidth variant="outlined" margin="normal" />

@@ -49,7 +49,7 @@ const UserInfoDialog = ({ open, handleClose, data }: Props) => {
               {data.statut}
             </RightCol>
             <Grid item xs={6}>
-              <h3>Compteur PIAFS</h3>
+              <h3>Compteur PIAF</h3>
             </Grid>
             <RightCol item xs={6}>
               {data.nbPiafEffectuees}/{data.nbPiafAttendues}

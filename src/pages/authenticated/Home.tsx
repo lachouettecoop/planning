@@ -66,7 +66,7 @@ const HomePage = () => {
         <Status>
           <Typography variant="h2">Mon statut</Typography>
           <Typography variant="h3">
-            {counter} <span>PIAFs attendues</span>
+            {counter} <span>PIAF attendues</span>
           </Typography>
           <Typography variant="h2">Je suis</Typography>
           <StatusText variant="h3" $status={user?.statut}>
@@ -74,7 +74,7 @@ const HomePage = () => {
           </StatusText>
         </Status>
         <MyPlanning>
-          <Typography variant="h2">Mes prochaines PIAFs</Typography>
+          <Typography variant="h2">Mes prochaines PIAF</Typography>
           <UserPiafs userId={userId} after={queryDate(startOfToday())} />
         </MyPlanning>
         <Replacements>
