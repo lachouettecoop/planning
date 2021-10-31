@@ -11,7 +11,7 @@ import { orderPiafsByDate } from "src/helpers/piaf"
 
 type Result = { piafs: PIAF[] }
 interface Props {
-  userId: string
+  userId?: string
   after?: string
   validated?: boolean
   allowValidate?: boolean
