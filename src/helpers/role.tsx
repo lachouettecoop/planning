@@ -18,9 +18,9 @@ export const hasRole = (id: RoleId, roles: Role[]) => {
 export const needsTraining = (user: User | null, roleId: RoleId) => {
   if (user) {
     if (roleId == RoleId.GrandHibou) {
-      return !user.nbPiafGH || user.nbPiafGH == 0
+      return !user.nbPiafGH
     } else if (roleId == RoleId.Caissier) {
-      return !user.nbPiafGH || user.nbPiafGH == 0
+      return !user.nbPiafCaisse
     }
   }
   return false

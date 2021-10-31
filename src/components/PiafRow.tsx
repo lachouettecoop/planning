@@ -22,8 +22,6 @@ const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
 const PERCENTAGE_NEW_CHOUETTOS = 50
 
-const OPTIONAL_SUPPORT_ROLES = [RoleId.Caissier]
-
 const Row = styled.div`
   margin: 0 0 1rem 0;
   display: flex;
@@ -101,7 +99,7 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
     sendEmail(
       replacedUserMail,
       "PIAF remplacée",
-      `Votre PIAF du ${formatDateLong(slot.start)}  à ${formatTime(
+      `Votre PIAF du ${formatDateLong(slot.start)} à ${formatTime(
         slot.start
       )} a été pourvue. Vous n'êtes plus en charge de cette PIAF.`
     )
@@ -113,7 +111,7 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
       sendEmail(
         ghEmail,
         "PIAF remplacée",
-        `La PIAF du ${formatDateLong(slot.start)}  à ${formatTime(slot.start)}  a été pourvue.
+        `La PIAF du ${formatDateLong(slot.start)} à ${formatTime(slot.start)} a été pourvue.
         ${user.prenom} ${user.nom} est maintenant inscrit pour cette PIAF.`
       )
     }
@@ -127,7 +125,7 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
   const currentUserIsInSlot = slot.piafs?.find(
     ({ piaffeur, statut }) => piaffeur?.id === user?.id && statut === "occupe"
   )
-  const rolesBD = useRoles()
+  const roles = useRoles()
   const { refetch } = useDatePlanning()
 
   const handleInputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -185,13 +183,10 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
       let registerOK = true
 
       if (needsTraining(user, piaf.role.roleUniqueId)) {
-        let addTrainerPIAF = true
-        if (OPTIONAL_SUPPORT_ROLES.includes(piaf.role.roleUniqueId)) {
-          addTrainerPIAF = await openQuestion(
-            `Voulez vous avoir une personne en appui pour votre première PIAF comme ${piaf.role.libelle} ?`
-          )
-        }
-        if (addTrainerPIAF) {
+        const addTrainer = await openQuestion(
+          `Voulez vous avoir une personne en appui pour votre première PIAF comme ${piaf.role.libelle} ?`
+        )
+        if (addTrainer) {
           registerOK = await addTrainerPiaf(piaf.role.roleUniqueId)
         }
       }
@@ -209,7 +204,7 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
   const addTrainerPiaf = async (roleUniqueId: RoleId) => {
     const idRoleTrainer = getTrainerRoleId(roleUniqueId)
     if (idRoleTrainer) {
-      const roleTrainer = rolesBD.find((r) => r.roleUniqueId == idRoleTrainer)
+      const roleTrainer = roles.find((r) => r.roleUniqueId == idRoleTrainer)
       if (roleTrainer) {
         await apollo.mutate({
           mutation: PIAF_CREATE,
@@ -261,7 +256,7 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
   const { id, piaffeur } = piaf
   const taken = isTaken(piaf)
 
-  const roleUser = rolesBD.find((r) => r.roleUniqueId == getPiafRole(piaf))
+  const roleUser = roles.find((r) => r.roleUniqueId == getPiafRole(piaf))
 
   return (
     <Row key={id}>
