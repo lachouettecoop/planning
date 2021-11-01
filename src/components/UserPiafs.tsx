@@ -36,7 +36,7 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
   }
 
   if (!data.piafs.length && !allowValidate) {
-    return <p>Aucune PIAF à venir. Inscrivez-vous sur le planning !</p>
+    return <p>Aucune PIAF à venir. Inscris-toi sur le planning !</p>
   }
 
   if (!data.piafs.length && allowValidate) {

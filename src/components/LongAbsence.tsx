@@ -97,7 +97,7 @@ const LongAbsence = ({ show, handleClose }: Props) => {
     event.preventDefault()
 
     if (!process.env.REACT_APP_MAIL_BDM) {
-      alert("L’adresse e-mail du BdM n’est pas configurée. Contactez votre administrateur.")
+      alert("L’adresse e-mail du BdM n’est pas configurée. Contacte l’administrateur.")
       return
     }
 
@@ -124,7 +124,7 @@ const LongAbsence = ({ show, handleClose }: Props) => {
 
     handleClose()
 
-    openDialog("Un e-mail informatif a été envoyé au BdM. Votre absence sera bientôt validée.")
+    openDialog("Un e-mail informatif a été envoyé au BdM. Ton absence sera bientôt validée.")
 
     setLoading(false)
   }

@@ -15,7 +15,7 @@ import { hasRole } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
 import { isTaken, getPiafRole } from "src/helpers/piaf"
 import { sendEmail } from "src/helpers/request"
-import { formatDateLong, formatTime } from "src/helpers/date"
+import { formatDateTime } from "src/helpers/date"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
@@ -86,10 +86,7 @@ const getRegistrationPiaf = (slot: ISlot, piaf: PIAF) => {
 
 const getGHEmail = (slot: ISlot) => {
   const GHPiaf = slot.piafs?.find(({ statut, role }) => statut === "occupe" && role.id === RoleId.GrandHibou)
-  if (GHPiaf) {
-    return GHPiaf.piaffeur?.email
-  }
-  return ""
+  return GHPiaf?.piaffeur?.email
 }
 
 const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
@@ -98,9 +95,7 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
     sendEmail(
       replacedUserMail,
       "PIAF remplacée",
-      `Votre PIAF du ${formatDateLong(slot.start)} à ${formatTime(
-        slot.start
-      )} a été pourvue. Vous n'êtes plus en charge de cette PIAF.`
+      `Ta PIAF du ${formatDateTime(slot.start)} a été pourvue. Tu n’es plus en charge de cette PIAF.`
     )
   }
 
@@ -110,7 +105,7 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
       sendEmail(
         ghEmail,
         "PIAF remplacée",
-        `La PIAF du ${formatDateLong(slot.start)} à ${formatTime(slot.start)} a été pourvue.
+        `La PIAF du ${formatDateTime(slot.start)} a été pourvue.
         ${user.prenom} ${user.nom} est maintenant inscrit pour cette PIAF.`
       )
     }

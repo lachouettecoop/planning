@@ -17,6 +17,8 @@ export const formatMonthYear = (date: Date | number | string) => formatInFrench(
 
 export const formatTime = (date: Date | number | string) => formatInFrench(date, "HH:mm")
 
+export const formatDateTime = (date: Date | number | string) => formatInFrench(date, "EEEE d MMMM yyyy à HH:mm")
+
 export const formatDateInterval = (start: Date | number | string, end: Date | number | string) => {
   start = getDate(start)
   end = getDate(end)

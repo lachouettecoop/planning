@@ -147,11 +147,11 @@ const ReservePage = () => {
         variables,
       })
 
-      openDialog(
-        (variables.id
-          ? "Votre inscription à la réserve a bien été mise à jour."
-          : "Vous êtes désormais inscrit·e à la reserve.") + " Merci !"
-      )
+      const text = variables.id
+        ? "Ton inscription à la réserve a bien été mise à jour"
+        : "Tu es désormais inscrit·e à la reserve"
+
+      openDialog(text + ". Merci !")
     } catch (error) {
       handleError(error as Error)
     }

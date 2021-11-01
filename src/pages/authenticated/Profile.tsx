@@ -66,7 +66,7 @@ const ProfilePage = () => {
         mutation: USER_UPDATE,
         variables: { ...values, idUser: user?.id },
       })
-      openDialog("Vos informations ont bien été mises à jour")
+      openDialog("Tes informations ont bien été mises à jour")
     } catch (error) {
       handleError(error as Error)
     }

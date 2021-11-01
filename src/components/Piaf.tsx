@@ -49,7 +49,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
   }
 
   const handleValidate = async (piafId: string) => {
-    const ok = await openQuestion("Êtes-vous sûr·e de vouloir valider cette PIAF ?")
+    const ok = await openQuestion("Es-tu sûr·e de vouloir valider cette PIAF ?")
 
     if (!ok) {
       return
@@ -73,7 +73,7 @@ const Piaf = ({ piaf, allowValidate = false }: Props) => {
   }
 
   const handleNonPourvue = async (piafId: string) => {
-    const ok = await openQuestion("Êtes-vous sûr·e de vouloir indiquer cette PIAF comme non pourvue?")
+    const ok = await openQuestion("Es-tu sûr·e de vouloir indiquer cette PIAF comme non pourvue?")
 
     if (!ok) {
       return

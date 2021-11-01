@@ -42,9 +42,8 @@ const HomePage = () => {
         <Status>
           <Typography variant="h2">Mon statut</Typography>
           <p>
-            Votre compteur de PIAF effectuées et votre statut ne seront disponibles qu’après la remise à zéro des
-            compteurs, soit le 29 novembre. D’ici là, votre participation actuelle est mise à disposition à l’accueil du
-            magasin.
+            Ton compteur de PIAF effectuées et ton statut ne seront disponibles qu’après la remise à zéro des compteurs,
+            soit le 29 novembre. D’ici là, ta participation actuelle est mise à disposition à l’accueil du magasin.
           </p>
         </Status>
         <div>
