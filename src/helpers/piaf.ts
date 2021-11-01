@@ -1,7 +1,18 @@
-import { PIAF } from "src/types/model"
+import { PIAF, RoleId } from "src/types/model"
 
-export const getPiafRole = ({ role }: PIAF) => {
-  return role?.roleUniqueId
+export const getPiafRole = ({ role, piaffeur }: PIAF) => {
+  if (!role) {
+    return null
+  }
+  if (piaffeur) {
+    if (role.roleUniqueId === RoleId.GrandHibou && !piaffeur.nbPiafGH) {
+      return RoleId.GrandHibou_Formation
+    }
+    if (role.roleUniqueId === RoleId.Caissier && !piaffeur.nbPiafCaisse) {
+      return RoleId.Caissier_Formation
+    }
+  }
+  return role.roleUniqueId
 }
 
 export const isTaken = (piaf: PIAF) => {
