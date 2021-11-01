@@ -22,37 +22,41 @@ const IconsCaption = () => {
       <Title>Légende</Title>
       <Grid container>
         <Grid item xs={4} component="figure">
-          <PiafIcon $role={RoleId.Chouettos} />
+          <PiafIcon role={RoleId.Chouettos} />
           <Caption>Chouettos</Caption>
         </Grid>
         <Grid item xs={4} component="figure">
-          <PiafIcon $role={RoleId.Caissier} />
+          <PiafIcon role={RoleId.Caissier} />
           <Caption>Caissier·ère</Caption>
         </Grid>
         <Grid item xs={4} component="figure">
-          <PiafIcon $role={RoleId.GrandHibou} />
+          <PiafIcon role={RoleId.GrandHibou} />
           <Caption>Grand Hibou</Caption>
         </Grid>
       </Grid>
       <br />
       <Grid container>
         <Grid item xs={4} component="figure">
-          <PiafIcon $role={RoleId.PIAF} />
+          <PiafIcon role={RoleId.PIAF} />
           <Caption>PIAF disponible</Caption>
         </Grid>
         <Grid item xs={4} component="figure">
-          <PiafIcon $role={RoleId.PIAF} $taken />
+          <PiafIcon role={RoleId.PIAF} taken />
           <Caption>PIAF occupée</Caption>
+        </Grid>
+        <Grid item xs={4} component="figure">
+          <PiafIcon role={RoleId.PIAF} critical />
+          <Caption>PIAF critique</Caption>
         </Grid>
       </Grid>
       <br />
       <Grid container>
         <Grid item xs={4} component="figure">
-          <PiafIcon $role={RoleId.Formation} />
+          <PiafIcon role={RoleId.Formation} />
           <Caption>En formation</Caption>
         </Grid>
         <Grid item xs={4} component="figure">
-          <PiafIcon $role={RoleId.Acc} />
+          <PiafIcon role={RoleId.Acc} />
           <Caption>Accompagnateur·rice</Caption>
         </Grid>
       </Grid>

@@ -7,6 +7,8 @@ import { ThemeProvider as EmotionThemeProvider } from "@emotion/react/macro"
 import { frFR as coreLocale } from "@material-ui/core/locale"
 import { grey } from "@material-ui/core/colors"
 
+import { ReactComponent as Icons } from "src/images/icons.svg"
+
 // see public/index.html
 const TITLE_FONT = "Montserrat, sans-serif" // https://style.lachouettecoop.fr/#/typographie?a=titres-et-sous-titres
 const TEXT_FONT = "Cabin, sans-serif" // https://style.lachouettecoop.fr/#/typographie?a=texte
@@ -98,6 +100,7 @@ const ThemeProvider: FC = ({ children }) => (
   <EmotionThemeProvider theme={THEME}>
     <MUIThemeProvider theme={THEME}>
       <CssBaseline />
+      <Icons />
       {children}
     </MUIThemeProvider>
   </EmotionThemeProvider>

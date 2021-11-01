@@ -4,8 +4,9 @@ import { useState } from "react"
 import styled from "@emotion/styled/macro"
 
 import SlotDialog from "src/components/SlotDialog"
-import PiafCircle, { PiafIcon } from "src/components/PiafCircle"
+import PiafCircle from "src/components/PiafCircle"
 import { formatTime } from "src/helpers/date"
+import { isCritical, isTaken } from "src/helpers/piaf"
 
 const SELECTED_COLOR = "#FFFFAA"
 
@@ -33,7 +34,7 @@ const List = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin: 0 -2px;
-  ${PiafIcon} {
+  svg {
     width: 24px;
     height: 24px;
   }
@@ -54,6 +55,8 @@ const Slot = ({ slot }: Props) => {
     setOpen(false)
   }
 
+  const critical = isCritical(slot)
+
   return (
     <>
       <ClickableSlot $open={open} onClick={handleClick}>
@@ -66,7 +69,7 @@ const Slot = ({ slot }: Props) => {
         </Title>
         <List>
           {slot.piafs?.map((piaf) => (
-            <PiafCircle key={piaf.id} piaf={piaf} />
+            <PiafCircle key={piaf.id} piaf={piaf} critical={critical && !isTaken(piaf)} />
           ))}
         </List>
       </ClickableSlot>

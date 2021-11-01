@@ -1,35 +1,48 @@
-import type { PIAF, RoleId } from "src/types/model"
+import type { PIAF } from "src/types/model"
 
 import styled from "@emotion/styled/macro"
 
+import { RoleId } from "src/types/model"
 import { getPiafRole, isTaken } from "src/helpers/piaf"
 
-import ICONS from "src/images/icons"
+const KNOWN_ROLES = Object.values(RoleId)
 
-const getImg = (role?: RoleId) => {
-  if (!role) {
-    return "none" // TODO
-  }
-  return `url(${ICONS[role] || ICONS.CH})`
-}
-
-export const PiafIcon = styled.span<{ $taken?: boolean; $role?: RoleId }>`
+const Svg = styled.svg<{ $taken?: boolean; $critical?: boolean }>`
   flex-shrink: 0;
   display: inline-block;
   margin: 3px;
   width: 32px;
   height: 32px;
-  background-image: ${({ $role }) => getImg($role)};
-  background-size: 100%;
-  background-position: center center;
-  background-repeat: no-repeat;
   opacity: ${({ $taken }) => ($taken ? 0.25 : 1)};
+  use {
+    fill: ${({ $critical }) => ($critical ? "#e53935" : "black")};
+  }
 `
+
+interface RoleProps {
+  role?: RoleId | null
+  taken?: boolean
+  critical?: boolean
+}
+
+export const PiafIcon = ({ role, taken, critical }: RoleProps) => {
+  if (!role || !KNOWN_ROLES.includes(role)) {
+    role = RoleId.PIAF
+  }
+  return (
+    <Svg $taken={taken} $critical={critical}>
+      <use xlinkHref={"#" + role} width="100%" height="100%" />
+    </Svg>
+  )
+}
 
 interface Props {
   piaf: PIAF
+  critical?: boolean
 }
 
-const PiafCircle = ({ piaf }: Props) => <PiafIcon $taken={isTaken(piaf)} $role={getPiafRole(piaf)} />
+const PiafCircle = ({ piaf, critical }: Props) => (
+  <PiafIcon role={getPiafRole(piaf)} taken={isTaken(piaf)} critical={critical} />
+)
 
 export default PiafCircle

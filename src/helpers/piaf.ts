@@ -1,7 +1,24 @@
-import { PIAF } from "src/types/model"
+import { differenceInDays } from "date-fns"
+import type { ISlot } from "src/types/app"
 
-export const getPiafRole = ({ role }: PIAF) => {
-  return role?.roleUniqueId
+import { PIAF, RoleId } from "src/types/model"
+
+const CRITICAL_DAYS = 5 // until how many days ahead a slot can be critical
+const CRITICAL_MINIMUM_TAKEN = 3 // minimum number of taken PIAFs to not be a critical slot
+
+export const getPiafRole = ({ role, piaffeur }: PIAF) => {
+  if (!role) {
+    return null
+  }
+  if (piaffeur) {
+    if (role.roleUniqueId === RoleId.GrandHibou && !piaffeur.nbPiafGH) {
+      return RoleId.GrandHibou_Formation
+    }
+    if (role.roleUniqueId === RoleId.Caissier && !piaffeur.nbPiafCaisse) {
+      return RoleId.Caissier_Formation
+    }
+  }
+  return role.roleUniqueId
 }
 
 export const isTaken = (piaf: PIAF) => {
@@ -9,6 +26,17 @@ export const isTaken = (piaf: PIAF) => {
     return false
   }
   return Boolean(piaf.piaffeur)
+}
+
+export const isCritical = (slot: ISlot) => {
+  if (!slot.piafs) {
+    return false
+  }
+  if (differenceInDays(slot.start, new Date()) > CRITICAL_DAYS) {
+    return false
+  }
+  const countTaken = slot.piafs.filter(isTaken).length
+  return countTaken < CRITICAL_MINIMUM_TAKEN
 }
 
 export const orderPiafsByDate = (left: PIAF, right: PIAF) => (left.creneau.debut > right.creneau.debut ? 1 : -1)
