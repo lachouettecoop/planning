@@ -203,6 +203,15 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
     setLoading(false)
   }
 
+  const rolesWithRightsToSeeInfo = [RoleId.AdminBdM, RoleId.AdminMag]
+  const userHasRightsToSeeInfo = () => {
+    //Only the GH of the slot or the admin bdm/mag can see the info included on the PIAF
+    return (
+      (user && rolesWithRightsToSeeInfo.some((r) => user.rolesChouette.find((rC) => rC.roleUniqueId == r))) ||
+      (currentUserIsInSlot && currentUserIsInSlot?.role.roleUniqueId === RoleId.GrandHibou)
+    )
+  }
+
   const { id, piaffeur } = piaf
   const taken = isTaken(piaf)
 
@@ -216,19 +225,15 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
         <br />
         <span> {roleUser?.libelle}</span>
       </Status>
-      {taken &&
-        currentUserIsInSlot &&
-        currentUserIsInSlot.role.roleUniqueId === RoleId.GrandHibou &&
-        piaffeur &&
-        piaffeur.id != user?.id && (
-          //Show info contacts only if the current user is the GH of the slot
-          <Contact>
-            <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
-            <br />
-            <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
-            <div>{piaf.informations}</div>
-          </Contact>
-        )}
+      {taken && userHasRightsToSeeInfo() && piaffeur && piaffeur.id != user?.id && (
+        //Show info contacts only if the current user is the GH of the slot
+        <Contact>
+          <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
+          <br />
+          <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
+          <div>{piaf.informations}</div>
+        </Contact>
+      )}
       {!taken && !currentUserIsInSlot && !isPast(slot.start) && (
         <TextField
           name="informations"
