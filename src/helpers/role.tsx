@@ -12,7 +12,7 @@ export const getTrainerRoleId = (id: RoleId) => {
 }
 
 export const hasRole = (id: RoleId, roles: Role[]) => {
-  return roles.find(({ roleUniqueId }) => roleUniqueId === id)
+  return roles.some(({ roleUniqueId }) => roleUniqueId === id)
 }
 
 export const needsTraining = (user: User | null, roleId: RoleId) => {

@@ -11,6 +11,7 @@ import { USER_UPDATE } from "src/graphql/queriesUser"
 import { useDialog } from "src/providers/dialog"
 import { handleError } from "src/helpers/errors"
 import { formatRoles } from "src/helpers/role"
+import { formatName } from "src/helpers/user"
 
 const Loading = styled.div`
   height: 50vh;
@@ -92,9 +93,7 @@ const ProfilePage = () => {
   return (
     <Container>
       <form onSubmit={handleSave}>
-        <Typography variant="h2">
-          {user.prenom} {user.nom}
-        </Typography>
+        <Typography variant="h2">{formatName(user)}</Typography>
         <p>{formatRoles(user.rolesChouette)}</p>
         <TextField
           name="telephone"

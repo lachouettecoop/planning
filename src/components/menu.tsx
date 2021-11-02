@@ -38,6 +38,7 @@ import Link from "src/components/Link"
 import { useUser } from "src/providers/user"
 import { hasRole } from "src/helpers/role"
 import { TEST } from "src/helpers/apollo"
+import { formatName } from "src/helpers/user"
 import { RoleId } from "src/types/model"
 
 const DRAWER_WIDTH = 260
@@ -214,7 +215,7 @@ const Menu = () => {
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
-          {user && <ListItemText primary={`${user.prenom} ${user.nom}`} />}
+          {user && <ListItemText primary={formatName(user)} />}
         </ListItem>
         <Divider />
         <List>

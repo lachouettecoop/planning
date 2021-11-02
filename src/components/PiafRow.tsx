@@ -9,6 +9,7 @@ import { PIAF, User, RoleId } from "src/types/model"
 import PiafCircle from "src/components/PiafCircle"
 import { useDialog } from "src/providers/dialog"
 import { useRoles } from "src/providers/roles"
+import { useUser } from "src/providers/user"
 import { PIAFS_COUNT, REGISTRATION_UPDATE } from "src/graphql/queries"
 import apollo from "src/helpers/apollo"
 import { hasRole } from "src/helpers/role"
@@ -16,10 +17,12 @@ import { handleError } from "src/helpers/errors"
 import { isTaken, getPiafRole } from "src/helpers/piaf"
 import { sendEmail } from "src/helpers/request"
 import { formatDateTime } from "src/helpers/date"
+import { formatName } from "src/helpers/user"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
 const PERCENTAGE_NEW_CHOUETTOS = 50
+const ADMIN_ROLES = [RoleId.AdminBdM, RoleId.AdminMag]
 
 const Row = styled.div`
   margin: 0 0 1rem 0;
@@ -27,6 +30,9 @@ const Row = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  button {
+    margin-left: 8px;
+  }
 `
 const Status = styled.div`
   flex: 1;
@@ -37,16 +43,13 @@ const Status = styled.div`
 `
 const Contact = styled.div`
   text-align: right;
+  a {
+    text-decoration: none;
+  }
 `
 const InfoPiaf = styled.div`
   display: block;
 `
-
-interface Props {
-  piaf: PIAF
-  user: User | null
-  slot: ISlot
-}
 
 type Result = { piafs: PIAF[] }
 
@@ -106,20 +109,30 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
         ghEmail,
         "PIAF remplacée",
         `La PIAF du ${formatDateTime(slot.start)} a été pourvue.
-        ${user.prenom} ${user.nom} est maintenant inscrit pour cette PIAF.`
+        ${formatName(user)} est maintenant inscrit pour cette PIAF.`
       )
     }
   }
 }
 
-const PiafRow = ({ piaf, user, slot }: Props) => {
+interface Props {
+  piaf: PIAF
+  slot: ISlot
+}
+
+const PiafRow = ({ piaf, slot }: Props) => {
   const [loading, setLoading] = useState(false)
   const [info, setInfo] = useState("")
   const { openDialog } = useDialog()
-  const currentUserIsInSlot = slot.piafs?.find(
-    ({ piaffeur, statut }) => piaffeur?.id === user?.id && statut === "occupe"
-  )
+  const { user } = useUser<true>()
   const roles = useRoles()
+
+  const currentUserIsAdmin = user
+    ? ADMIN_ROLES.some((role) => user.rolesChouette.some(({ roleUniqueId }) => roleUniqueId === role))
+    : false
+
+  const currentUserPiafInSlot =
+    user && slot.piafs?.find(({ piaffeur, statut }) => piaffeur?.id === user.id && statut === "occupe")
 
   const handleInputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInfo(target.value)
@@ -185,7 +198,6 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
     setLoading(true)
 
     try {
-      //Delete info in memory
       setInfo("")
 
       const userId = (user as User).id
@@ -203,54 +215,48 @@ const PiafRow = ({ piaf, user, slot }: Props) => {
     setLoading(false)
   }
 
-  const rolesWithRightsToSeeInfo = [RoleId.AdminBdM, RoleId.AdminMag]
-  const userHasRightsToSeeInfo = () => {
-    //Only the GH of the slot or the admin bdm/mag can see the info included on the PIAF
-    return (
-      (user && rolesWithRightsToSeeInfo.some((r) => user.rolesChouette.find((rC) => rC.roleUniqueId == r))) ||
-      (currentUserIsInSlot && currentUserIsInSlot?.role.roleUniqueId === RoleId.GrandHibou)
-    )
-  }
-
-  const { id, piaffeur } = piaf
+  const { piaffeur, informations } = piaf
   const taken = isTaken(piaf)
+  const isFuture = !isPast(slot.start)
+  const piafRole = roles.find(({ roleUniqueId }) => roleUniqueId == getPiafRole(piaf))
 
-  const roleUser = roles.find((r) => r.roleUniqueId == getPiafRole(piaf))
+  // show contact infos only if the current user is the GH of the slot or is an admin
+  const showInfos = currentUserIsAdmin || currentUserPiafInSlot?.role.roleUniqueId === RoleId.GrandHibou
 
   return (
-    <Row key={id}>
+    <Row>
       <PiafCircle piaf={piaf} />
       <Status>
-        {taken && piaffeur ? `${piaffeur.prenom} ${piaffeur.nom}` : "Place disponible"}
+        {taken && piaffeur ? formatName(piaffeur) : "Place disponible"}
         <br />
-        <span> {roleUser?.libelle}</span>
+        <span> {piafRole?.libelle}</span>
       </Status>
-      {taken && userHasRightsToSeeInfo() && piaffeur && piaffeur.id != user?.id && (
-        //Show info contacts only if the current user is the GH of the slot
+      {taken && showInfos && piaffeur && piaffeur.id != user?.id && (
         <Contact>
           <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
           <br />
           <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
-          <div>{piaf.informations}</div>
+          <br />
+          {informations}
         </Contact>
       )}
-      {!taken && !currentUserIsInSlot && !isPast(slot.start) && (
+      {!taken && !currentUserPiafInSlot && isFuture && (
         <TextField
           name="informations"
           multiline
-          label="Information (optionnel)"
+          label="Informations (optionnel)"
           value={info}
           onChange={handleInputChange}
-        ></TextField>
+        />
       )}
-      {!taken && !currentUserIsInSlot && !isPast(slot.start) && (
+      {!taken && !currentUserPiafInSlot && isFuture && (
         <Button disabled={loading} color="primary" variant="contained" onClick={register}>
           S’inscrire
         </Button>
       )}
-      {piaffeur?.id === user?.id && taken && !isPast(slot.start) && (
+      {piaffeur?.id === user?.id && taken && isFuture && (
         <InfoPiaf>
-          <div>{piaf.informations}</div>
+          <div>{informations}</div>
           <Button disabled={loading} color="primary" variant="contained" onClick={unregister}>
             Demander un remplacement
           </Button>

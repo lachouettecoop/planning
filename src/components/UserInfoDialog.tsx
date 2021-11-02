@@ -6,6 +6,7 @@ import styled from "@emotion/styled/macro"
 
 import UserPiafs from "src/components/UserPiafs"
 import { formatRoles } from "src/helpers/role"
+import { formatName } from "src/helpers/user"
 
 const RightCol = styled(Grid)`
   display: flex;
@@ -30,9 +31,7 @@ const UserInfoDialog = ({ open, handleClose, data }: Props) => {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">
-        {data.prenom} {data.nom.toUpperCase()}
-      </DialogTitle>
+      <DialogTitle id="alert-dialog-title">{formatName(data)}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           <Grid container>

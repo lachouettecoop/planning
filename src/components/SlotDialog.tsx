@@ -7,7 +7,6 @@ import styled from "@emotion/styled/macro"
 import Loader from "src/components/Loader"
 import PiafRow from "src/components/PiafRow"
 import { formatTime, formatDateLong } from "src/helpers/date"
-import { useUser } from "src/providers/user"
 
 const CloseButton = styled(IconButton)`
   position: absolute;
@@ -36,8 +35,6 @@ interface Props {
 }
 
 const SlotDialog = ({ slot, show, handleClose }: Props) => {
-  const { user } = useUser<true>()
-
   return (
     <Dialog open={show} onClose={handleClose} fullWidth>
       <CloseButton onClick={handleClose}>
@@ -56,11 +53,7 @@ const SlotDialog = ({ slot, show, handleClose }: Props) => {
         </Title>
       </DialogTitle>
       <DialogContent>
-        {slot.piafs ? (
-          slot.piafs.map((piaf) => <PiafRow key={piaf.id} piaf={piaf} user={user} slot={slot} />)
-        ) : (
-          <Loader />
-        )}
+        {slot.piafs ? slot.piafs.map((piaf) => <PiafRow key={piaf.id} piaf={piaf} slot={slot} />) : <Loader />}
       </DialogContent>
     </Dialog>
   )
