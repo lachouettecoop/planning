@@ -10,7 +10,6 @@ import {
   Toolbar,
   List,
   Typography,
-  Divider,
   IconButton,
   ListItem,
   ListItemIcon,
@@ -186,6 +185,9 @@ const Menu = () => {
             Planning {TEST && <Chip label="TEST" />}
           </Typography>
           <Spacer />
+          <PersonIcon />
+          {user && <ListItemText primary={formatName(user)} />}
+          <Spacer />
           <Button onClick={logout} color="inherit">
             Déconnexion
           </Button>
@@ -210,14 +212,6 @@ const Menu = () => {
             {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
-        <Divider />
-        <ListItem>
-          <ListItemIcon>
-            <PersonIcon />
-          </ListItemIcon>
-          {user && <ListItemText primary={formatName(user)} />}
-        </ListItem>
-        <Divider />
         <List>
           {ITEMS.filter(({ role }) => hasRole(role, userRoles)).map(({ href, title, Icon }) => {
             const active = pathname === href
