@@ -1,7 +1,7 @@
 import { PIAF } from "src/types/model"
 
 export const getPiafRole = ({ role }: PIAF) => {
-  return role.roleUniqueId
+  return role?.roleUniqueId
 }
 
 export const isTaken = (piaf: PIAF) => {
@@ -12,4 +12,12 @@ export const isTaken = (piaf: PIAF) => {
 }
 
 export const orderPiafsByDate = (left: PIAF, right: PIAF) => (left.creneau.debut > right.creneau.debut ? 1 : -1)
-export const orderPiafsByRoleId = (left: PIAF, right: PIAF) => (left.role.id > right.role.id ? 1 : -1)
+export const orderPiafsByRoleId = (left: PIAF, right: PIAF) => {
+  if (!left.role) {
+    return -2
+  }
+  if (!right.role) {
+    return 2
+  }
+  return left.role.id > right.role.id ? 1 : -1
+}

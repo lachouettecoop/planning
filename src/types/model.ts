@@ -92,13 +92,13 @@ export interface InfoCreneau {
 
 export interface PIAF {
   id: ID
-  role: Role
-  piaffeur?: User
+  role: Role | null
+  piaffeur: User | null
   creneau: Creneau
   visible: boolean
   pourvu: boolean
   nonPourvu: boolean
   statut: "occupe" | "remplacement" | "" | null // empty = available
-  informations: string
+  informations: string | null
   infoCreneau: InfoCreneau
 }

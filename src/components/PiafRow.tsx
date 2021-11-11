@@ -78,7 +78,9 @@ const checkMaximumNumberOfNewChouettos = (user: User, piaf: PIAF) => {
   return true
 }
 const getRegistrationPiaf = (slot: ISlot, piaf: PIAF) => {
-  const replacementPiaf = slot.piafs?.find(({ statut, role }) => statut === "remplacement" && role.id === piaf.role.id)
+  const replacementPiaf = slot.piafs?.find(
+    ({ statut, role }) => statut === "remplacement" && role?.id === piaf.role?.id
+  )
   if (replacementPiaf) {
     // If there is a PIAF with status "remplacement" and the same role,
     // the user will be registered in it instead of the requested one.
@@ -88,7 +90,7 @@ const getRegistrationPiaf = (slot: ISlot, piaf: PIAF) => {
 }
 
 const getGHEmail = (slot: ISlot) => {
-  const GHPiaf = slot.piafs?.find(({ statut, role }) => statut === "occupe" && role.id === RoleId.GrandHibou)
+  const GHPiaf = slot.piafs?.find(({ statut, role }) => statut === "occupe" && role?.id === RoleId.GrandHibou)
   return GHPiaf?.piaffeur?.email
 }
 
@@ -102,7 +104,7 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
     )
   }
 
-  if (piaf.role.roleUniqueId != RoleId.GrandHibou) {
+  if (piaf.role?.roleUniqueId != RoleId.GrandHibou) {
     const ghEmail = getGHEmail(slot)
     if (ghEmail) {
       sendEmail(
@@ -139,6 +141,11 @@ const PiafRow = ({ piaf, slot }: Props) => {
   }
 
   const register = async () => {
+    if (!piaf.role) {
+      openDialog("Cette PIAF n’a pas de rôle. Contactez l’administrateur pour lui signaler cette erreur.")
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -221,7 +228,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
   const piafRole = roles.find(({ roleUniqueId }) => roleUniqueId == getPiafRole(piaf))
 
   // show contact infos only if the current user is the GH of the slot or is an admin
-  const showInfos = currentUserIsAdmin || currentUserPiafInSlot?.role.roleUniqueId === RoleId.GrandHibou
+  const showInfos = currentUserIsAdmin || currentUserPiafInSlot?.role?.roleUniqueId === RoleId.GrandHibou
 
   return (
     <Row>
