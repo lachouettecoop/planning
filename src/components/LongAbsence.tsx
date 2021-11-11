@@ -18,6 +18,7 @@ import styled from "@emotion/styled/macro"
 import { useDialog } from "src/providers/dialog"
 import { formatDateInterval } from "src/helpers/date"
 import { sendEmail } from "src/helpers/request"
+import { handleError } from "src/helpers/errors"
 
 const Row = styled.div`
   display: flex;
@@ -112,19 +113,22 @@ const LongAbsence = ({ show, handleClose }: Props) => {
 
     setLoading(true)
 
-    const content = [
-      `Raison de l'absence : ${REASONS[values.reason]}`,
-      `Période : ${formatDateInterval(values.startDate, values.endDate)}`,
-    ]
-    if (values.comment) {
-      content.push(`Commentaire : ${values.comment}`)
+    try {
+      const content = [
+        `Raison de l'absence : ${REASONS[values.reason]}`,
+        `Période : ${formatDateInterval(values.startDate, values.endDate)}`,
+      ]
+      if (values.comment) {
+        content.push(`Commentaire : ${values.comment}`)
+      }
+
+      await sendEmail(process.env.REACT_APP_MAIL_BDM, "Absence prolongée", content.join("<br />"))
+
+      handleClose()
+      openDialog("Un e-mail informatif a été envoyé au BdM. Ton absence sera bientôt validée.")
+    } catch (error) {
+      handleError(error as Error)
     }
-
-    await sendEmail(process.env.REACT_APP_MAIL_BDM, "Absence prolongée", content.join("<br />"))
-
-    handleClose()
-
-    openDialog("Un e-mail informatif a été envoyé au BdM. Ton absence sera bientôt validée.")
 
     setLoading(false)
   }

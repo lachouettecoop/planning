@@ -1,9 +1,11 @@
 import type { User } from "src/types/model"
 
 import { createContext, useContext, useState, FC, useEffect } from "react"
+import Bugsnag from "@bugsnag/js"
 
 import { LOGGED_IN_USER } from "src/graphql/queriesUser"
 import apollo from "src/helpers/apollo"
+import { formatName } from "src/helpers/user"
 
 export interface Auth {
   email: string
@@ -46,6 +48,14 @@ export const UserProvider: FC = ({ children }) => {
         })
     }
   }, [auth])
+
+  useEffect(() => {
+    if (user) {
+      Bugsnag.setUser(user.id, user.email, formatName(user))
+    } else {
+      Bugsnag.setUser()
+    }
+  }, [user])
 
   const login = (data: Auth) => {
     setAuth(data)
