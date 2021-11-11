@@ -7,6 +7,7 @@ export const SLOTS = gql`
       informations
       debut
       fin
+      horsMag
       creneauGenerique {
         frequence
       }
@@ -87,6 +88,7 @@ export const PLANNING = gql`
       fin
       titre
       informations
+      horsMag
       creneauGenerique {
         frequence
       }

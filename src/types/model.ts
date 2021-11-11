@@ -82,6 +82,7 @@ export interface Creneau {
   debut: string // ISO datetime
   fin: string // ISO datetime
   informations: string
+  horsMag: boolean
   piafs: PIAF[]
 }
 
