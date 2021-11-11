@@ -56,10 +56,7 @@ const PlanningPage = () => {
     return <ErrorBlock error={error} />
   }
 
-  const slots = data?.creneaus
-    .filter((c) => c.horsMag === null || c.horsMag === false)
-    .slice()
-    .sort(orderSlotsByDate)
+  const slots = data?.creneaus.filter((c) => !c.horsMag).sort(orderSlotsByDate)
 
   return (
     <>
