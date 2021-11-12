@@ -39,7 +39,6 @@ const Calendar = ({ start, end, list }: Props) => {
   const weeks: IWeek[] = eachWeekOfInterval({ start, end }, { weekStartsOn: 1 }).map((date) => ({
     start: date,
     days: [0, 1, 2, 3, 4, 5, 6].map((i) => ({ start: addDays(date, i), slots: [] })),
-    weekNumber: 1,
   }))
 
   list.forEach((node) => {

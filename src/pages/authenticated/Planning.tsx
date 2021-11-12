@@ -1,6 +1,6 @@
 import type { Creneau } from "src/types/model"
 
-import { Button, Typography, useMediaQuery, useTheme } from "@material-ui/core"
+import { Button, Typography } from "@material-ui/core"
 import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 import { isSameMonth } from "date-fns"
@@ -29,10 +29,29 @@ const Nav = styled.nav`
     flex: 1;
     text-transform: capitalize;
   }
+  ${({ theme }) => theme.breakpoints.down("xs")} {
+    h2 {
+      font-size: 1.15rem;
+    }
+  }
 `
 const ButtonArea = styled.div`
   display: flex;
   justify-content: end;
+  ${({ theme }) => theme.breakpoints.down("sm")} {
+    span.text {
+      display: none;
+    }
+    .MuiButton-root {
+      min-width: 32px;
+    }
+    .MuiButton-startIcon {
+      margin-right: -4px;
+    }
+    .MuiButton-endIcon {
+      margin-left: -4px;
+    }
+  }
 `
 const BottomCaption = styled.div`
   max-width: 500px;
@@ -46,17 +65,11 @@ const orderSlotsByDate = (left: Creneau, right: Creneau) => (left.debut > right.
 
 const PlanningPage = () => {
   const { goBack, goForward, goToday, start, end, data, error, loading } = useDatePlanning()
-  const theme = useTheme()
-  const matches = useMediaQuery(theme.breakpoints.up("sm"))
-  const textTodayButton = matches ? "Aujourd’hui" : ""
-  const textBeforeButton = matches ? "Précédent" : ""
-  const textAfterButton = matches ? "Suivant" : ""
-
   if (error) {
     return <ErrorBlock error={error} />
   }
 
-  const slots = data?.creneaus.filter((c) => !c.horsMag).sort(orderSlotsByDate)
+  const slots = data?.creneaus.filter(({ horsMag }) => !horsMag).sort(orderSlotsByDate)
 
   return (
     <>
@@ -64,7 +77,7 @@ const PlanningPage = () => {
         <Typography variant="h2">{formatMonthYear(start)}</Typography>
         <ButtonArea>
           <Button disabled={loading} variant="contained" color="primary" startIcon={<ArrowBackIos />} onClick={goBack}>
-            {textBeforeButton}
+            <span className="text">Précédent</span>
           </Button>
           <Button
             disabled={loading || isSameMonth(start, new Date())}
@@ -73,7 +86,7 @@ const PlanningPage = () => {
             startIcon={<CalendarToday />}
             onClick={goToday}
           >
-            {textTodayButton}
+            <span className="text">Aujourd’hui</span>
           </Button>
           <Button
             disabled={loading}
@@ -82,7 +95,7 @@ const PlanningPage = () => {
             endIcon={<ArrowForwardIos />}
             onClick={goForward}
           >
-            {textAfterButton}
+            <span className="text">Suivant</span>
           </Button>
         </ButtonArea>
       </Nav>

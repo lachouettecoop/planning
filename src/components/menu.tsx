@@ -186,7 +186,7 @@ const Menu = () => {
           </Typography>
           <Spacer />
           <PersonIcon />
-          {user && <ListItemText primary={formatName(user)} />}
+          {user && formatName(user)}
           <Spacer />
           <Button onClick={logout} color="inherit">
             Déconnexion

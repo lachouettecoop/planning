@@ -19,7 +19,7 @@ export type IWeekNumber = 1 | 2 | 3 | 4
 export interface IWeek {
   start: Date
   days: IDay[]
-  weekNumber: IWeekNumber
+  weekNumber?: IWeekNumber
 }
 
 export interface ISlotReserve {

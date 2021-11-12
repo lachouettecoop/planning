@@ -16,8 +16,8 @@ const WEEK_COLORS: Record<IWeekNumber, string> = {
   4: "#27382F",
 }
 
-const Header = styled.div<{ $when: IWeekNumber }>`
-  background-color: ${({ $when }) => WEEK_COLORS[$when]};
+const Header = styled.div<{ $when?: IWeekNumber }>`
+  background-color: ${({ $when, theme }) => ($when ? WEEK_COLORS[$when] : theme.palette.grey[400])};
   height: 18px;
   color: white;
   font-size: 12px;
@@ -42,18 +42,19 @@ const List = styled.ul`
 
 interface Props {
   day: IDay
-  weekNumber: IWeekNumber
+  weekNumber?: IWeekNumber
 }
 
 const CalendarDay = ({ day, weekNumber }: Props) => {
-  const isMonday = day.start.getDay() === 1
+  const { start, slots } = day
+  const isFirstDoW = start.getDay() === 1 || start.getDate() === 1
 
   return (
-    <Container $when={isToday(day.start) ? "present" : isPast(day.start) ? "past" : "future"}>
-      <Header $when={weekNumber}>{isMonday && `Semaine ${weekNumber}`}</Header>
-      <Typography variant="h3">{capitalize(formatDateShort(day.start))}</Typography>
+    <Container $when={isToday(start) ? "present" : isPast(start) ? "past" : "future"}>
+      <Header $when={weekNumber}>{isFirstDoW && weekNumber && `Semaine ${weekNumber}`}</Header>
+      <Typography variant="h3">{capitalize(formatDateShort(start))}</Typography>
       <List>
-        {day.slots.map((slot) => (
+        {slots.map((slot) => (
           <Slot slot={slot} key={slot.id}></Slot>
         ))}
       </List>
