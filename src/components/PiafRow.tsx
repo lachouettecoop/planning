@@ -142,7 +142,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
 
   const register = async () => {
     if (!piaf.role) {
-      openDialog("Cette PIAF n’a pas de rôle. Contactez l’administrateur pour lui signaler cette erreur.")
+      openDialog("Cette PIAF n’a pas de rôle. Contacte l’administrateur pour lui signaler cette erreur.")
       return
     }
 

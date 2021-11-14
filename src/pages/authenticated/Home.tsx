@@ -59,7 +59,7 @@ const HomePage = () => {
         <Link to="/legal">Politique de traitement des données personnelles</Link>
         <p>Ce site n’utilise pas de cookies tiers</p>
         <p>
-          Un problème ? Une question ? Contactez le BdM :{" "}
+          Un problème ? Une question ? Contacte le BdM :{" "}
           <a href={`mailto:${process.env.REACT_APP_MAIL_BDM}`}>{process.env.REACT_APP_MAIL_BDM}</a>
         </p>
       </Bottom>

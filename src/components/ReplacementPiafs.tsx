@@ -52,7 +52,7 @@ const ReplacementPiafs = () => {
   return (
     <>
       <p>
-        Les créneaux suivants sont vacants et donc disponibles pour un remplacement. N’hésites pas à te positionner, la
+        Les créneaux suivants sont vacants et donc disponibles pour un remplacement. N’hésite pas à te positionner, la
         personne que tu remplaces sera avertie par e-mail instantanément !
       </p>
       <List>
