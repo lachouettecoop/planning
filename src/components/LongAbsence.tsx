@@ -16,9 +16,12 @@ import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 
 import { useDialog } from "src/providers/dialog"
-import { formatDateInterval } from "src/helpers/date"
+import { formatDateLong } from "src/helpers/date"
 import { sendEmail } from "src/helpers/request"
 import { handleError } from "src/helpers/errors"
+import { formatName } from "src/helpers/user"
+
+import { User } from "src/types/model"
 
 const Row = styled.div`
   display: flex;
@@ -58,6 +61,7 @@ const REASONS = {
 
 interface Props {
   show: boolean
+  user: User
   handleClose: () => void
 }
 
@@ -68,7 +72,7 @@ interface State {
   endDate: string
 }
 
-const LongAbsence = ({ show, handleClose }: Props) => {
+const LongAbsence = ({ show, handleClose, user }: Props) => {
   const { openDialog } = useDialog()
   const [values, setValues] = useState<State>({
     reason: "",
@@ -102,12 +106,8 @@ const LongAbsence = ({ show, handleClose }: Props) => {
       return
     }
 
-    if (!values.startDate || !values.endDate || !values.reason) {
+    if (!values.startDate || !values.reason) {
       openDialog("Tous les champs sont obligatoires.")
-      return
-    }
-    if (values.startDate > values.endDate) {
-      openDialog("La date de début ne peut pas être postérieure à la date de fin.")
       return
     }
 
@@ -115,8 +115,11 @@ const LongAbsence = ({ show, handleClose }: Props) => {
 
     try {
       const content = [
+        `Nom et prénom : ${formatName(user)}`,
+        `Mail : ${user.email} `,
+        `Téléphone : ${user.telephone} `,
         `Raison de l'absence : ${REASONS[values.reason]}`,
-        `Période : ${formatDateInterval(values.startDate, values.endDate)}`,
+        `Période : ${formatDateLong(values.startDate)}`,
       ]
       if (values.comment) {
         content.push(`Commentaire : ${values.comment}`)
@@ -125,7 +128,9 @@ const LongAbsence = ({ show, handleClose }: Props) => {
       await sendEmail(process.env.REACT_APP_MAIL_BDM, "Absence prolongée", content.join("<br />"))
 
       handleClose()
-      openDialog("Un e-mail informatif a été envoyé au BdM. Ton absence sera bientôt validée.")
+      openDialog(
+        "Un e-mail a été envoyé au BdM qui te recontactera si besoin. Pense bien a les recontacter lorsque tu pourras reprendre les PIAF."
+      )
     } catch (error) {
       handleError(error as Error)
     }
@@ -155,7 +160,8 @@ const LongAbsence = ({ show, handleClose }: Props) => {
                 shrink: true,
               }}
             />
-            <TextField
+
+            {/*            <TextField
               id="endDate"
               label="Date de fin"
               name="endDate"
@@ -167,7 +173,7 @@ const LongAbsence = ({ show, handleClose }: Props) => {
               InputLabelProps={{
                 shrink: true,
               }}
-            />
+            /> */}
           </Row>
           <Row>
             <FormControl fullWidth>
