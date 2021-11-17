@@ -16,7 +16,7 @@ import { hasRole } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
 import { isTaken, getPiafRole } from "src/helpers/piaf"
 import { sendEmail } from "src/helpers/request"
-import { formatDateTime } from "src/helpers/date"
+import { formatDateTime, formatDateShort } from "src/helpers/date"
 import { formatName } from "src/helpers/user"
 
 const MAX_PIAF_PER_WEEK = 3
@@ -125,7 +125,7 @@ interface Props {
 const PiafRow = ({ piaf, slot }: Props) => {
   const [loading, setLoading] = useState(false)
   const [info, setInfo] = useState("")
-  const { openDialog } = useDialog()
+  const { openDialog, openQuestion } = useDialog()
   const { user } = useUser<true>()
   const roles = useRoles()
 
@@ -145,8 +145,6 @@ const PiafRow = ({ piaf, slot }: Props) => {
       openDialog("Cette PIAF n’a pas de rôle. Contacte l’administrateur pour lui signaler cette erreur.")
       return
     }
-
-    setLoading(true)
 
     try {
       const userRoles = user?.rolesChouette
@@ -178,6 +176,17 @@ const PiafRow = ({ piaf, slot }: Props) => {
         return
       }
 
+      const ok = await openQuestion(
+        `Es-tu sûr·e de vouloir t’inscrire à cette PIAF du ${formatDateShort(slot.start)} en tant que ${
+          piaf.role.libelle
+        }?`
+      )
+
+      if (!ok) {
+        return
+      }
+
+      setLoading(true)
       const registrationPiaf = getRegistrationPiaf(slot, piaf)
       if (registrationPiaf.statut === "remplacement") {
         sendEmailReplacedPiaf(registrationPiaf, slot, loggedUser)
@@ -202,6 +211,14 @@ const PiafRow = ({ piaf, slot }: Props) => {
   }
 
   const unregister = async () => {
+    const ok = await openQuestion(
+      `N’oublie pas de chercher un·e remplaçant·e sur Facebook, Zulip, appel aux autres Chouettos… Plus ton créneau est proche, plus c’est important! Es-tu sûr·e de vouloir te désinscrire ?`
+    )
+
+    if (!ok) {
+      return
+    }
+
     setLoading(true)
 
     try {

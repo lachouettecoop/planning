@@ -119,7 +119,7 @@ const LongAbsence = ({ show, handleClose, user }: Props) => {
         `Mail : ${user.email} `,
         `Téléphone : ${user.telephone} `,
         `Raison de l'absence : ${REASONS[values.reason]}`,
-        `Période : ${formatDateLong(values.startDate)}`,
+        `Date début : ${formatDateLong(values.startDate)}`,
       ]
       if (values.comment) {
         content.push(`Commentaire : ${values.comment}`)
