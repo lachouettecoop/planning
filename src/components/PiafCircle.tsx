@@ -27,7 +27,7 @@ interface RoleProps {
 
 export const PiafIcon = ({ role, taken, critical }: RoleProps) => {
   if (!role || !KNOWN_ROLES.includes(role)) {
-    role = RoleId.PIAF
+    role = RoleId.Chouettos
   }
   return (
     <Svg $taken={taken} $critical={critical}>
