@@ -55,8 +55,6 @@ const Slot = ({ slot }: Props) => {
     setOpen(false)
   }
 
-  const critical = isCritical(slot)
-
   return (
     <>
       <ClickableSlot $open={open} onClick={handleClick}>
@@ -69,7 +67,7 @@ const Slot = ({ slot }: Props) => {
         </Title>
         <List>
           {slot.piafs?.map((piaf) => (
-            <PiafCircle key={piaf.id} piaf={piaf} critical={critical && !isTaken(piaf)} />
+            <PiafCircle key={piaf.id} piaf={piaf} critical={isCritical(slot, piaf) && !isTaken(piaf)} />
           ))}
         </List>
       </ClickableSlot>

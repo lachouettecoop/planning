@@ -28,7 +28,7 @@ export const isTaken = (piaf: PIAF) => {
   return Boolean(piaf.piaffeur)
 }
 
-export const isCritical = (slot: ISlot) => {
+export const isCritical = (slot: ISlot, piaf: PIAF) => {
   if (!slot.piafs) {
     return false
   }
@@ -36,7 +36,11 @@ export const isCritical = (slot: ISlot) => {
     return false
   }
   const countTaken = slot.piafs.filter(isTaken).length
-  return countTaken < CRITICAL_MINIMUM_TAKEN
+  return (
+    countTaken < CRITICAL_MINIMUM_TAKEN ||
+    piaf.role?.roleUniqueId == RoleId.GrandHibou ||
+    piaf.role?.roleUniqueId == RoleId.Caissier
+  )
 }
 
 export const orderPiafsByDate = (left: PIAF, right: PIAF) => (left.creneau.debut > right.creneau.debut ? 1 : -1)
