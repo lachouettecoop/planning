@@ -21,7 +21,7 @@ import { formatName } from "src/helpers/user"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
-const PERCENTAGE_NEW_CHOUETTOS = 50
+//const PERCENTAGE_NEW_CHOUETTOS = 50
 const ADMIN_ROLES = [RoleId.AdminBdM, RoleId.AdminMag]
 
 const Row = styled.div`
@@ -63,7 +63,8 @@ const getPiafCount = async (slot: ISlot, userId: string, type: "week" | "day") =
   //The filter by statut on the database does not work
   return data.piafs.filter((p) => p.statut === "occupe" && p.nonPourvu === false).length
 }
-
+/*
+Feature not available due to the reset of the counters
 const checkMaximumNumberOfNewChouettos = (user: User, piaf: PIAF) => {
   // There is a maximum percentage for PIAF of new Chouettos
   if (user.nbPiafEffectuees === 0) {
@@ -76,7 +77,7 @@ const checkMaximumNumberOfNewChouettos = (user: User, piaf: PIAF) => {
     }
   }
   return true
-}
+}*/
 const getRegistrationPiaf = (slot: ISlot, piaf: PIAF) => {
   const replacementPiaf = slot.piafs?.find(
     ({ statut, role }) => statut === "remplacement" && role?.id === piaf.role?.id
@@ -170,12 +171,12 @@ const PiafRow = ({ piaf, slot }: Props) => {
         return
       }
 
-      if (!checkMaximumNumberOfNewChouettos(loggedUser, piaf)) {
+      /* if (!checkMaximumNumberOfNewChouettos(loggedUser, piaf)) {
         setLoading(false)
         openDialog(`Il n’est pas possible d’avoir plus de ${PERCENTAGE_NEW_CHOUETTOS}% de nouveaux chouettos par PIAF`)
         return
       }
-
+*/
       const ok = await openQuestion(
         `Es-tu sûr·e de vouloir t’inscrire à cette PIAF du ${formatDateShort(slot.start)} en tant que ${
           piaf.role.libelle
