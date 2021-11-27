@@ -73,6 +73,7 @@ export interface User {
   nbPiafAttendues: number
   nbPiafGH?: number
   nbPiafCaisse?: number
+  affichageDonneesPersonnelles: boolean
 }
 
 export interface Creneau {

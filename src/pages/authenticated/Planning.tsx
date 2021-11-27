@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react"
+
 import type { Creneau } from "src/types/model"
 
 import { Button, Typography } from "@material-ui/core"
@@ -9,8 +11,10 @@ import Loader from "src/components/Loader"
 import Calendar from "src/components/Calendar"
 import IconsCaption, { CaptionDialog } from "src/components/IconsCaption"
 import { useDatePlanning } from "src/providers/datePlanning"
+import { useUser } from "src/providers/user"
 import { formatMonthYear } from "src/helpers/date"
 import { ErrorBlock } from "src/helpers/errors"
+import PrivacyPolicy from "src/components/PrivacyPolicy"
 
 const Loading = styled.div`
   border: 2px solid gray;
@@ -64,6 +68,12 @@ const BottomCaption = styled.div`
 const orderSlotsByDate = (left: Creneau, right: Creneau) => (left.debut > right.debut ? 1 : -1)
 
 const PlanningPage = () => {
+  const { user } = useUser<true>()
+  const [displayPrivacyPolicyDialog, setDisplayPrivacyPolicyDialog] = useState(false)
+  useEffect(() => {
+    if (user) setDisplayPrivacyPolicyDialog(!user.affichageDonneesPersonnelles)
+  }, [user])
+
   const { goBack, goForward, goToday, start, end, data, error, loading } = useDatePlanning()
   if (error) {
     return <ErrorBlock error={error} />
@@ -104,7 +114,10 @@ const PlanningPage = () => {
           <Loader />
         </Loading>
       ) : (
-        <Calendar start={start} end={end} list={slots} />
+        <>
+          {displayPrivacyPolicyDialog && <PrivacyPolicy />}
+          <Calendar start={start} end={end} list={slots} />
+        </>
       )}
       <BottomCaption>
         <IconsCaption />

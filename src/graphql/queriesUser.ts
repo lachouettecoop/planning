@@ -19,16 +19,25 @@ export const LOGGED_IN_USER = gql`
       nbPiafAttendues
       nbPiafGH
       nbPiafCaisse
+      affichageDonneesPersonnelles
     }
   }
 `
 export const USER_UPDATE = gql`
-  mutation USER_UPDATE($idUser: ID!, $email: String, $telephone: String) {
-    updateUser(input: { id: $idUser, email: $email, telephone: $telephone }) {
+  mutation USER_UPDATE($idUser: ID!, $email: String, $telephone: String, $affichageDonneesPersonnelles: Boolean) {
+    updateUser(
+      input: {
+        id: $idUser
+        email: $email
+        telephone: $telephone
+        affichageDonneesPersonnelles: $affichageDonneesPersonnelles
+      }
+    ) {
       user {
         id
         email
         telephone
+        affichageDonneesPersonnelles
       }
     }
   }
