@@ -9,11 +9,17 @@ import { formatTime } from "src/helpers/date"
 import { isCritical, isTaken } from "src/helpers/piaf"
 
 const SELECTED_COLOR = "#FFFFAA"
+const TRAINING_COLOR = "#89C7A8"
 
-const ClickableSlot = styled.button<{ $open: boolean }>`
+const ClickableSlot = styled.button<{ $open: boolean; $slotTitle: string }>`
   width: 100%;
   border: none;
-  background-color: ${({ $open }) => ($open ? SELECTED_COLOR : "transparent")};
+  background-color: ${({ $open, $slotTitle }) =>
+    $open
+      ? SELECTED_COLOR
+      : $slotTitle.toLowerCase().toString().startsWith("formation")
+      ? TRAINING_COLOR
+      : "transparent"};
   padding: 5px;
   text-align: left;
   font-size: inherit;
@@ -57,7 +63,7 @@ const Slot = ({ slot }: Props) => {
 
   return (
     <>
-      <ClickableSlot $open={open} onClick={handleClick}>
+      <ClickableSlot $open={open} $slotTitle={slot.title || ""} onClick={handleClick}>
         <Title>
           <strong>
             {formatTime(slot.start)}–{formatTime(slot.end)}
