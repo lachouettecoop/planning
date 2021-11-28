@@ -256,12 +256,16 @@ const PiafRow = ({ piaf, slot }: Props) => {
         <br />
         <span> {piafRole?.libelle}</span>
       </Status>
-      {taken && showInfos && piaffeur && piaffeur.id != user?.id && (
+      {taken && piaffeur && piaffeur.id != user?.id && (
         <Contact>
-          <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
-          <br />
-          <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
-          <br />
+          {showInfos && (
+            <>
+              <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
+              <br />
+              <a href={`tel:${piaffeur.telephone}`}>{piaffeur.telephone}</a>
+              <br />
+            </>
+          )}
           {informations}
         </Contact>
       )}
