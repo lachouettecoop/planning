@@ -1,7 +1,7 @@
 import type { PIAF } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
-import { startOfToday, addMonths } from "date-fns"
+import { startOfToday, addMonths, addWeeks } from "date-fns"
 import { List } from "@material-ui/core"
 
 import Loader from "src/components/Loader"
@@ -42,7 +42,13 @@ const ReplacementPiafs = () => {
   const userRoles = user?.rolesChouette || []
 
   const otherPiafs = data.piafs
-    .filter((piaf) => getId(piaf.piaffeur?.id) !== auth.id && piaf.role && hasRole(piaf.role.roleUniqueId, userRoles))
+    .filter(
+      (piaf) =>
+        getId(piaf.piaffeur?.id) !== auth.id &&
+        piaf.role &&
+        hasRole(piaf.role.roleUniqueId, userRoles) &&
+        new Date(piaf.creneau.debut) < addWeeks(startOfToday(), 2)
+    )
     .sort(orderPiafsByDate)
 
   if (!otherPiafs.length) {
