@@ -8,6 +8,21 @@ import UserPiafs from "src/components/UserPiafs"
 import ReplacementPiafs from "src/components/ReplacementPiafs"
 import { queryDate } from "src/helpers/date"
 
+// https://style.lachouettecoop.fr/#/couleurs
+// TODO: use constants
+// https://github.com/lachouettecoop/chouette-admin-chouettos/blob/master/src/Controller/PlanningController.php#L99-L105
+const COLORS: Record<string, string> = {
+  "très chouette": "#2ECC40",
+  chouette: "#FF851B",
+  "chouette en alerte": "#FF4136",
+}
+const StatusText = styled(Typography)<{ $status?: string }>`
+  color: ${({ $status, theme }) => ($status && COLORS[$status]) || theme.palette.secondary.main};
+  &::first-letter {
+    text-transform: uppercase;
+  }
+`
+
 const Container = styled.div`
   min-height: calc(100vh - 132px);
   display: flex;
@@ -28,23 +43,33 @@ const Content = styled.div`
   }
 `
 const Status = styled.div`
-  p {
-    color: ${({ theme }) => theme.palette.secondary.main};
+  h3 {
+    font-size: 2.5rem;
+    span {
+      font-size: 0.5em;
+    }
+    margin-bottom: 2rem;
   }
 `
 
 const HomePage = () => {
   const { user } = useUser<true>()
 
+  const counter = `${user?.nbPiafEffectuees ?? "…"}/${user?.nbPiafAttendues ?? "…"}`
+  const status = user?.statut || "…"
+
   return (
     <Container>
       <Content>
         <Status>
           <Typography variant="h2">Mon statut</Typography>
-          <p>
-            Ton compteur de PIAF effectuées et ton statut ne seront disponibles qu’après la remise à zéro des compteurs,
-            soit le 29 novembre. D’ici là, ta participation actuelle est mise à disposition à l’accueil du magasin.
-          </p>
+          <Typography variant="h3">
+            {counter} <span>PIAF attendues</span>
+          </Typography>
+          <Typography variant="h2">Je suis</Typography>
+          <StatusText variant="h3" $status={user?.statut}>
+            {status}
+          </StatusText>
         </Status>
         <div>
           <Typography variant="h2">Mes prochaines PIAF</Typography>
