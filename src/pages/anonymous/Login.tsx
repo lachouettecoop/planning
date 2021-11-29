@@ -18,6 +18,11 @@ const Header = styled.div`
   }
 `
 
+const ResetPassword = styled.div`
+  margin: 5px;
+  float: right;
+`
+
 const LoginPage = () => {
   const [loading, setLoading] = useState(false)
   const { login } = useUser()
@@ -57,6 +62,9 @@ const LoginPage = () => {
         </p>
         <TextField type="email" name="username" label="E-mail" fullWidth variant="outlined" margin="normal" />
         <TextField type="password" name="password" label="Mot de passe" fullWidth variant="outlined" margin="normal" />
+        <ResetPassword>
+          <a href="https://adminchouettos.lachouettecoop.fr/resetting/request">Mot de passe oublié ?</a>
+        </ResetPassword>
         <Button type="submit" fullWidth size="large" variant="contained" color="primary" disabled={loading}>
           Connexion
         </Button>
