@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react"
-import { Container, TextField, Button, Typography } from "@material-ui/core"
+import { Container, TextField, Button, Typography, IconButton, Tooltip } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
+import { VisibilityOff, Visibility } from "@material-ui/icons"
 
 import { useUser, Auth } from "src/providers/user"
 import { post } from "src/helpers/request"
@@ -17,6 +18,9 @@ const Header = styled.div`
     margin: -20px 0;
   }
 `
+const ConexionButton = styled(Button)`
+  margin-bottom: 15px;
+`
 
 const ResetPassword = styled.div`
   margin: 5px;
@@ -25,6 +29,7 @@ const ResetPassword = styled.div`
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const { login } = useUser()
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -49,6 +54,10 @@ const LoginPage = () => {
     }
   }
 
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+
   return (
     <Container maxWidth="xs">
       <Header>
@@ -57,17 +66,34 @@ const LoginPage = () => {
       </Header>
       <form onSubmit={handleSubmit}>
         <p>
-          Cette application permet de gérer le planning des PIAF du magasin. Connecte-toi avec tes identifiants
-          habituels.
+          Pour te connecter, l’identifiant et le mot de passe sont les mêmes que ceux que tu utilises pour aller sur
+          l’espace membres. Si tu réinitialises ton mot de passe, le changement sera donc valable aussi pour l’espace
+          membres.
         </p>
         <TextField type="email" name="username" label="E-mail" fullWidth variant="outlined" margin="normal" />
-        <TextField type="password" name="password" label="Mot de passe" fullWidth variant="outlined" margin="normal" />
+        <TextField
+          type={showPassword ? "text" : "password"}
+          name="password"
+          label="Mot de passe"
+          fullWidth
+          variant="outlined"
+          margin="normal"
+          InputProps={{
+            endAdornment: (
+              <Tooltip title={showPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}>
+                <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </Tooltip>
+            ),
+          }}
+        />
         <ResetPassword>
           <a href="https://adminchouettos.lachouettecoop.fr/resetting/request">Mot de passe oublié ?</a>
         </ResetPassword>
-        <Button type="submit" fullWidth size="large" variant="contained" color="primary" disabled={loading}>
+        <ConexionButton type="submit" fullWidth size="large" variant="contained" color="primary" disabled={loading}>
           Connexion
-        </Button>
+        </ConexionButton>
       </form>
     </Container>
   )
