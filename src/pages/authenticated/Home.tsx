@@ -17,7 +17,7 @@ const COLORS: Record<string, string> = {
   "chouette en alerte": "#FF4136",
 }
 const StatusText = styled(Typography)<{ $status?: string }>`
-  color: ${({ $status, theme }) => ($status && COLORS[$status]) || theme.palette.secondary.main};
+  color: ${({ $status, theme }) => ($status && COLORS[$status.toLowerCase()]) || theme.palette.secondary.main};
   &::first-letter {
     text-transform: uppercase;
   }
