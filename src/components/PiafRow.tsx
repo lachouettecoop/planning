@@ -242,7 +242,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
 
   const { piaffeur, informations } = piaf
   const taken = isTaken(piaf)
-  const isFuture = !isPast(slot.start)
+  const isFuture = !isPast(slot.end)
   const piafRole = roles.find(({ roleUniqueId }) => roleUniqueId == getPiafRole(piaf))
 
   // show contact infos only if the current user is the GH of the slot or is an admin

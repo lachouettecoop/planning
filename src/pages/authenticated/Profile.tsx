@@ -131,7 +131,7 @@ const ProfilePage = () => {
           Enregistrer
         </Button>
         <Button color="primary" disabled={saving} onClick={handleOpenAbsenceDialog}>
-          Tu ne peux pas faire des PIAF pendant 2 mois, c’est par ici!
+          Tu ne peux pas faire des PIAF pendant au moins 2 mois, c’est par ici!
         </Button>
       </form>
       <LongAbsence show={openAbsenceDialog} handleClose={handleCloseAbsenceDialog} user={user} />

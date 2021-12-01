@@ -9,7 +9,8 @@ import { formatTime } from "src/helpers/date"
 import { isCritical, isTaken } from "src/helpers/piaf"
 
 const SELECTED_COLOR = "#FFFFAA"
-const TRAINING_COLOR = "#89C7A8"
+const HIGHLIGHT_COLOR = "#89C7A8"
+const HIGHLIGHTED_SLOTS = ["inventaire", "formation"]
 
 const ClickableSlot = styled.button<{ $open: boolean; $slotTitle: string }>`
   width: 100%;
@@ -17,8 +18,8 @@ const ClickableSlot = styled.button<{ $open: boolean; $slotTitle: string }>`
   background-color: ${({ $open, $slotTitle }) =>
     $open
       ? SELECTED_COLOR
-      : $slotTitle.toLowerCase().toString().startsWith("formation")
-      ? TRAINING_COLOR
+      : HIGHLIGHTED_SLOTS.some((title) => $slotTitle.toLowerCase().toString().startsWith(title))
+      ? HIGHLIGHT_COLOR
       : "transparent"};
   padding: 5px;
   text-align: left;
