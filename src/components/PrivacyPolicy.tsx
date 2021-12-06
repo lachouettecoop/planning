@@ -47,19 +47,20 @@ const PrivacyPolicy = () => {
       <DialogContent>
         <p>
           {" "}
-          Tu n’as pas accepté l’accès à tes coordonnées (mail et num de téléphone) par les autres coopérateurs•rices.
-          Les afficher facilite le bon fonctionnement de l’outil participation.{" "}
+          Tu n’as pas autorisé l’accès à tes coordonnées (email et numéro de téléphone) par les autres
+          coopérateurs•rices. Les afficher facilite la communication (par example en cas d’indisponibilité au dernier
+          moment), et facilite ainsi l’organisation des PIAF.{" "}
         </p>
         <p>
-          Il est possible à tout moment de modifier ton choix depuis <Link to="/profile"> mon profil</Link>
+          Il est possible à tout moment de modifier ce choix depuis <Link to="/profile"> mon profil</Link>
         </p>
       </DialogContent>
 
       <Button onClick={handleAccept} color="primary">
-        Je comprends et j’accepte que mes donnés soient affichés sur le planning
+        J’accepte que mes coordonnées soient visibles par les autres coopérateurs·rices
       </Button>
       <Button onClick={handleClose} color="primary">
-        Je decide plus tard
+        Je décide plus tard
       </Button>
       <Button onClick={handleDismiss} color="primary">
         Je ne veux pas afficher mes coordonées
