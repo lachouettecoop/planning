@@ -153,9 +153,11 @@ const ProfilePage = () => {
         <UserDataShare>
           <p>
             {" "}
-            L’accès à mes coordonnées (mail et num de téléphone) par les autres coopérateurs·rices facilite le bon
-            fonctionnement de l’outil participation.
+            L’accès à mes coordonnées (email et numéro de téléphone) par les autres coopérateurs·rices facilite la
+            communication (par example en cas d’indisponibilité au dernier moment), et facilite ainsi l’organisation des
+            PIAF.
           </p>
+          <p>Il est possible à tout moment de modifier ce choix</p>
           <RadioGroup
             aria-label="displayMyContactDetails"
             defaultValue="false"
@@ -166,9 +168,9 @@ const ProfilePage = () => {
             <FormControlLabel
               value="true"
               control={<Radio />}
-              label="Je comprends et j’accepte que mes donnés soient affichés sur le planning"
+              label="Je comprends et j’accepte que mes coordonnées soient visibles par les autres coopérateurs·rices"
             />
-            <FormControlLabel value="false" control={<Radio />} label="Je n’accepte pas" />
+            <FormControlLabel value="false" control={<Radio />} label="Je ne veux pas afficher mes coordonées" />
           </RadioGroup>
         </UserDataShare>
         <Button color="primary" variant="contained" disabled={saving} type="submit">
