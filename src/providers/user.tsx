@@ -18,6 +18,7 @@ export interface IUserContext<IsAuthenticated extends boolean = false> {
   user: User | null
   login: (auth: Auth) => void
   logout: () => void
+  refetchUser: () => void
 }
 
 const UserContext = createContext<IUserContext>({} as IUserContext)
@@ -67,7 +68,20 @@ export const UserProvider: FC = ({ children }) => {
     localStorage.removeItem(STORAGE_KEY)
   }
 
-  return <UserContext.Provider value={{ auth, user, login, logout }}>{children}</UserContext.Provider>
+  const refetchUser = () => {
+    if (auth) {
+      apollo
+        .query<{ user: User }>({
+          query: LOGGED_IN_USER,
+          variables: { id: `api/users/${auth.id}` },
+        })
+        .then(({ data }) => {
+          setUser(data.user)
+        })
+    }
+  }
+
+  return <UserContext.Provider value={{ auth, user, login, logout, refetchUser }}>{children}</UserContext.Provider>
 }
 
 export function useUser<IsAuthenticated extends boolean = false>() {

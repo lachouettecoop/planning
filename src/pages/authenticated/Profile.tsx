@@ -1,6 +1,15 @@
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { Phone, Mail } from "@material-ui/icons"
-import { Button, InputAdornment, TextField, Typography } from "@material-ui/core"
+import {
+  Button,
+  InputAdornment,
+  TextField,
+  Typography,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  FormControl,
+} from "@material-ui/core"
 import styled from "@emotion/styled/macro"
 
 import Loader from "src/components/Loader"
@@ -32,14 +41,19 @@ const Container = styled.div`
   }
 `
 
+const UserDataShare = styled(FormControl)`
+  margin: 10px 0;
+`
+
 const ProfilePage = () => {
-  const { user } = useUser<true>()
+  const { user, refetchUser } = useUser<true>()
   const [saving, setSaving] = useState(false)
   const { openDialog } = useDialog()
   const [openAbsenceDialog, setOpenAbsenceDialog] = useState(false)
   const [values, setValues] = useState({
     email: user?.email || "",
     telephone: user?.telephone || "",
+    affichageDonneesPersonnelles: user?.affichageDonneesPersonnelles,
   })
 
   useEffect(() => {
@@ -47,6 +61,7 @@ const ProfilePage = () => {
       setValues({
         email: user.email,
         telephone: user.telephone,
+        affichageDonneesPersonnelles: user.affichageDonneesPersonnelles,
       })
     }
   }, [user])
@@ -67,6 +82,7 @@ const ProfilePage = () => {
         mutation: USER_UPDATE,
         variables: { ...values, idUser: user?.id },
       })
+      refetchUser()
       openDialog("Tes informations ont bien été mises à jour")
     } catch (error) {
       handleError(error as Error)
@@ -80,6 +96,13 @@ const ProfilePage = () => {
 
   const handleCloseAbsenceDialog = () => {
     setOpenAbsenceDialog(false)
+  }
+
+  const handleDisplayContactDetails = (event: ChangeEvent<HTMLInputElement>) => {
+    setValues({
+      ...values,
+      affichageDonneesPersonnelles: event.target.value.toLowerCase() == "true", //Convert to bool
+    })
   }
 
   if (!user) {
@@ -127,6 +150,33 @@ const ProfilePage = () => {
             ),
           }}
         />
+        <UserDataShare>
+          <p>
+            {" "}
+            L’accès à mes coordonnées (email et numéro de téléphone) par tous les coopérateurs·rices facilite la
+            communication entre coopérateurs·rices et optimise l’organisation des PIAF au magasin, par exemple en cas
+            d’indisponibilité au dernier moment.
+          </p>
+          <p>Je peux modifier ce choix à tout moment.</p>
+          <RadioGroup
+            aria-label="displayMyContactDetails"
+            defaultValue="false"
+            name="radio-buttons-group"
+            value={values.affichageDonneesPersonnelles ? "true" : "false"}
+            onChange={handleDisplayContactDetails}
+          >
+            <FormControlLabel
+              value="true"
+              control={<Radio />}
+              label="Je comprends et j’accepte que mes coordonnées soient visibles par tous·tes les coopérateurs·rices"
+            />
+            <FormControlLabel
+              value="false"
+              control={<Radio />}
+              label="Je n’accepte pas que mes coordonnées soient visibles"
+            />
+          </RadioGroup>
+        </UserDataShare>
         <Button color="primary" variant="contained" disabled={saving} type="submit">
           Enregistrer
         </Button>

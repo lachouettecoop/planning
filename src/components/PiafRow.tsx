@@ -245,8 +245,14 @@ const PiafRow = ({ piaf, slot }: Props) => {
   const isFuture = !isPast(slot.end)
   const piafRole = roles.find(({ roleUniqueId }) => roleUniqueId == getPiafRole(piaf))
 
-  // show contact infos only if the current user is the GH of the slot or is an admin
-  const showInfos = currentUserIsAdmin || currentUserPiafInSlot?.role?.roleUniqueId === RoleId.GrandHibou
+  // show contact infos only if:
+  //   the current user is the GH of the slot
+  //   is an admin
+  //   the user displayed has accepted to share the info
+  const showInfos =
+    currentUserIsAdmin ||
+    currentUserPiafInSlot?.role?.roleUniqueId === RoleId.GrandHibou ||
+    piaffeur?.affichageDonneesPersonnelles
 
   return (
     <Row>
