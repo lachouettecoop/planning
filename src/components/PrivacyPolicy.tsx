@@ -48,7 +48,7 @@ const PrivacyPolicy = () => {
         <p>
           {" "}
           Par défaut, tes coordonnées (email et numéro de téléphone) ne sont pas visibles par les autres
-          coopérateurs·rices. Les rendre accessibles facilite la communication entre coopérateurs et optimise
+          coopérateurs·rices. Les rendre accessibles facilite la communication entre coopérateurs·rices et optimise
           l’organisation des PIAF au magasin, par exemple en cas d’indisponibilité au dernier moment.{" "}
         </p>
         <p>
