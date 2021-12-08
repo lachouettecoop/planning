@@ -47,23 +47,23 @@ const PrivacyPolicy = () => {
       <DialogContent>
         <p>
           {" "}
-          Tu n’as pas autorisé l’accès à tes coordonnées (email et numéro de téléphone) par les autres
-          coopérateurs•rices. Les afficher facilite la communication (par example en cas d’indisponibilité au dernier
-          moment), et facilite ainsi l’organisation des PIAF.{" "}
+          Par défaut, tes coordonnées (email et numéro de téléphone) ne sont pas visibles par les autres
+          coopérateurs·rices. Les rendre accessibles facilite la communication entre coopérateurs·rices et optimise
+          l’organisation des PIAF au magasin, par exemple en cas d’indisponibilité au dernier moment.{" "}
         </p>
         <p>
-          Il est possible à tout moment de modifier ce choix depuis <Link to="/profile"> mon profil</Link>
+          Ce choix est modifiable à tout moment depuis <Link to="/profile"> mon profil</Link>
         </p>
       </DialogContent>
 
       <Button onClick={handleAccept} color="primary">
-        J’accepte que mes coordonnées soient visibles par les autres coopérateurs·rices
+        Je comprends et j’accepte que mes coordonnées soient visibles par tous·tes les coopérateurs·rices
       </Button>
       <Button onClick={handleClose} color="primary">
         Je décide plus tard
       </Button>
       <Button onClick={handleDismiss} color="primary">
-        Je ne veux pas afficher mes coordonées
+        Je n’accepte pas que mes coordonnées soient visibles
       </Button>
     </Dialog>
   )
