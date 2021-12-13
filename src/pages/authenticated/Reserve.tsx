@@ -2,6 +2,7 @@ import { CreneauGenerique, Reserve } from "src/types/model"
 import { IReserve } from "src/types/app"
 
 import { useEffect, useState, ChangeEvent } from "react"
+import { Prompt } from "react-router"
 import { Button, FormGroup, FormControlLabel, Checkbox, TextField, Typography } from "@material-ui/core"
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled/macro"
@@ -43,6 +44,7 @@ const ReservePage = () => {
   const { openDialog } = useDialog()
   const [information, setInformation] = useState<string>("")
   const [slots, setSlots] = useState<string[]>([])
+  const [unsavedChanges, setUnsavedChanges] = useState(false)
 
   const { data: dataCreneauxList, loading: loadingCL, error: errorCreneauxList } = useQuery<ResultCG>(
     CRENEAUX_GENERIQUES
@@ -59,6 +61,20 @@ const ReservePage = () => {
       setSlots(dataCreneauxUser.reserves[0].creneauGeneriques.map((cg) => cg.id))
     }
   }, [dataCreneauxUser])
+
+  useEffect(() => {
+    const alertUser = (e: any) => {
+      if (unsavedChanges) {
+        e.preventDefault()
+        e.returnValue = ""
+      }
+    }
+
+    window.addEventListener("beforeunload", alertUser)
+    return () => {
+      window.removeEventListener("beforeunload", alertUser)
+    }
+  }, [unsavedChanges])
 
   const queryError = errorCreneauxList || errorReserve
   if (queryError) {
@@ -103,6 +119,7 @@ const ReservePage = () => {
 
   const handleInfoChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
     setInformation(target.value)
+    setUnsavedChanges(true)
   }
 
   const getSlots = (idCreneauGenerique: string) => {
@@ -127,6 +144,7 @@ const ReservePage = () => {
       })
       setSlots(temp)
     }
+    setUnsavedChanges(true)
   }
 
   const handleSave = async () => {
@@ -147,6 +165,8 @@ const ReservePage = () => {
         variables,
       })
 
+      setUnsavedChanges(false)
+
       const text = variables.id
         ? "Ton inscription à la réserve a bien été mise à jour"
         : "Tu es désormais inscrit·e à la reserve"
@@ -161,6 +181,10 @@ const ReservePage = () => {
 
   return (
     <>
+      <Prompt
+        when={unsavedChanges}
+        message="Les changements n'ont pas été enregistrés, es-tu sûr·e de vouloir abandonner la page?"
+      />
       <Typography variant="h2">Réserve</Typography>
       {loading ? (
         <Loading>
