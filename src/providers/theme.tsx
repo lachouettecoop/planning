@@ -83,6 +83,11 @@ const THEME = createMuiTheme(
       tonalOffset: 0.2,
     },
     overrides: {
+      MuiTooltip: {
+        tooltip: {
+          fontSize: "1rem",
+        },
+      },
       MuiCssBaseline: {
         "@global": {
           a: {
