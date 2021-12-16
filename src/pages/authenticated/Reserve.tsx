@@ -1,9 +1,9 @@
 import { CreneauGenerique, Reserve } from "src/types/model"
 import { IReserve } from "src/types/app"
 
-import { useEffect, useState, ChangeEvent } from "react"
+import { useEffect, useState } from "react"
 import { Prompt } from "react-router"
-import { Button, FormGroup, FormControlLabel, Checkbox, TextField, Typography } from "@material-ui/core"
+import { Button, FormGroup, FormControlLabel, Checkbox, Typography } from "@material-ui/core"
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled/macro"
 
@@ -31,9 +31,10 @@ const ReserveGrid = styled.div`
     }
   }
 `
+/*
 const Infos = styled.div`
   margin: 20px 0 40px;
-`
+`*/
 
 type ResultCG = { creneauGeneriques: CreneauGenerique[] }
 type ResultRU = { reserves: Reserve[] }
@@ -117,10 +118,11 @@ const ReservePage = () => {
     }
   }
 
+  /*
   const handleInfoChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
     setInformation(target.value)
     setUnsavedChanges(true)
-  }
+  }*/
 
   const getSlots = (idCreneauGenerique: string) => {
     let list: string[] = []
@@ -218,7 +220,7 @@ const ReservePage = () => {
               </FormGroup>
             ))}
           </ReserveGrid>
-          <Infos>
+          {/* <Infos>
             <TextField
               multiline
               disabled={loading}
@@ -227,7 +229,7 @@ const ReservePage = () => {
               onChange={handleInfoChange}
               fullWidth
             />
-          </Infos>
+          </Infos> */}
           <Button disabled={saving} color="primary" variant="contained" onClick={handleSave}>
             Enregistrer
           </Button>
