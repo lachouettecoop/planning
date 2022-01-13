@@ -10,7 +10,8 @@ import PiafCircle from "src/components/PiafCircle"
 import { useDialog } from "src/providers/dialog"
 import { useRoles } from "src/providers/roles"
 import { useUser } from "src/providers/user"
-import { PIAFS_COUNT, REGISTRATION_UPDATE } from "src/graphql/queries"
+import { useDatePlanning } from "src/providers/datePlanning"
+import { PIAFS_COUNT, REGISTRATION_UPDATE, PIAF_GET } from "src/graphql/queries"
 import apollo from "src/helpers/apollo"
 import { hasRole } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
@@ -51,12 +52,13 @@ const InfoPiaf = styled.div`
   display: block;
 `
 
-type Result = { piafs: PIAF[] }
+type ResultPiafsCount = { piafs: PIAF[] }
+type ResultGetPiaf = { piaf: PIAF }
 
 const getPiafCount = async (slot: ISlot, userId: string, type: "week" | "day") => {
   const after = type === "day" ? startOfDay(slot.start) : startOfWeek(slot.start)
   const before = type === "day" ? endOfDay(slot.start) : endOfWeek(slot.start)
-  const { data } = await apollo.query<Result>({
+  const { data } = await apollo.query<ResultPiafsCount>({
     query: PIAFS_COUNT,
     variables: { userId, after, before },
   })
@@ -129,6 +131,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
   const { openDialog, openQuestion } = useDialog()
   const { user } = useUser<true>()
   const roles = useRoles()
+  const { refetch } = useDatePlanning()
 
   const currentUserIsAdmin = user
     ? ADMIN_ROLES.some((role) => user.rolesChouette.some(({ roleUniqueId }) => roleUniqueId === role))
@@ -141,45 +144,61 @@ const PiafRow = ({ piaf, slot }: Props) => {
     setInfo(target.value)
   }
 
-  const register = async () => {
-    if (!piaf.role) {
-      openDialog("Cette PIAF n’a pas de rôle. Contacte l’administrateur pour lui signaler cette erreur.")
-      return
+  const checksBeforeRegister = async (loggedUser: User) => {
+    //Check if the PIAF has still no registered person
+    const { data } = await apollo.query<ResultGetPiaf>({
+      query: PIAF_GET,
+      variables: { id: piaf.id },
+    })
+    if (data.piaf.piaffeur) {
+      openDialog("La PIAF a été déjà prise par un autre chouettos")
+      refetch()
+      return false
     }
 
-    try {
-      const userRoles = user?.rolesChouette
-      if (!userRoles || !hasRole(piaf.role.roleUniqueId, userRoles)) {
-        setLoading(false)
-        openDialog(`Pour t’inscrire à cette PIAF, tu dois d’abord passer la formation ${piaf.role.libelle}`)
-        return
-      }
+    if (!piaf.role) {
+      openDialog("Cette PIAF n’a pas de rôle. Contacte l’administrateur pour lui signaler cette erreur.")
+      return false
+    }
 
-      const loggedUser = user as User
+    const userRoles = user?.rolesChouette
+    if (!userRoles || !hasRole(piaf.role.roleUniqueId, userRoles)) {
+      setLoading(false)
+      openDialog(`Pour t’inscrire à cette PIAF, tu dois d’abord passer la formation ${piaf.role.libelle}`)
+      return false
+    }
 
-      const piafOfWeek = await getPiafCount(slot, loggedUser.id, "week")
-      if (piafOfWeek >= MAX_PIAF_PER_WEEK) {
-        setLoading(false)
-        openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_WEEK} PIAF par semaine`)
-        return
-      }
+    const piafOfWeek = await getPiafCount(slot, loggedUser.id, "week")
+    if (piafOfWeek >= MAX_PIAF_PER_WEEK) {
+      setLoading(false)
+      openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_WEEK} PIAF par semaine`)
+      return false
+    }
 
-      const piafOfDay = await getPiafCount(slot, loggedUser.id, "day")
-      if (piafOfDay >= MAX_PIAF_PER_DAY) {
-        setLoading(false)
-        openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
-        return
-      }
+    const piafOfDay = await getPiafCount(slot, loggedUser.id, "day")
+    if (piafOfDay >= MAX_PIAF_PER_DAY) {
+      setLoading(false)
+      openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
+      return false
+    }
 
-      /* if (!checkMaximumNumberOfNewChouettos(loggedUser, piaf)) {
-        setLoading(false)
-        openDialog(`Il n’est pas possible d’avoir plus de ${PERCENTAGE_NEW_CHOUETTOS}% de nouveaux chouettos par PIAF`)
-        return
-      }
+    /* if (!checkMaximumNumberOfNewChouettos(loggedUser, piaf)) {
+      setLoading(false)
+      openDialog(`Il n’est pas possible d’avoir plus de ${PERCENTAGE_NEW_CHOUETTOS}% de nouveaux chouettos par PIAF`)
+      return false
+    }
 */
+    return true
+  }
+
+  const register = async () => {
+    const loggedUser = user as User
+    if (!(await checksBeforeRegister(loggedUser))) return
+
+    try {
       const ok = await openQuestion(
         `Es-tu sûr·e de vouloir t’inscrire à cette PIAF du ${formatDateShort(slot.start)} en tant que ${
-          piaf.role.libelle
+          piaf.role?.libelle
         }?`
       )
 

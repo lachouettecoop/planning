@@ -252,6 +252,23 @@ export const PIAF_CREATE = gql`
   }
 `
 
+export const PIAF_GET = gql`
+  query PIAF_GET($id: ID!) {
+    piaf(id: $id) {
+      id
+      creneau {
+        id
+      }
+      piaffeur {
+        id
+      }
+      role {
+        id
+      }
+    }
+  }
+`
+
 export const ROLES = gql`
   query ROLES {
     roles {
