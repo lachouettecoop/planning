@@ -162,7 +162,7 @@ const ProfilePage = () => {
             name="email"
             label="Adresse e-mail"
             required
-            disabled={!user}
+            disabled={true}
             value={values.email}
             onChange={handleInputChange}
             fullWidth

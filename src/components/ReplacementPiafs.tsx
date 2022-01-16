@@ -15,14 +15,15 @@ import { hasRole } from "src/helpers/role"
 import { getId } from "src/helpers/apollo"
 
 type Result = { piafs: PIAF[] }
+const currentDate = new Date(Date.now())
 
 const ReplacementPiafs = () => {
   const { auth, user } = useUser<true>()
 
   const { loading, error, data } = useQuery<Result>(PIAFS, {
     variables: {
-      after: queryDate(startOfToday()),
-      before: queryDate(addMonths(startOfToday(), 2)),
+      after: queryDate(currentDate),
+      before: queryDate(addMonths(currentDate, 2)),
       statut: "remplacement",
     },
   })
@@ -47,7 +48,8 @@ const ReplacementPiafs = () => {
         getId(piaf.piaffeur?.id) !== auth.id &&
         piaf.role &&
         hasRole(piaf.role.roleUniqueId, userRoles) &&
-        new Date(piaf.creneau.debut) < addWeeks(startOfToday(), 2)
+        new Date(piaf.creneau.fin) < addWeeks(startOfToday(), 2) &&
+        new Date(piaf.creneau.fin) > currentDate
     )
     .sort(orderPiafsByDate)
 
