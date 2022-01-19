@@ -150,7 +150,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
       query: PIAF_GET,
       variables: { id: piaf.id },
     })
-    if (data.piaf.piaffeur) {
+    if (data.piaf.piaffeur && data.piaf.statut == "occupe") {
       openDialog("La PIAF a été déjà prise par un autre chouettos")
       refetch()
       return false
