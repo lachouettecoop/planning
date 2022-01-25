@@ -4,16 +4,13 @@ export enum RoleId {
   GrandHibou = "GH",
   Chouettos = "CH",
   Caissier = "CA",
-  GrandHibou_Formation = "GHF",
-  Caissier_Formation = "CAF",
-  GrandHibou_Acc = "GHA",
-  Caissier_Acc = "CAA",
+  GrandHibou_Formateur = "GHF",
+  Caissier_Formateur = "CAF",
   AdminMag = "MAG",
   AdminBdM = "BDM",
   // only for icons:
   PIAF = "P",
-  Formation = "F",
-  Acc = "A",
+  Formateur = "F",
 }
 
 export interface Role {

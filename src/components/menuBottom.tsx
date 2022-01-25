@@ -77,6 +77,7 @@ const MAIN_ITEMS = [
 const EXTRA_ITEMS = [
   //{ title: "Auto", href: "/auto", role: RoleId.Chouettos },
   { title: "Mon profil", href: "/profile", role: RoleId.Chouettos },
+  { title: "Historique des PIAF", href: "/history", role: RoleId.Chouettos },
   { title: "Espace membre", href: "/member", role: RoleId.Chouettos },
   { title: "Groupe MAG", href: "/magasin", role: RoleId.AdminMag },
   { title: "Groupe BdM", href: "/bdm", role: RoleId.AdminBdM },

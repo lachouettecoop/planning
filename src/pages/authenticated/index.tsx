@@ -12,6 +12,7 @@ import ProfilePage from "src/pages/authenticated/Profile"
 import ReservePage from "src/pages/authenticated/Reserve"
 import MagasinPage from "src/pages/authenticated/Magasin"
 import BdMPage from "src/pages/authenticated/BdM"
+import HistoryPage from "src/pages/authenticated/History"
 import LegalPage from "src/pages/Legal"
 
 const Content = styled.div`
@@ -40,6 +41,7 @@ const Authenticated = () => {
           <Route path="/bdm" component={BdMPage} />
           <Route path="/magasin" component={MagasinPage} />
           <Route path="/legal" component={LegalPage} />
+          <Route path="/history" component={HistoryPage} />
           <Redirect to={next || "/home"} />
         </Switch>
         <MenuBottom />

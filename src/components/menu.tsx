@@ -31,6 +31,7 @@ import {
   Event as EventIcon,
   Storefront as StorefrontIcon,
   CardMembership as CardMembershipIcon,
+  History as HistoryIcon,
 } from "@material-ui/icons"
 
 import Link from "src/components/Link"
@@ -129,6 +130,7 @@ const ITEMS = [
     role: RoleId.Chouettos,
   },*/
   { title: "Mon profil", href: "/profile", Icon: PersonIcon, role: RoleId.Chouettos },
+  { title: "Historique des PIAF", href: "/history", Icon: HistoryIcon, role: RoleId.Chouettos },
   { title: "Groupe MAG", href: "/magasin", Icon: StorefrontIcon, role: RoleId.AdminMag },
   { title: "Groupe BdM", href: "/bdm", Icon: CardMembershipIcon, role: RoleId.AdminBdM },
   {

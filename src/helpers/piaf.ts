@@ -10,14 +10,6 @@ export const getPiafRole = ({ role }: PIAF) => {
   if (!role) {
     return null
   }
-  /*if (piaffeur) {
-    if (role.roleUniqueId === RoleId.GrandHibou && !piaffeur.nbPiafGH) {
-      return RoleId.GrandHibou_Formation
-    }
-    if (role.roleUniqueId === RoleId.Caissier && !piaffeur.nbPiafCaisse) {
-      return RoleId.Caissier_Formation
-    }
-  }*/
   return role.roleUniqueId
 }
 
