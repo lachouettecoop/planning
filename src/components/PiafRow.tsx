@@ -298,7 +298,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
         <TextField
           name="informations"
           multiline
-          label="Informations (optionnel)"
+          label="Commentaire (optionnel)"
           value={info}
           onChange={handleInputChange}
         />
