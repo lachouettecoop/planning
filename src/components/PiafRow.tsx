@@ -48,6 +48,9 @@ const Contact = styled.div`
     text-decoration: none;
   }
 `
+const InfoTextField = styled(TextField)`
+  flex: 1;
+`
 const InfoPiaf = styled.div`
   display: block;
 `
@@ -295,7 +298,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
         </Contact>
       )}
       {!taken && !currentUserPiafInSlot && isFuture && (
-        <TextField
+        <InfoTextField
           name="informations"
           multiline
           label="Commentaire (optionnel)"
