@@ -14,12 +14,12 @@ export interface IDay {
   slots: ISlot[]
 }
 
-export type IWeekNumber = 1 | 2 | 3 | 4
+export type IWeekId = "A" | "B" | "C" | "D" | string
 
 export interface IWeek {
   start: Date
   days: IDay[]
-  weekNumber?: IWeekNumber
+  weekId?: IWeekId
 }
 
 export interface ISlotReserve {

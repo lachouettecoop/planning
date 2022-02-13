@@ -1,5 +1,5 @@
 import { differenceInDays } from "date-fns"
-import type { ISlot } from "src/types/app"
+import type { ISlot, IWeekId } from "src/types/app"
 
 import { PIAF, RoleId } from "src/types/model"
 
@@ -44,4 +44,9 @@ export const orderPiafsByRoleId = (left: PIAF, right: PIAF) => {
     return 2
   }
   return left.role.id > right.role.id ? 1 : -1
+}
+
+export const getWeekId = (creneauGenerique: string): IWeekId => {
+  const num = Number(creneauGenerique)
+  return num ? String.fromCharCode(64 + num) : creneauGenerique
 }

@@ -1,12 +1,12 @@
 import type { Creneau, PIAF } from "src/types/model"
-import type { IWeek, IWeekNumber } from "src/types/app"
+import type { IWeek } from "src/types/app"
 
 import { useMediaQuery, useTheme } from "@material-ui/core"
 import styled from "@emotion/styled/macro"
 import { addDays, differenceInWeeks, eachWeekOfInterval, getDay } from "date-fns"
 
 import CalendarDay, { DayPlaceholder } from "src/components/CalendarDay"
-import { orderPiafsByRoleId } from "src/helpers/piaf"
+import { getWeekId, orderPiafsByRoleId } from "src/helpers/piaf"
 
 const Container = styled.div`
   border: 1px solid gray;
@@ -68,7 +68,7 @@ const Calendar = ({ start, end, list }: Props) => {
     })
 
     if (node.creneauGenerique) {
-      week.weekNumber = Number(node.creneauGenerique.frequence) as IWeekNumber
+      week.weekId = getWeekId(node.creneauGenerique.frequence)
     }
   })
 
@@ -78,7 +78,7 @@ const Calendar = ({ start, end, list }: Props) => {
         <WeekRow key={index}>
           {week.days.map((day, i) =>
             day.start >= start && day.start < end ? (
-              <CalendarDay day={day} key={i} weekNumber={week.weekNumber} />
+              <CalendarDay day={day} key={i} weekId={week.weekId} />
             ) : matches ? null : (
               <DayPlaceholder key={i} />
             )
