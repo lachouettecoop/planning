@@ -26,6 +26,7 @@ const Header = styled.div<{ $weekId?: IWeekId }>`
 
 const Container = styled.div<{ $when: TimeStatus }>`
   opacity: ${({ $when }) => ($when === "past" ? 0.25 : 1)};
+  scroll-margin-top: 64px;
   border: 1px solid gray;
   min-height: 80px;
   background-color: ${({ $when }) => ($when === "present" ? "#d0d9d0" : "#eee")};
@@ -47,11 +48,19 @@ interface Props {
 
 const CalendarDay = ({ day, weekId }: Props) => {
   const { start, slots } = day
-  const isFirstDoW = start.getDay() === 1 || start.getDate() === 1
+  const today = isToday(start)
+  const monday = start.getDay() === 1 || start.getDate() === 1
 
   return (
-    <Container $when={isToday(start) ? "present" : isPast(start) ? "past" : "future"}>
-      <Header $weekId={weekId}>{isFirstDoW && weekId && `Semaine ${weekId}`}</Header>
+    <Container
+      $when={today ? "present" : isPast(start) ? "past" : "future"}
+      ref={(el) => {
+        if (today && el) {
+          el.scrollIntoView({ behavior: "smooth" })
+        }
+      }}
+    >
+      <Header $weekId={weekId}>{monday && weekId && `Semaine ${weekId}`}</Header>
       <Typography variant="h3">{capitalize(formatDateShort(start))}</Typography>
       <List>
         {slots.map((slot) => (
