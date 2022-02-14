@@ -2,6 +2,7 @@ import type { PIAF } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
 import { List } from "@material-ui/core"
+import { Link } from "react-router-dom"
 
 import Loader from "src/components/Loader"
 import Piaf from "src/components/Piaf"
@@ -36,7 +37,11 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
   }
 
   if (!data.piafs.length && !allowValidate) {
-    return <p>Aucune PIAF à venir. Inscris-toi sur le planning !</p>
+    return (
+      <p>
+        Aucune PIAF à venir. Inscris-toi sur <Link to="/planning">le planning</Link> !
+      </p>
+    )
   }
 
   if (!data.piafs.length && allowValidate) {
