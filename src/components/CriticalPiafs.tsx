@@ -1,7 +1,8 @@
 import type { PIAF } from "src/types/model"
+import type { ISlot } from "src/types/app"
 
 import { useQuery } from "@apollo/client"
-import { addWeeks } from "date-fns"
+import { addDays } from "date-fns"
 import { List } from "@material-ui/core"
 
 import Loader from "src/components/Loader"
@@ -10,21 +11,19 @@ import { useUser } from "src/providers/user"
 import { PIAFS } from "src/graphql/queries"
 import { queryDate } from "src/helpers/date"
 import { ErrorMessage } from "src/helpers/errors"
-import { orderPiafsByDate } from "src/helpers/piaf"
+import { isCritical, CRITICAL_DAYS, orderPiafsByDate, isTaken } from "src/helpers/piaf"
 import { hasRole } from "src/helpers/role"
-import { getId } from "src/helpers/apollo"
 
 type Result = { piafs: PIAF[] }
 
-const ReplacementPiafs = () => {
-  const { auth, user } = useUser<true>()
+const CriticalPiafs = () => {
+  const { user } = useUser<true>()
   const now = new Date()
 
   const { loading, error, data } = useQuery<Result>(PIAFS, {
     variables: {
       after: queryDate(now),
-      before: queryDate(addWeeks(now, 2)),
-      statut: "remplacement",
+      before: queryDate(addDays(now, CRITICAL_DAYS)),
     },
   })
 
@@ -42,10 +41,25 @@ const ReplacementPiafs = () => {
 
   const userRoles = user?.rolesChouette || []
 
+  const slots: Record<string, ISlot> = {}
+  data.piafs.forEach((piaf) => {
+    if (!slots[piaf.creneau.id]) {
+      slots[piaf.creneau.id] = {
+        id: piaf.creneau.id,
+        title: piaf.creneau.titre,
+        information: piaf.creneau.informations,
+        start: new Date(piaf.creneau.debut),
+        end: new Date(piaf.creneau.fin),
+        piafs: [],
+      }
+    }
+    slots[piaf.creneau.id].piafs!.push(piaf)
+  })
+
   const list = data.piafs
     .filter((piaf) => {
-      if (getId(piaf.piaffeur?.id) === auth.id) {
-        // own PIAF
+      if (isTaken(piaf)) {
+        // all good
         return false
       }
       if (!piaf.role) {
@@ -56,27 +70,26 @@ const ReplacementPiafs = () => {
         // user is not trained for this role
         return false
       }
-      return true
+      return isCritical(slots[piaf.creneau.id], piaf)
     })
     .sort(orderPiafsByDate)
 
   if (!list.length) {
-    return <p>Aucun remplacement à venir n’est demandé.</p>
+    return <p>Aucun créneau critique dans les jours à venir. Espérons que ça dure !</p>
   }
 
   return (
     <>
       <p>
-        Les créneaux suivants sont vacants et donc disponibles pour un remplacement. N’hésite pas à te positionner, la
-        personne que tu remplaces sera avertie par e-mail instantanément !
+        Les créneaux suivants sont vacants et critiques ! N’hésite pas à te positionner, le magasin a besoin de toi !
       </p>
       <List>
         {list.map((piaf) => (
-          <Piaf key={piaf.id} piaf={piaf} />
+          <Piaf key={piaf.id} piaf={piaf} critical />
         ))}
       </List>
     </>
   )
 }
 
-export default ReplacementPiafs
+export default CriticalPiafs

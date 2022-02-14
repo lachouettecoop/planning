@@ -6,11 +6,12 @@ import { Link } from "react-router-dom"
 import { useUser } from "src/providers/user"
 import UserPiafs from "src/components/UserPiafs"
 import ReplacementPiafs from "src/components/ReplacementPiafs"
+import CriticalPiafs from "src/components/CriticalPiafs"
 import { queryDate } from "src/helpers/date"
 
 // https://style.lachouettecoop.fr/#/couleurs
 // TODO: use constants
-// https://github.com/lachouettecoop/chouette-admin-chouettos/blob/master/src/Controller/PlanningController.php#L99-L105
+// https://github.com/lachouettecoop/chouette-admin-chouettos/blob/master/src/Controller/PlanningController.php#L79-L85
 const COLORS: Record<string, string> = {
   "très chouette": "#2ECC40",
   chouette: "#FF851B",
@@ -40,6 +41,9 @@ const Content = styled.div`
   > div {
     flex: 0 1 calc(50% - 16px);
     min-width: 300px;
+    @media (max-width: 750px) {
+      flex: 1;
+    }
   }
 `
 const Status = styled.div`
@@ -74,6 +78,10 @@ const HomePage = () => {
         <div>
           <Typography variant="h2">Mes prochaines PIAF</Typography>
           <UserPiafs userId={user?.id} after={queryDate(startOfToday())} />
+        </div>
+        <div>
+          <Typography variant="h2">Créneaux critiques</Typography>
+          <CriticalPiafs />
         </div>
         <div>
           <Typography variant="h2">Remplacements</Typography>

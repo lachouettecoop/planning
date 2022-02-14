@@ -3,7 +3,7 @@ import type { ISlot, IWeekId } from "src/types/app"
 
 import { PIAF, RoleId } from "src/types/model"
 
-const CRITICAL_DAYS = 5 // until how many days ahead a slot can be critical
+export const CRITICAL_DAYS = 5 // until how many days ahead a slot can be critical
 const CRITICAL_RATIO = 75 // % minimum ratio of taken PIAFs to not be a critical slot
 
 export const getPiafRole = ({ role }: PIAF) => {
@@ -21,6 +21,9 @@ export const isTaken = (piaf: PIAF) => {
 }
 
 export const isCritical = (slot: ISlot, piaf: PIAF) => {
+  if (isTaken(piaf)) {
+    return false
+  }
   if (!slot.piafs) {
     return false
   }

@@ -6,7 +6,7 @@ import styled from "@emotion/styled/macro"
 import SlotDialog from "src/components/SlotDialog"
 import PiafCircle from "src/components/PiafCircle"
 import { formatTime } from "src/helpers/date"
-import { isCritical, isTaken } from "src/helpers/piaf"
+import { isCritical } from "src/helpers/piaf"
 
 const SELECTED_COLOR = "#FFFFAA"
 const HIGHLIGHT_COLOR = "#89C7A8"
@@ -74,12 +74,7 @@ const Slot = ({ slot }: Props) => {
         </Title>
         <List>
           {slot.piafs?.map((piaf) => (
-            <PiafCircle
-              key={piaf.id}
-              piaf={piaf}
-              critical={isCritical(slot, piaf) && !isTaken(piaf)}
-              displayTooltip={true}
-            />
+            <PiafCircle key={piaf.id} piaf={piaf} critical={isCritical(slot, piaf)} displayTooltip={true} />
           ))}
         </List>
       </ClickableSlot>

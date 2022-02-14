@@ -15,7 +15,7 @@ import { PIAFS_COUNT, REGISTRATION_UPDATE, PIAF_GET } from "src/graphql/queries"
 import apollo from "src/helpers/apollo"
 import { hasRole } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
-import { isTaken, getPiafRole } from "src/helpers/piaf"
+import { isTaken, getPiafRole, isCritical } from "src/helpers/piaf"
 import { sendEmail } from "src/helpers/request"
 import { formatDateTime, formatDateShort } from "src/helpers/date"
 import { formatName } from "src/helpers/user"
@@ -278,7 +278,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
 
   return (
     <Row>
-      <PiafCircle piaf={piaf} />
+      <PiafCircle piaf={piaf} critical={isCritical(slot, piaf)} />
       <Status>
         {taken && piaffeur ? formatName(piaffeur) : "Place disponible"}
         <br />
