@@ -4,7 +4,7 @@ import type { ISlot, IWeekId } from "src/types/app"
 import { PIAF, RoleId } from "src/types/model"
 
 const CRITICAL_DAYS = 5 // until how many days ahead a slot can be critical
-const CRITICAL_MINIMUM_TAKEN = 3 // minimum number of taken PIAFs to not be a critical slot
+const CRITICAL_RATIO = 75 // % minimum ratio of taken PIAFs to not be a critical slot
 
 export const getPiafRole = ({ role }: PIAF) => {
   if (!role) {
@@ -27,12 +27,13 @@ export const isCritical = (slot: ISlot, piaf: PIAF) => {
   if (differenceInDays(slot.start, new Date()) > CRITICAL_DAYS) {
     return false
   }
+  if (piaf.role?.roleUniqueId == RoleId.GrandHibou || piaf.role?.roleUniqueId == RoleId.Caissier) {
+    return true
+  }
+  // TODO: we might want to calculate a ratio per type of slot instead of overall
   const countTaken = slot.piafs.filter(isTaken).length
-  return (
-    countTaken < CRITICAL_MINIMUM_TAKEN ||
-    piaf.role?.roleUniqueId == RoleId.GrandHibou ||
-    piaf.role?.roleUniqueId == RoleId.Caissier
-  )
+  const ratio = (100 * countTaken) / slot.piafs.length
+  return ratio < CRITICAL_RATIO
 }
 
 export const orderPiafsByDate = (left: PIAF, right: PIAF) => (left.creneau.debut > right.creneau.debut ? 1 : -1)
