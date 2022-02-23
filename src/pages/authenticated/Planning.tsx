@@ -25,6 +25,7 @@ const Loading = styled.div`
 `
 const Nav = styled.nav`
   display: flex;
+  justify-content: end;
   margin-bottom: 1rem;
   button:not(:first-of-type) {
     margin-left: 1rem;
@@ -41,7 +42,6 @@ const Nav = styled.nav`
 `
 const ButtonArea = styled.div`
   display: flex;
-  justify-content: end;
   ${({ theme }) => theme.breakpoints.down("sm")} {
     span.text {
       display: none;
@@ -55,6 +55,22 @@ const ButtonArea = styled.div`
     .MuiButton-endIcon {
       margin-left: -4px;
     }
+  }
+`
+const ButtonAreaBottom = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  span.text {
+    display: none;
+  }
+  .MuiButton-root {
+    min-width: 32px;
+  }
+  .MuiButton-startIcon {
+    margin-right: -4px;
+  }
+  .MuiButton-endIcon {
+    margin-left: -4px;
   }
 `
 const BottomCaption = styled.div`
@@ -119,6 +135,29 @@ const PlanningPage = () => {
           <Calendar start={start} end={end} list={slots} />
         </>
       )}
+      <Nav>
+        <ButtonAreaBottom>
+          <Button disabled={loading} variant="contained" color="primary" startIcon={<ArrowBackIos />} onClick={goBack}>
+            <span className="text">Précédent</span>
+          </Button>
+          <Button
+            disabled={loading || isSameMonth(start, new Date())}
+            variant="contained"
+            color="primary"
+            startIcon={<CalendarToday />}
+            onClick={goToday}
+          ></Button>
+          <Button
+            disabled={loading}
+            variant="contained"
+            color="primary"
+            endIcon={<ArrowForwardIos />}
+            onClick={goForward}
+          >
+            <span className="text">Suivant</span>
+          </Button>
+        </ButtonAreaBottom>
+      </Nav>
       <BottomCaption>
         <IconsCaption />
       </BottomCaption>
