@@ -148,6 +148,12 @@ const PiafRow = ({ piaf, slot }: Props) => {
   }
 
   const checksBeforeRegister = async (loggedUser: User) => {
+    if (loggedUser.absenceLongueDureeCourses || loggedUser.absenceLongueDureeSansCourses) {
+      openDialog(
+        "Ta participation aux PIAF du magasin est actuellement en pause. Tu peux la reprendre depuis la page d'accueil pour pouvoir t’inscrire à nouveau sur le planning"
+      )
+      return false
+    }
     //Check if the PIAF has still no registered person
     const { data } = await apollo.query<ResultGetPiaf>({
       query: PIAF_GET,

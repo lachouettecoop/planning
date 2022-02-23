@@ -16,7 +16,7 @@ import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
 
 import { useDialog } from "src/providers/dialog"
-import { formatDateLong } from "src/helpers/date"
+import { formatDateLong, queryDate } from "src/helpers/date"
 import { sendEmail } from "src/helpers/request"
 import { handleError } from "src/helpers/errors"
 import { formatName } from "src/helpers/user"
@@ -71,6 +71,8 @@ interface State {
   startDate: string
   endDate: string
 }
+
+const currentDate = new Date(Date.now())
 
 const LongAbsence = ({ show, handleClose, user }: Props) => {
   const { openDialog } = useDialog()
@@ -159,6 +161,7 @@ const LongAbsence = ({ show, handleClose, user }: Props) => {
               InputLabelProps={{
                 shrink: true,
               }}
+              inputProps={{ min: queryDate(currentDate) }}
             />
 
             {/*            <TextField

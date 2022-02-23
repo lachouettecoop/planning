@@ -57,6 +57,8 @@ jobs:
         repository: ${{ github.repository }}
         REACT_APP_API: https://adminchouettos.lachouettecoop.fr
         REACT_APP_MAIL_BDM: bureau-des-membres@lachouettecoop.fr
+        REACT_APP_MAIL_COMMISSION_PARTICIPATION: commission_participation_lcc@framalistes.org
+        REACT_APP_MAIL_SUPPORT: supportparticipation@lachouettecoop.fr
         REACT_APP_BUGSNAG_KEY: ${{ secrets.BUGSNAG_KEY }}
         REACT_APP_COMMIT: ${{ github.sha }}
         REACT_APP_AUTHOR: ${{ github.actor }}

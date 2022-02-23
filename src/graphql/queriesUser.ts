@@ -20,6 +20,8 @@ export const LOGGED_IN_USER = gql`
       nbPiafGH
       nbPiafCaisse
       affichageDonneesPersonnelles
+      absenceLongueDureeCourses
+      absenceLongueDureeSansCourses
     }
   }
 `
@@ -73,6 +75,35 @@ export const USERS = gql`
       nbPiafAttendues
       nbPiafGH
       nbPiafCaisse
+    }
+  }
+`
+
+export const USER_UPDATE_STOP_ABSENCE_WITHOUT_SHOPPING = gql`
+  mutation($id: ID!) {
+    updateUser(input: { id: $id, absenceLongueDureeSansCourses: false }) {
+      user {
+        id
+        username
+        nom
+        prenom
+        absenceLongueDureeSansCourses
+        absenceLongueDureeCourses
+      }
+    }
+  }
+`
+export const USER_UPDATE_STOP_ABSENCE_WITH_SHOPPING = gql`
+  mutation($id: ID!) {
+    updateUser(input: { id: $id, absenceLongueDureeCourses: false }) {
+      user {
+        id
+        username
+        nom
+        prenom
+        absenceLongueDureeSansCourses
+        absenceLongueDureeCourses
+      }
     }
   }
 `

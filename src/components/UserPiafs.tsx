@@ -17,6 +17,7 @@ interface Props {
   validated?: boolean
   allowValidate?: boolean
 }
+const currentDate = new Date(Date.now())
 
 const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: Props) => {
   const { loading, error, data } = useQuery<Result>(PIAFS, {
@@ -49,7 +50,12 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
   }
 
   const piafs = data.piafs
-    .filter(({ statut, nonPourvu }) => statut !== "remplacement" && nonPourvu == false)
+    .filter(
+      ({ statut, nonPourvu, creneau }) =>
+        statut !== "remplacement" &&
+        nonPourvu == false &&
+        ((allowValidate && new Date(creneau.debut) < currentDate) || !allowValidate)
+    )
     .sort(orderPiafsByDate)
 
   return (
