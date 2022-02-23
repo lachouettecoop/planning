@@ -30,6 +30,9 @@ export const isCritical = (slot: ISlot, piaf: PIAF) => {
   if (differenceInDays(slot.start, new Date()) > CRITICAL_DAYS) {
     return false
   }
+  if (slot.title.toLowerCase().toString().startsWith("formation")) {
+    return false
+  }
   if (piaf.role?.roleUniqueId == RoleId.GrandHibou || piaf.role?.roleUniqueId == RoleId.Caissier) {
     return true
   }

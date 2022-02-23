@@ -2,6 +2,8 @@ import type { ISlot } from "src/types/app"
 
 import { useState } from "react"
 import { Button, TextField } from "@material-ui/core"
+import { Save } from "@material-ui/icons"
+
 import styled from "@emotion/styled/macro"
 import { startOfWeek, endOfWeek, startOfDay, endOfDay, isPast } from "date-fns"
 
@@ -53,6 +55,18 @@ const InfoTextField = styled(TextField)`
 `
 const InfoPiaf = styled.div`
   display: block;
+`
+
+const ButtonSave = styled.div`
+  .MuiButton-root {
+    min-width: 32px;
+  }
+  .MuiButton-startIcon {
+    margin-right: -4px;
+  }
+  .MuiButton-endIcon {
+    margin-left: -4px;
+  }
 `
 
 type ResultPiafsCount = { piafs: PIAF[] }
@@ -130,7 +144,7 @@ interface Props {
 
 const PiafRow = ({ piaf, slot }: Props) => {
   const [loading, setLoading] = useState(false)
-  const [info, setInfo] = useState("")
+  const [info, setInfo] = useState(piaf?.informations || "")
   const { openDialog, openQuestion } = useDialog()
   const { user } = useUser<true>()
   const roles = useRoles()
@@ -140,11 +154,24 @@ const PiafRow = ({ piaf, slot }: Props) => {
     ? ADMIN_ROLES.some((role) => user.rolesChouette.some(({ roleUniqueId }) => roleUniqueId === role))
     : false
 
-  const currentUserPiafInSlot =
+  const currentUserInSlot =
     user && slot.piafs?.find(({ piaffeur, statut }) => piaffeur?.id === user.id && statut === "occupe")
 
   const handleInputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInfo(target.value)
+  }
+
+  const saveInfo = async () => {
+    const loggedUser = user as User
+    await apollo.mutate({
+      mutation: REGISTRATION_UPDATE,
+      variables: {
+        piafId: piaf.id,
+        userId: loggedUser.id,
+        statut: "occupe",
+        informations: info,
+      },
+    })
   }
 
   const checksBeforeRegister = async (loggedUser: User) => {
@@ -279,7 +306,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
   //   the user displayed has accepted to share the info
   const showInfos =
     currentUserIsAdmin ||
-    currentUserPiafInSlot?.role?.roleUniqueId === RoleId.GrandHibou ||
+    currentUserInSlot?.role?.roleUniqueId === RoleId.GrandHibou ||
     piaffeur?.affichageDonneesPersonnelles
 
   return (
@@ -290,9 +317,9 @@ const PiafRow = ({ piaf, slot }: Props) => {
         <br />
         <span> {piafRole?.libelle}</span>
       </Status>
-      {taken && piaffeur && piaffeur.id != user?.id && (
+      {taken && (
         <Contact>
-          {showInfos && (
+          {showInfos && piaffeur && piaffeur?.id !== user?.id && (
             <>
               <a href={`mailto:${piaffeur.email}`}>{piaffeur.email}</a>
               <br />
@@ -300,30 +327,52 @@ const PiafRow = ({ piaf, slot }: Props) => {
               <br />
             </>
           )}
-          {informations}
+          {piaffeur?.id !== user?.id && <div>{informations}</div>}
+          {piaffeur?.id === user?.id && isFuture && (
+            <>
+              <Row>
+                {" "}
+                <InfoTextField
+                  name="informations"
+                  multiline
+                  label="Commentaire (optionnel)"
+                  value={info}
+                  onChange={handleInputChange}
+                />
+                <ButtonSave>
+                  <Button
+                    disabled={loading}
+                    startIcon={<Save />}
+                    color="primary"
+                    variant="contained"
+                    onClick={saveInfo}
+                  />
+                </ButtonSave>
+              </Row>
+
+              <InfoPiaf>
+                <Button disabled={loading} color="primary" variant="contained" onClick={unregister}>
+                  Demander un remplacement
+                </Button>
+              </InfoPiaf>
+            </>
+          )}
         </Contact>
       )}
-      {!taken && !currentUserPiafInSlot && isFuture && (
-        <InfoTextField
-          name="informations"
-          multiline
-          label="Commentaire (optionnel)"
-          value={info}
-          onChange={handleInputChange}
-        />
-      )}
-      {!taken && !currentUserPiafInSlot && isFuture && (
-        <Button disabled={loading} color="primary" variant="contained" onClick={register}>
-          S’inscrire
-        </Button>
-      )}
-      {piaffeur?.id === user?.id && taken && isFuture && (
-        <InfoPiaf>
-          <div>{informations}</div>
-          <Button disabled={loading} color="primary" variant="contained" onClick={unregister}>
-            Demander un remplacement
+
+      {!taken && !currentUserInSlot && isFuture && (
+        <>
+          <InfoTextField
+            name="informations"
+            multiline
+            label="Commentaire (optionnel)"
+            value={info}
+            onChange={handleInputChange}
+          />
+          <Button disabled={loading} color="primary" variant="contained" onClick={register}>
+            S’inscrire
           </Button>
-        </InfoPiaf>
+        </>
       )}
     </Row>
   )
