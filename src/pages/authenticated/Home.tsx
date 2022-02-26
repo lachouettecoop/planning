@@ -2,6 +2,7 @@ import styled from "@emotion/styled/macro"
 import { Typography, Button } from "@material-ui/core"
 import { startOfToday } from "date-fns"
 import { Link } from "react-router-dom"
+import { useState } from "react"
 
 import apollo from "src/helpers/apollo"
 import { queryDate } from "src/helpers/date"
@@ -16,6 +17,7 @@ import { useDialog } from "src/providers/dialog"
 import UserPiafs from "src/components/UserPiafs"
 import ReplacementPiafs from "src/components/ReplacementPiafs"
 import CriticalPiafs from "src/components/CriticalPiafs"
+import SendEmail from "src/components/SendEmail"
 
 // https://style.lachouettecoop.fr/#/couleurs
 // TODO: use constants
@@ -71,13 +73,14 @@ const Status = styled.div`
 const HomePage = () => {
   const { user, refetchUser } = useUser<true>()
   const { openQuestion } = useDialog()
+  const [openSendEmailDialog, setOpenSendEmailDialog] = useState(false)
 
   const counter = `${user?.nbPiafEffectuees ?? "…"}/${user?.nbPiafAttendues ?? "…"}`
   const status = user?.statut || "…"
 
   const handleClick = async (shopping: boolean) => {
     const ok = await openQuestion(
-      "Tu souhaites revenir faire tes PIAF et tes courses ? Super ! Confirme-le ici et l'effet sera immédiat. Pense à t’inscrire à nouveau sur des créneaux de PIAF."
+      "Tu souhaites revenir faire tes PIAF et tes courses ? Super ! Confirme-le ici et l’effet sera immédiat. Pense à t’inscrire à nouveau sur des créneaux de PIAF."
     )
     if (!ok) {
       return
@@ -92,6 +95,14 @@ const HomePage = () => {
     } catch (errorUpdate) {
       handleError(errorUpdate as Error)
     }
+  }
+
+  const handleCloseSendEmailDialog = () => {
+    setOpenSendEmailDialog(false)
+  }
+
+  const handleOpenSendEmailDialog = () => {
+    setOpenSendEmailDialog(true)
   }
 
   return (
@@ -134,6 +145,18 @@ const HomePage = () => {
               </>
             )}
           </AbsenceText>
+          {process.env.REACT_APP_MAIL_COMMISSION_PARTICIPATION && user?.statut.toLowerCase() == "chouette en alerte" && (
+            <>
+              <Typography>
+                Ce statut t’empêche de faire des courses. Si tu souhaites revenir faire tes courses et PIAF, tu peux
+                saisir la commission participation qui examine les cas particuliers et recherche des solutions. Pour
+                joindre la commission, tu peux cliquer sur le bouton ci-dessous
+              </Typography>
+              <Button variant="contained" color="primary" size="large" onClick={handleOpenSendEmailDialog}>
+                joindre la commission
+              </Button>
+            </>
+          )}
         </Status>
         <div>
           <Typography variant="h2">Mes prochaines PIAF</Typography>
@@ -153,9 +176,20 @@ const HomePage = () => {
         <p>Ce site n’utilise pas de cookies tiers</p>
         <p>
           Un problème ? Une question ? Contacte le BdM :{" "}
-          <a href={`mailto:${process.env.REACT_APP_MAIL_BDM}`}>{process.env.REACT_APP_MAIL_BDM}</a>
+          <a href={`mailto:${process.env.REACT_APP_MAIL_BDM}`}>{process.env.REACT_APP_MAIL_COMMISSION_PARTICIPATION}</a>
         </p>
       </Bottom>
+      {user && process.env.REACT_APP_MAIL_COMMISSION_PARTICIPATION && (
+        <SendEmail
+          show={openSendEmailDialog}
+          handleClose={handleCloseSendEmailDialog}
+          user={user}
+          title="Ton status sera mis en attente de la decision de la commission. Pour cela, un mail lui sera envoyé et elle prendra contact avec toi. En attendant tu peux faire tes courses."
+          dialogContent="Tu peux laisser un commentaire si tu le souhaites."
+          emailAddress={process.env.REACT_APP_MAIL_COMMISSION_PARTICIPATION}
+          emailSubject={`Saisie commission participation ${user.prenom} ${user.nom}`}
+        />
+      )}
     </Container>
   )
 }
