@@ -64,6 +64,7 @@ const Calendar = ({ start, end, list }: Props) => {
       information: node.informations,
       start: date,
       end: new Date(node.fin),
+      horsMag: node.horsMag,
       piafs,
     })
 

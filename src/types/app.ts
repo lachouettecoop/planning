@@ -6,6 +6,7 @@ export interface ISlot {
   information: string
   start: Date
   end: Date
+  horsMag: boolean
   piafs?: PIAF[] // undefined = loading
 }
 

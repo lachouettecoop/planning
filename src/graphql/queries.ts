@@ -47,6 +47,7 @@ export const PIAFS = gql`
         titre
         debut
         fin
+        horsMag
       }
       piaffeur {
         id

@@ -50,6 +50,7 @@ const CriticalPiafs = () => {
         information: piaf.creneau.informations,
         start: new Date(piaf.creneau.debut),
         end: new Date(piaf.creneau.fin),
+        horsMag: piaf.creneau.horsMag,
         piafs: [],
       }
     }
@@ -68,6 +69,10 @@ const CriticalPiafs = () => {
       }
       if (!hasRole(piaf.role.roleUniqueId, userRoles)) {
         // user is not trained for this role
+        return false
+      }
+      if (now > new Date(piaf.creneau.debut)) {
+        //PIAF already started
         return false
       }
       return isCritical(slots[piaf.creneau.id], piaf)

@@ -27,6 +27,9 @@ export const isCritical = (slot: ISlot, piaf: PIAF) => {
   if (!slot.piafs) {
     return false
   }
+  if (slot.horsMag) {
+    return false
+  }
   if (differenceInDays(slot.start, new Date()) > CRITICAL_DAYS) {
     return false
   }

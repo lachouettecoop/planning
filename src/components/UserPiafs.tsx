@@ -37,7 +37,17 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
     return null
   }
 
-  if (!data.piafs.length && !allowValidate) {
+  const piafs = data.piafs
+    .filter(
+      ({ statut, nonPourvu, creneau }) =>
+        statut !== "remplacement" &&
+        nonPourvu == false &&
+        ((allowValidate && new Date(creneau.fin) < currentDate) ||
+          (!allowValidate && new Date(creneau.fin) > currentDate))
+    )
+    .sort(orderPiafsByDate)
+
+  if (!piafs.length && !allowValidate) {
     return (
       <p>
         Aucune PIAF à venir. Inscris-toi sur <Link to="/planning">le planning</Link> !
@@ -45,18 +55,9 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
     )
   }
 
-  if (!data.piafs.length && allowValidate) {
+  if (!piafs.length && allowValidate) {
     return <p>Aucune PIAF à valider.</p>
   }
-
-  const piafs = data.piafs
-    .filter(
-      ({ statut, nonPourvu, creneau }) =>
-        statut !== "remplacement" &&
-        nonPourvu == false &&
-        ((allowValidate && new Date(creneau.debut) < currentDate) || !allowValidate)
-    )
-    .sort(orderPiafsByDate)
 
   return (
     <List>

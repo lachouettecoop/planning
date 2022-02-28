@@ -103,6 +103,7 @@ const Piaf = ({ piaf, allowValidate, critical }: Props) => {
     information: creneau.informations,
     start: new Date(creneau.debut),
     end: new Date(creneau.fin),
+    horsMag: creneau.horsMag,
     piafs: data?.creneau.piafs,
   }
 
