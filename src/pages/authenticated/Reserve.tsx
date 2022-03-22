@@ -87,7 +87,7 @@ const ReservePage = () => {
   if (dataCreneauxList) {
     for (let day = 0; day < 7; day++) {
       dataCreneauxList?.creneauGeneriques
-        .filter(({ jour, actif }) => jour === day && actif)
+        .filter(({ jour, actif, horsMag }) => jour === day && actif && !horsMag)
         .forEach((slot) => {
           const reserveFound = slotList.find((s) => s.day === day)
           const startTime = new Date(slot.heureDebut).getTime()

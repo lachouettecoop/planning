@@ -224,6 +224,7 @@ export const CRENEAUX_GENERIQUES = gql`
       titre
       jour
       actif
+      horsMag
       postes {
         id
         role {

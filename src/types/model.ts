@@ -27,6 +27,7 @@ export interface CreneauGenerique {
   heureDebut: string // ISO datetime
   heureFin: string // ISO datetime
   actif: boolean
+  horsMag: boolean
 }
 
 export interface Poste {
