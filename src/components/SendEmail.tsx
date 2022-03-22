@@ -6,7 +6,6 @@ import styled from "@emotion/styled/macro"
 import { useDialog } from "src/providers/dialog"
 import { sendEmail } from "src/helpers/request"
 import { handleError } from "src/helpers/errors"
-import { formatName } from "src/helpers/user"
 
 import { User } from "src/types/model"
 
@@ -32,9 +31,10 @@ interface Props {
   dialogContent: string | null
   emailAddress: string
   emailSubject: string
+  callback?: (ok: boolean) => void
 }
 
-const SendEmail = ({ show, handleClose, user, title, dialogContent, emailAddress, emailSubject }: Props) => {
+const SendEmail = ({ show, handleClose, user, title, dialogContent, emailAddress, emailSubject, callback }: Props) => {
   const { openDialog } = useDialog()
   const [comment, setComment] = useState<string>("")
   const [loading, setLoading] = useState(false)
@@ -50,10 +50,10 @@ const SendEmail = ({ show, handleClose, user, title, dialogContent, emailAddress
 
     try {
       const content = [
-        `Nom et prénom : ${formatName(user)}`,
+        `Prénom NOM : ${user.prenom}  ${user.nom.toUpperCase()}`,
         `Mail : ${user.email} `,
         `Téléphone : ${user.telephone} `,
-        `Code-barres: ${user.codeBarre}`,
+        `Code-barres : ${user.codeBarre}`,
         `Commentaire : ${comment}`,
       ]
 
@@ -61,6 +61,10 @@ const SendEmail = ({ show, handleClose, user, title, dialogContent, emailAddress
 
       handleClose()
       openDialog(`Un e-mail a été envoyé a ${emailAddress} qui te recontactera si besoin.`)
+
+      if (callback) {
+        setTimeout(callback, 300)
+      }
     } catch (error) {
       handleError(error as Error)
     }

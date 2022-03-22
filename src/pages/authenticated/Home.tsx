@@ -10,6 +10,7 @@ import { handleError } from "src/helpers/errors"
 import {
   USER_UPDATE_STOP_ABSENCE_WITHOUT_SHOPPING,
   USER_UPDATE_STOP_ABSENCE_WITH_SHOPPING,
+  USER_SET_AWAITING_PARTICIPATION_GROUP,
 } from "src/graphql/queriesUser"
 
 import { useUser } from "src/providers/user"
@@ -105,6 +106,11 @@ const HomePage = () => {
     setOpenSendEmailDialog(true)
   }
 
+  const setUserAsAwaitingResult = async () => {
+    await apollo.mutate({ mutation: USER_SET_AWAITING_PARTICIPATION_GROUP, variables: { id: user?.id } })
+    refetchUser()
+  }
+
   return (
     <Container>
       <Content>
@@ -117,7 +123,9 @@ const HomePage = () => {
             <>
               <Typography variant="h2">Je suis</Typography>
               <StatusText variant="h3" $status={user?.statut}>
-                {status}
+                {!user?.attenteCommissionParticipation && status}
+                {user?.attenteCommissionParticipation &&
+                  "En attente de la décision de la commission de participation et je peux faire mes courses"}
               </StatusText>
             </>
           )}
@@ -145,18 +153,20 @@ const HomePage = () => {
               </>
             )}
           </AbsenceText>
-          {process.env.REACT_APP_MAIL_COMMISSION_PARTICIPATION && user?.statut.toLowerCase() == "chouette en alerte" && (
-            <>
-              <Typography>
-                Ce statut t’empêche de faire des courses. Si tu souhaites revenir faire tes courses et PIAF, tu peux
-                saisir la commission participation qui examine les cas particuliers et recherche des solutions. Pour
-                joindre la commission, tu peux cliquer sur le bouton ci-dessous
-              </Typography>
-              <Button variant="contained" color="primary" size="large" onClick={handleOpenSendEmailDialog}>
-                joindre la commission
-              </Button>
-            </>
-          )}
+          {process.env.REACT_APP_MAIL_COMMISSION_PARTICIPATION &&
+            !user?.attenteCommissionParticipation &&
+            user?.statut.toLowerCase() == "chouette en alerte" && (
+              <>
+                <Typography>
+                  Ce statut t’empêche de faire des courses. Si tu souhaites revenir faire tes courses et PIAF, tu peux
+                  saisir la commission participation qui examine les cas particuliers et recherche des solutions. Pour
+                  joindre la commission, tu peux cliquer sur le bouton ci-dessous
+                </Typography>
+                <Button variant="contained" color="primary" size="large" onClick={handleOpenSendEmailDialog}>
+                  joindre la commission
+                </Button>
+              </>
+            )}
         </Status>
         <div>
           <Typography variant="h2">Mes prochaines PIAF</Typography>
@@ -184,10 +194,11 @@ const HomePage = () => {
           show={openSendEmailDialog}
           handleClose={handleCloseSendEmailDialog}
           user={user}
-          title="Ton status sera mis en attente de la decision de la commission. Pour cela, un mail lui sera envoyé et elle prendra contact avec toi. En attendant tu peux faire tes courses."
+          title="Si tu confirmes ton souhait, la commission recevra un mail et prendra contact avec toi. Ton statut sera mis en attente de la décision de la commission. En attendant, tu pourras faire tes courses."
           dialogContent="Tu peux laisser un commentaire si tu le souhaites."
           emailAddress={process.env.REACT_APP_MAIL_COMMISSION_PARTICIPATION}
           emailSubject={`Saisie commission participation ${user.prenom} ${user.nom}`}
+          callback={setUserAsAwaitingResult}
         />
       )}
     </Container>

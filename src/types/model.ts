@@ -71,6 +71,7 @@ export interface User {
   nbPiafGH?: number
   nbPiafCaisse?: number
   affichageDonneesPersonnelles: boolean
+  attenteCommissionParticipation: boolean
 }
 
 export interface Creneau {

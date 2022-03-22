@@ -15,6 +15,7 @@ export const LOGGED_IN_USER = gql`
       telephone
       actif
       statut
+      codeBarre
       nbPiafEffectuees
       nbPiafAttendues
       nbPiafGH
@@ -22,6 +23,7 @@ export const LOGGED_IN_USER = gql`
       affichageDonneesPersonnelles
       absenceLongueDureeCourses
       absenceLongueDureeSansCourses
+      attenteCommissionParticipation
     }
   }
 `
@@ -53,6 +55,7 @@ export const USERS = gql`
       prenom
       email
       actif
+      codeBarre
       rolesChouette {
         id
         libelle
@@ -75,6 +78,7 @@ export const USERS = gql`
       nbPiafAttendues
       nbPiafGH
       nbPiafCaisse
+      attenteCommissionParticipation
     }
   }
 `
@@ -103,6 +107,20 @@ export const USER_UPDATE_STOP_ABSENCE_WITH_SHOPPING = gql`
         prenom
         absenceLongueDureeSansCourses
         absenceLongueDureeCourses
+      }
+    }
+  }
+`
+
+export const USER_SET_AWAITING_PARTICIPATION_GROUP = gql`
+  mutation($id: ID!) {
+    updateUser(input: { id: $id, attenteCommissionParticipation: true }) {
+      user {
+        id
+        username
+        nom
+        prenom
+        attenteCommissionParticipation
       }
     }
   }
