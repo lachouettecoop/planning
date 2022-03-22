@@ -186,7 +186,7 @@ const HomePage = () => {
         <p>Ce site n’utilise pas de cookies tiers</p>
         <p>
           Un problème ? Une question ? Contacte le BdM :{" "}
-          <a href={`mailto:${process.env.REACT_APP_MAIL_BDM}`}>{process.env.REACT_APP_MAIL_COMMISSION_PARTICIPATION}</a>
+          <a href={`mailto:${process.env.REACT_APP_MAIL_BDM}`}>{process.env.REACT_APP_MAIL_BDM}</a>
         </p>
       </Bottom>
       {user && process.env.REACT_APP_MAIL_COMMISSION_PARTICIPATION && (
