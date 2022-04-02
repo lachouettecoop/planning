@@ -13,6 +13,7 @@ import ReservePage from "src/pages/authenticated/Reserve"
 import MagasinPage from "src/pages/authenticated/Magasin"
 import BdMPage from "src/pages/authenticated/BdM"
 import HistoryPage from "src/pages/authenticated/History"
+import ProtectedRoute from "src/pages/authenticated/ProtectedRoute"
 import LegalPage from "src/pages/Legal"
 
 const Content = styled.div`
@@ -34,7 +35,7 @@ const Authenticated = () => {
       <Menu />
       <Content>
         <Switch>
-          <Route path="/home" component={HomePage} />
+          <ProtectedRoute path="/home" component={HomePage} />
           <Route path="/planning" component={PlanningPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/reserve" component={ReservePage} />

@@ -20,7 +20,7 @@ import { handleError } from "src/helpers/errors"
 import { isTaken, getPiafRole, isCritical } from "src/helpers/piaf"
 import { sendEmail } from "src/helpers/request"
 import { formatDateTime, formatDateShort } from "src/helpers/date"
-import { formatName } from "src/helpers/user"
+import { formatName, currentUserIsPA } from "src/helpers/user"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
@@ -328,7 +328,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
             </>
           )}
           {piaffeur?.id !== user?.id && <div>{informations}</div>}
-          {piaffeur?.id === user?.id && isFuture && (
+          {piaffeur?.id === user?.id && isFuture && !currentUserIsPA && (
             <>
               <Row>
                 {" "}
@@ -360,7 +360,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
         </Contact>
       )}
 
-      {!taken && !currentUserInSlot && isFuture && (
+      {!taken && !currentUserInSlot && isFuture && !currentUserIsPA && (
         <>
           <InfoTextField
             name="informations"

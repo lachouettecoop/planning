@@ -15,7 +15,7 @@ import {
 import { MoreVert as MoreIcon, Group as GroupIcon, Event as EventIcon, Home as HomeIcon } from "@material-ui/icons"
 
 import { RoleId } from "src/types/model"
-import { hasRole } from "src/helpers/role"
+import { hasAtLeastOneRole } from "src/helpers/role"
 import { useUser } from "src/providers/user"
 
 const useStyles = makeStyles((theme) =>
@@ -70,17 +70,17 @@ const useStyles = makeStyles((theme) =>
 )
 
 const MAIN_ITEMS = [
-  { title: "Accueil", href: "/home", Icon: HomeIcon, role: RoleId.Chouettos },
-  { title: "Planning", href: "/planning", Icon: EventIcon, role: RoleId.Chouettos },
-  { title: "Réserve", href: "/reserve", Icon: GroupIcon, role: RoleId.Chouettos },
+  { title: "Accueil", href: "/home", Icon: HomeIcon, roles: [RoleId.Chouettos] },
+  { title: "Planning", href: "/planning", Icon: EventIcon, roles: [RoleId.Chouettos, RoleId.PosteAccueil] },
+  { title: "Réserve", href: "/reserve", Icon: GroupIcon, roles: [RoleId.Chouettos] },
 ]
 const EXTRA_ITEMS = [
-  //{ title: "Auto", href: "/auto", role: RoleId.Chouettos },
-  { title: "Mon profil", href: "/profile", role: RoleId.Chouettos },
-  { title: "Historique des PIAF", href: "/history", role: RoleId.Chouettos },
-  { title: "Espace membre", href: "/member", role: RoleId.Chouettos },
-  { title: "Groupe MAG", href: "/magasin", role: RoleId.AdminMag },
-  { title: "Groupe BdM", href: "/bdm", role: RoleId.AdminBdM },
+  //{ title: "Auto", href: "/auto", roles: [RoleId.Chouettos] },
+  { title: "Mon profil", href: "/profile", roles: [RoleId.Chouettos] },
+  { title: "Historique des PIAF", href: "/history", roles: [RoleId.Chouettos] },
+  { title: "Espace membre", href: "/member", roles: [RoleId.Chouettos] },
+  { title: "Groupe MAG", href: "/magasin", roles: [RoleId.AdminMag] },
+  { title: "Groupe BdM", href: "/bdm", roles: [RoleId.AdminBdM] },
 ]
 
 export default function BottomAppBar() {
@@ -109,7 +109,7 @@ export default function BottomAppBar() {
     <>
       <AppBar position="fixed" color="primary" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
-          {MAIN_ITEMS.filter(({ role }) => hasRole(role, userRoles)).map(({ href, title, Icon }) => {
+          {MAIN_ITEMS.filter(({ roles }) => hasAtLeastOneRole(roles, userRoles)).map(({ href, title, Icon }) => {
             const active = pathname === href
             return (
               <ListItem button className={classes.label} key={title} component={Link} to={href}>
@@ -128,7 +128,7 @@ export default function BottomAppBar() {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            {EXTRA_ITEMS.filter(({ role }) => hasRole(role, userRoles)).map(({ href, title }) => {
+            {EXTRA_ITEMS.filter(({ roles }) => hasAtLeastOneRole(roles, userRoles)).map(({ href, title }) => {
               const active = pathname === href
               return (
                 <MenuItem
