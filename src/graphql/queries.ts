@@ -15,6 +15,7 @@ export const SLOTS = gql`
         id
         statut
         informations
+        description
         role {
           id
           roleUniqueId
@@ -42,6 +43,7 @@ export const PIAFS = gql`
       pourvu
       nonPourvu
       informations
+      description
       creneau {
         id
         titre
@@ -98,6 +100,7 @@ export const PLANNING = gql`
         id
         statut
         informations
+        description
         role {
           id
           roleUniqueId

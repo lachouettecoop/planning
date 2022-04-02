@@ -316,6 +316,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
         {taken && piaffeur ? formatName(piaffeur) : "Place disponible"}
         <br />
         <span> {piafRole?.libelle}</span>
+        {piaf.description ? <span> - {piaf.description}</span> : ""}
       </Status>
       {taken && (
         <Contact>

@@ -35,6 +35,7 @@ export interface Poste {
   reservationChouettos: User
   creneauGenerique: CreneauGenerique
   role: Role
+  description: string
 }
 
 export interface Reserve {
@@ -102,4 +103,5 @@ export interface PIAF {
   statut: "occupe" | "remplacement" | "" | null // empty = available
   informations: string | null
   infoCreneau: InfoCreneau
+  description: string
 }
