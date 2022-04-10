@@ -20,7 +20,7 @@ import { handleError } from "src/helpers/errors"
 import { isTaken, getPiafRole, isCritical } from "src/helpers/piaf"
 import { sendEmail } from "src/helpers/request"
 import { formatDateTime, formatDateShort } from "src/helpers/date"
-import { formatName, currentUserIsPA } from "src/helpers/user"
+import { formatName } from "src/helpers/user"
 
 const MAX_PIAF_PER_WEEK = 3
 const MAX_PIAF_PER_DAY = 2
@@ -156,6 +156,8 @@ const PiafRow = ({ piaf, slot }: Props) => {
 
   const currentUserInSlot =
     user && slot.piafs?.find(({ piaffeur, statut }) => piaffeur?.id === user.id && statut === "occupe")
+
+  const currentUser = user as User
 
   const handleInputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInfo(target.value)
@@ -328,7 +330,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
             </>
           )}
           {piaffeur?.id !== user?.id && <div>{informations}</div>}
-          {piaffeur?.id === user?.id && isFuture && !currentUserIsPA && (
+          {piaffeur?.id === user?.id && isFuture && !hasRole(RoleId.PosteAccueil, currentUser.rolesChouette) && (
             <>
               <Row>
                 {" "}
@@ -360,7 +362,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
         </Contact>
       )}
 
-      {!taken && !currentUserInSlot && isFuture && !currentUserIsPA && (
+      {!taken && !currentUserInSlot && isFuture && !hasRole(RoleId.PosteAccueil, currentUser.rolesChouette) && (
         <>
           <InfoTextField
             name="informations"
