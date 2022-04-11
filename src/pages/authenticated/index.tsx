@@ -2,9 +2,11 @@ import { Redirect, Route, Switch, useLocation } from "react-router-dom"
 import styled from "@emotion/styled/macro"
 
 import { DatePlanningProvider } from "src/providers/datePlanning"
+import { RoleId } from "src/types/model"
+import { getParams } from "src/helpers/request"
+
 import Menu from "src/components/menu"
 import MenuBottom from "src/components/menuBottom"
-import { getParams } from "src/helpers/request"
 
 import HomePage from "src/pages/authenticated/Home"
 import PlanningPage from "src/pages/authenticated/Planning"
@@ -13,6 +15,7 @@ import ReservePage from "src/pages/authenticated/Reserve"
 import MagasinPage from "src/pages/authenticated/Magasin"
 import BdMPage from "src/pages/authenticated/BdM"
 import HistoryPage from "src/pages/authenticated/History"
+import RestrictedRoute from "src/pages/authenticated/RestrictedRoute"
 import LegalPage from "src/pages/Legal"
 
 const Content = styled.div`
@@ -34,14 +37,34 @@ const Authenticated = () => {
       <Menu />
       <Content>
         <Switch>
-          <Route path="/home" component={HomePage} />
+          <RestrictedRoute path="/home" component={HomePage} roleIds={[RoleId.Chouettos]} redirectionPath="/planning" />
           <Route path="/planning" component={PlanningPage} />
-          <Route path="/profile" component={ProfilePage} />
-          <Route path="/reserve" component={ReservePage} />
-          <Route path="/bdm" component={BdMPage} />
-          <Route path="/magasin" component={MagasinPage} />
+          <RestrictedRoute
+            path="/profile"
+            component={ProfilePage}
+            roleIds={[RoleId.Chouettos]}
+            redirectionPath="/planning"
+          />
+          <RestrictedRoute
+            path="/reserve"
+            component={ReservePage}
+            roleIds={[RoleId.Chouettos]}
+            redirectionPath="/planning"
+          />
+          <RestrictedRoute path="/bdm" component={BdMPage} roleIds={[RoleId.AdminBdM]} redirectionPath="/planning" />
+          <RestrictedRoute
+            path="/magasin"
+            component={MagasinPage}
+            roleIds={[RoleId.AdminMag]}
+            redirectionPath="/planning"
+          />
+          <RestrictedRoute
+            path="/history"
+            component={HistoryPage}
+            roleIds={[RoleId.Chouettos]}
+            redirectionPath="/planning"
+          />
           <Route path="/legal" component={LegalPage} />
-          <Route path="/history" component={HistoryPage} />
           <Redirect to={next || "/home"} />
         </Switch>
         <MenuBottom />

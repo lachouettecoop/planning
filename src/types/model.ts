@@ -8,6 +8,7 @@ export enum RoleId {
   Caissier_Formateur = "CAF",
   AdminMag = "MAG",
   AdminBdM = "BDM",
+  PosteAccueil = "PA",
   // only for icons:
   PIAF = "P",
   Formateur = "F",
