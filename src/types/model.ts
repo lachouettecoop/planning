@@ -104,4 +104,5 @@ export interface PIAF {
   informations: string | null
   infoCreneau: InfoCreneau
   description: string
+  dateReservation: string // ISO date (without time)
 }

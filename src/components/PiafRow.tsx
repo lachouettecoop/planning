@@ -19,7 +19,7 @@ import { hasRole } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
 import { isTaken, getPiafRole, isCritical } from "src/helpers/piaf"
 import { sendEmail } from "src/helpers/request"
-import { formatDateTime, formatDateShort } from "src/helpers/date"
+import { formatDateTime, formatDateShort, queryDate } from "src/helpers/date"
 import { formatName } from "src/helpers/user"
 
 const MAX_PIAF_PER_WEEK = 3
@@ -255,6 +255,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
           userId: loggedUser.id,
           statut: "occupe",
           informations: info,
+          registrationDate: queryDate(new Date()),
         },
       })
 

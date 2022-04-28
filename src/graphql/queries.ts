@@ -122,8 +122,22 @@ export const PLANNING = gql`
 `
 
 export const REGISTRATION_UPDATE = gql`
-  mutation REGISTRATION_UPDATE($piafId: ID!, $userId: String!, $statut: String!, $informations: String) {
-    updatePiaf(input: { id: $piafId, piaffeur: $userId, statut: $statut, informations: $informations }) {
+  mutation REGISTRATION_UPDATE(
+    $piafId: ID!
+    $userId: String!
+    $statut: String!
+    $informations: String
+    $registrationDate: String
+  ) {
+    updatePiaf(
+      input: {
+        id: $piafId
+        piaffeur: $userId
+        statut: $statut
+        informations: $informations
+        dateReservation: $registrationDate
+      }
+    ) {
       piaf {
         id
         piaffeur {
