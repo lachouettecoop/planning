@@ -36,7 +36,7 @@ import {
 
 import Link from "src/components/Link"
 import { useUser } from "src/providers/user"
-import { hasRole } from "src/helpers/role"
+import { hasAtLeastOneRole } from "src/helpers/role"
 import { TEST } from "src/helpers/apollo"
 import { formatName } from "src/helpers/user"
 import { RoleId } from "src/types/model"
@@ -120,24 +120,24 @@ const useStyles = makeStyles((theme) =>
 )
 
 const ITEMS = [
-  { title: "Accueil", href: "/home", Icon: HomeIcon, role: RoleId.Chouettos },
-  { title: "Planning", href: "/planning", Icon: EventIcon, role: RoleId.Chouettos },
-  { title: "Réserve", href: "/reserve", Icon: GroupIcon, role: RoleId.Chouettos },
+  { title: "Accueil", href: "/home", Icon: HomeIcon, roles: [RoleId.Chouettos] },
+  { title: "Planning", href: "/planning", Icon: EventIcon, roles: [RoleId.Chouettos, RoleId.PosteAccueil] },
+  { title: "Réserve", href: "/reserve", Icon: GroupIcon, roles: [RoleId.Chouettos] },
   /* {
     title: "Réservation automatique",
     href: "/auto",
     Icon: ReplayIcon,
-    role: RoleId.Chouettos,
+    roles: [RoleId.Chouettos],
   },*/
-  { title: "Mon profil", href: "/profile", Icon: PersonIcon, role: RoleId.Chouettos },
-  { title: "Historique des PIAF", href: "/history", Icon: HistoryIcon, role: RoleId.Chouettos },
-  { title: "Groupe MAG", href: "/magasin", Icon: StorefrontIcon, role: RoleId.AdminMag },
-  { title: "Groupe BdM", href: "/bdm", Icon: CardMembershipIcon, role: RoleId.AdminBdM },
+  { title: "Mon profil", href: "/profile", Icon: PersonIcon, roles: [RoleId.Chouettos] },
+  { title: "Historique des PIAF", href: "/history", Icon: HistoryIcon, roles: [RoleId.Chouettos] },
+  { title: "Groupe MAG", href: "/magasin", Icon: StorefrontIcon, roles: [RoleId.AdminMag] },
+  { title: "Groupe BdM", href: "/bdm", Icon: CardMembershipIcon, roles: [RoleId.AdminBdM] },
   {
     title: "Espace membre",
     href: "https://espace-membres.lachouettecoop.fr/page/homepage",
     Icon: ArrowBackIcon,
-    role: RoleId.Chouettos,
+    roles: [RoleId.Chouettos],
   },
 ]
 
@@ -215,7 +215,7 @@ const Menu = () => {
           </IconButton>
         </div>
         <List>
-          {ITEMS.filter(({ role }) => hasRole(role, userRoles)).map(({ href, title, Icon }) => {
+          {ITEMS.filter(({ roles }) => hasAtLeastOneRole(roles, userRoles)).map(({ href, title, Icon }) => {
             const active = pathname === href
             return (
               <Link className={active ? classes.activeItem : classes.menuItem} href={href} key={href}>

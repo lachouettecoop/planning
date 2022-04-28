@@ -157,6 +157,8 @@ const PiafRow = ({ piaf, slot }: Props) => {
   const currentUserInSlot =
     user && slot.piafs?.find(({ piaffeur, statut }) => piaffeur?.id === user.id && statut === "occupe")
 
+  const currentUser = user as User
+
   const handleInputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInfo(target.value)
   }
@@ -330,7 +332,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
             </>
           )}
           {piaffeur?.id !== user?.id && <div>{informations}</div>}
-          {piaffeur?.id === user?.id && isFuture && (
+          {piaffeur?.id === user?.id && isFuture && !hasRole(RoleId.PosteAccueil, currentUser.rolesChouette) && (
             <>
               <Row>
                 {" "}
@@ -362,7 +364,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
         </Contact>
       )}
 
-      {!taken && !currentUserInSlot && isFuture && (
+      {!taken && !currentUserInSlot && isFuture && !hasRole(RoleId.PosteAccueil, currentUser.rolesChouette) && (
         <>
           <InfoTextField
             name="informations"

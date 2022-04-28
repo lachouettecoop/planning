@@ -48,7 +48,7 @@ const LoginPage = () => {
       if (error instanceof HttpError && error.code === 401) {
         alert("Identifiant ou mot de passe incorrect")
       } else {
-        handleError(error)
+        handleError(error as Error)
       }
       setLoading(false)
     }
