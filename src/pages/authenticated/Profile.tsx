@@ -31,7 +31,7 @@ const Loading = styled.div`
 `
 const Container = styled.div`
   margin: 0 auto;
-  max-width: 500px;
+  max-width: 550px;
   p,
   .MuiTextField-root {
     margin: 10px 0;
@@ -204,7 +204,7 @@ const ProfilePage = () => {
           <Button color="primary" variant="contained" disabled={saving} type="submit">
             Enregistrer
           </Button>
-          <Button color="primary" disabled={saving} onClick={handleOpenAbsenceDialog}>
+          <Button color="primary" variant="contained" disabled={saving} onClick={handleOpenAbsenceDialog}>
             Tu ne peux pas faire des PIAF pendant au moins 2 mois, c’est par ici!
           </Button>
         </form>
