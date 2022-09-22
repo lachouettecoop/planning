@@ -1,4 +1,5 @@
 import InfoIcon from "@material-ui/icons/Info"
+import { ReactComponent as KeyIcon } from "src/images/key.svg"
 
 import type { PIAF } from "src/types/model"
 
@@ -29,6 +30,13 @@ const InfoIconPiaf = styled(InfoIcon)`
   top: 0px;
   height: 1rem !important;
 `
+const KeyIconPiaf = styled(KeyIcon)`
+  position: absolute;
+  z-index: 10;
+  right: -3px;
+  top: 0px;
+  height: 1rem !important;
+`
 
 const ImageContainer = styled.div`
   position: relative;
@@ -39,16 +47,19 @@ interface RoleProps {
   taken?: boolean
   critical?: boolean
   info?: string
+  canOpenDoor?: boolean
 }
 
-export const PiafIcon = ({ role, taken, critical, info }: RoleProps) => {
+export const PiafIcon = ({ role, taken, critical, info, canOpenDoor }: RoleProps) => {
   if (!role || !KNOWN_ROLES.includes(role)) {
     role = RoleId.Chouettos
   }
+  console.log(canOpenDoor)
   return (
     <Tooltip title={info ? info : ""}>
       <ImageContainer>
         {info && <InfoIconPiaf />}
+        {canOpenDoor && <KeyIconPiaf />}
         <Svg $taken={taken} $critical={critical}>
           <use xlinkHref={"#" + role} width="100%" height="100%" />
         </Svg>
@@ -61,15 +72,17 @@ interface Props {
   piaf: PIAF
   critical?: boolean
   displayTooltip?: boolean | false
+  canOpenDoor?: boolean
 }
 
-const PiafCircle = ({ piaf, critical, displayTooltip }: Props) => (
+const PiafCircle = ({ piaf, critical, displayTooltip, canOpenDoor }: Props) => (
   <>
     <PiafIcon
       role={getPiafRole(piaf)}
       taken={isTaken(piaf)}
       critical={critical}
       info={displayTooltip ? piaf.informations || "" : ""}
+      canOpenDoor={canOpenDoor}
     />
   </>
 )
