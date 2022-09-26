@@ -54,7 +54,6 @@ export const PiafIcon = ({ role, taken, critical, info, canOpenDoor }: RoleProps
   if (!role || !KNOWN_ROLES.includes(role)) {
     role = RoleId.Chouettos
   }
-  console.log(canOpenDoor)
   return (
     <Tooltip title={info ? info : ""}>
       <ImageContainer>
