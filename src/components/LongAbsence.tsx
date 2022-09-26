@@ -128,11 +128,18 @@ const LongAbsence = ({ show, handleClose, user }: Props) => {
       }
 
       await sendEmail(process.env.REACT_APP_MAIL_BDM, "Absence prolongée", content.join("<br />"))
-
-      handleClose()
-      openDialog(
-        "Un e-mail a été envoyé au BdM qui te recontactera si besoin. Pense bien a les recontacter lorsque tu pourras reprendre les PIAF."
-      )
+        .then(() => {
+          handleClose()
+          openDialog(
+            "Un e-mail a été envoyé au BdM qui te recontactera si besoin. Pense bien a les recontacter lorsque tu pourras reprendre les PIAF."
+          )
+        })
+        .catch(() => {
+          handleClose()
+          openDialog(
+            "L'e-mail n'a pas pu être envoyé. S'il te plaît déconnecte toi puis reconnecte toi au site et essaye à nouveau"
+          )
+        })
     } catch (error) {
       handleError(error as Error)
     }

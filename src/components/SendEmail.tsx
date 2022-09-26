@@ -58,13 +58,19 @@ const SendEmail = ({ show, handleClose, user, title, dialogContent, emailAddress
       ]
 
       await sendEmail(emailAddress, emailSubject, content.join("<br />"))
-
-      handleClose()
-      openDialog(`Un e-mail a été envoyé a ${emailAddress} qui te recontactera si besoin.`)
-
-      if (callback) {
-        setTimeout(callback, 300)
-      }
+        .then(() => {
+          handleClose()
+          openDialog(`Un e-mail a été envoyé a ${emailAddress} qui te recontactera si besoin.`)
+          if (callback) {
+            setTimeout(callback, 300)
+          }
+        })
+        .catch(() => {
+          handleClose()
+          openDialog(
+            "L'e-mail n'a pas pu être envoyé. S'il te plaît déconnecte toi puis reconnecte toi au site et essaye à nouveau"
+          )
+        })
     } catch (error) {
       handleError(error as Error)
     }
