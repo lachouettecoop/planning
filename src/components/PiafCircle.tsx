@@ -1,6 +1,3 @@
-import InfoIcon from "@material-ui/icons/Info"
-import { ReactComponent as KeyIcon } from "src/images/key.svg"
-
 import type { PIAF } from "src/types/model"
 
 import styled from "@emotion/styled/macro"
@@ -23,21 +20,6 @@ const Svg = styled.svg<{ $taken?: boolean; $critical?: boolean }>`
   }
 `
 
-const InfoIconPiaf = styled(InfoIcon)`
-  position: absolute;
-  z-index: 10;
-  left: -5px;
-  top: 0px;
-  height: 1rem !important;
-`
-const KeyIconPiaf = styled(KeyIcon)`
-  position: absolute;
-  z-index: 10;
-  right: -3px;
-  top: 0px;
-  height: 1rem !important;
-`
-
 const ImageContainer = styled.div`
   position: relative;
 `
@@ -57,10 +39,8 @@ export const PiafIcon = ({ role, taken, critical, info, canOpenDoor }: RoleProps
   return (
     <Tooltip title={info ? info : ""}>
       <ImageContainer>
-        {info && <InfoIconPiaf />}
-        {canOpenDoor && <KeyIconPiaf />}
         <Svg $taken={taken} $critical={critical}>
-          <use xlinkHref={"#" + role} width="100%" height="100%" />
+          <use xlinkHref={"#" + role + (canOpenDoor ? "_KEY" : "") + (info ? "_INF" : "")} width="100%" height="100%" />
         </Svg>
       </ImageContainer>
     </Tooltip>
