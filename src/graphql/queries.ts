@@ -60,6 +60,7 @@ export const PIAFS = gql`
         nbPiafGH
         nbPiafCaisse
         affichageDonneesPersonnelles
+        gh
       }
       role {
         id
@@ -115,6 +116,7 @@ export const PLANNING = gql`
           nbPiafGH
           nbPiafCaisse
           affichageDonneesPersonnelles
+          gh
         }
       }
     }

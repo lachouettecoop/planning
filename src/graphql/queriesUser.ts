@@ -9,6 +9,7 @@ export const LOGGED_IN_USER = gql`
         roleUniqueId
         libelle
       }
+      gh
       nom
       prenom
       email
@@ -61,6 +62,7 @@ export const USERS = gql`
         libelle
         roleUniqueId
       }
+      gh
       statut
       reserve {
         id

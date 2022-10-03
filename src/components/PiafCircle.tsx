@@ -1,5 +1,3 @@
-import InfoIcon from "@material-ui/icons/Info"
-
 import type { PIAF } from "src/types/model"
 
 import styled from "@emotion/styled/macro"
@@ -22,14 +20,6 @@ const Svg = styled.svg<{ $taken?: boolean; $critical?: boolean }>`
   }
 `
 
-const InfoIconPiaf = styled(InfoIcon)`
-  position: absolute;
-  z-index: 10;
-  left: -5px;
-  top: 0px;
-  height: 1rem !important;
-`
-
 const ImageContainer = styled.div`
   position: relative;
 `
@@ -39,18 +29,18 @@ interface RoleProps {
   taken?: boolean
   critical?: boolean
   info?: string
+  displayKey?: boolean
 }
 
-export const PiafIcon = ({ role, taken, critical, info }: RoleProps) => {
+export const PiafIcon = ({ role, taken, critical, info, displayKey }: RoleProps) => {
   if (!role || !KNOWN_ROLES.includes(role)) {
     role = RoleId.Chouettos
   }
   return (
     <Tooltip title={info ? info : ""}>
       <ImageContainer>
-        {info && <InfoIconPiaf />}
         <Svg $taken={taken} $critical={critical}>
-          <use xlinkHref={"#" + role} width="100%" height="100%" />
+          <use xlinkHref={"#" + role + (displayKey ? "_KEY" : "") + (info ? "_INF" : "")} width="100%" height="100%" />
         </Svg>
       </ImageContainer>
     </Tooltip>
@@ -70,6 +60,7 @@ const PiafCircle = ({ piaf, critical, displayTooltip }: Props) => (
       taken={isTaken(piaf)}
       critical={critical}
       info={displayTooltip ? piaf.informations || "" : ""}
+      displayKey={isTaken(piaf) && piaf.piaffeur?.gh}
     />
   </>
 )
