@@ -12,6 +12,8 @@ export enum RoleId {
   // only for icons:
   PIAF = "P",
   Formateur = "F",
+  Key = "KEY",
+  Info = "INF",
 }
 
 export interface Role {

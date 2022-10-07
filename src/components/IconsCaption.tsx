@@ -55,6 +55,14 @@ const IconsCaption = () => {
           <PiafIcon role={RoleId.Formateur} />
           <Caption>Formateur·ice</Caption>
         </Grid>
+        <Grid item xs={4} component="figure">
+          <PiafIcon role={RoleId.Key} />
+          <Caption>Ouverture porte</Caption>
+        </Grid>
+        <Grid item xs={4} component="figure">
+          <PiafIcon role={RoleId.Info} />
+          <Caption>Commentaire ajouté</Caption>
+        </Grid>
       </Grid>
     </Container>
   )

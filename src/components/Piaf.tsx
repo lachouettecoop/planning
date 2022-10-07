@@ -29,10 +29,9 @@ interface Props {
   piaf: PIAF
   allowValidate?: boolean
   critical?: boolean
-  displayKeyIcon?: boolean
 }
 
-const Piaf = ({ piaf, allowValidate, critical, displayKeyIcon }: Props) => {
+const Piaf = ({ piaf, allowValidate, critical }: Props) => {
   const { creneau } = piaf
   const [open, setOpen] = useState(false)
   const { openQuestion, openDialog } = useDialog()
@@ -115,7 +114,7 @@ const Piaf = ({ piaf, allowValidate, critical, displayKeyIcon }: Props) => {
       <Grid item xs={8}>
         <ListItem key={piaf.id} button onClick={handleClick}>
           <ListItemAvatar>
-            <PiafCircle piaf={piaf} critical={critical} canOpenDoor={displayKeyIcon} />
+            <PiafCircle piaf={piaf} critical={critical} />
           </ListItemAvatar>
           <ListItemText
             primary={formatDateLong(slot.start)}

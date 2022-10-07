@@ -74,13 +74,7 @@ const Slot = ({ slot }: Props) => {
         </Title>
         <List>
           {slot.piafs?.map((piaf) => (
-            <PiafCircle
-              key={piaf.id}
-              piaf={piaf}
-              critical={isCritical(slot, piaf)}
-              displayTooltip={true}
-              canOpenDoor={piaf.piaffeur?.gh}
-            />
+            <PiafCircle key={piaf.id} piaf={piaf} critical={isCritical(slot, piaf)} displayTooltip={true} />
           ))}
         </List>
       </ClickableSlot>

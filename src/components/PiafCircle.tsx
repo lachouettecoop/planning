@@ -29,10 +29,10 @@ interface RoleProps {
   taken?: boolean
   critical?: boolean
   info?: string
-  canOpenDoor?: boolean
+  displayKey?: boolean
 }
 
-export const PiafIcon = ({ role, taken, critical, info, canOpenDoor }: RoleProps) => {
+export const PiafIcon = ({ role, taken, critical, info, displayKey }: RoleProps) => {
   if (!role || !KNOWN_ROLES.includes(role)) {
     role = RoleId.Chouettos
   }
@@ -40,7 +40,7 @@ export const PiafIcon = ({ role, taken, critical, info, canOpenDoor }: RoleProps
     <Tooltip title={info ? info : ""}>
       <ImageContainer>
         <Svg $taken={taken} $critical={critical}>
-          <use xlinkHref={"#" + role + (canOpenDoor ? "_KEY" : "") + (info ? "_INF" : "")} width="100%" height="100%" />
+          <use xlinkHref={"#" + role + (displayKey ? "_KEY" : "") + (info ? "_INF" : "")} width="100%" height="100%" />
         </Svg>
       </ImageContainer>
     </Tooltip>
@@ -51,17 +51,16 @@ interface Props {
   piaf: PIAF
   critical?: boolean
   displayTooltip?: boolean | false
-  canOpenDoor?: boolean
 }
 
-const PiafCircle = ({ piaf, critical, displayTooltip, canOpenDoor }: Props) => (
+const PiafCircle = ({ piaf, critical, displayTooltip }: Props) => (
   <>
     <PiafIcon
       role={getPiafRole(piaf)}
       taken={isTaken(piaf)}
       critical={critical}
       info={displayTooltip ? piaf.informations || "" : ""}
-      canOpenDoor={canOpenDoor}
+      displayKey={isTaken(piaf) && piaf.piaffeur?.gh}
     />
   </>
 )

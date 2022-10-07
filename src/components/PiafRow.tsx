@@ -314,11 +314,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
 
   return (
     <Row>
-      <PiafCircle
-        piaf={piaf}
-        critical={isCritical(slot, piaf)}
-        canOpenDoor={(taken && piaffeur && piaffeur.gh) || false}
-      />
+      <PiafCircle piaf={piaf} critical={isCritical(slot, piaf)} />
       <Status>
         {taken && piaffeur ? formatName(piaffeur) : "Place disponible"}
         <br />
