@@ -165,15 +165,39 @@ const PiafRow = ({ piaf, slot }: Props) => {
 
   const saveInfo = async () => {
     const loggedUser = user as User
-    await apollo.mutate({
-      mutation: REGISTRATION_UPDATE,
-      variables: {
-        piafId: piaf.id,
-        userId: loggedUser.id,
-        statut: "occupe",
-        informations: info,
-      },
-    })
+    if (checkInfoBeforeRegister(loggedUser)) {
+      await apollo.mutate({
+        mutation: REGISTRATION_UPDATE,
+        variables: {
+          piafId: piaf.id,
+          userId: loggedUser.id,
+          statut: "occupe",
+          informations: info,
+        },
+      })
+    }
+  }
+
+  const checkInfoBeforeRegister = (loggedUser: User) => {
+    console.log(
+      "checkInfoBeforeRegister",
+      info.toUpperCase().replace(/ /g, ""),
+      info.toUpperCase().replace(/ /g, "").includes(loggedUser.prenom.toUpperCase().replace(/ /g, ""))
+    )
+    if (
+      info.toUpperCase().replace(/ /g, "").includes(loggedUser.nom.toUpperCase().replace(/ /g, "")) ||
+      info.toUpperCase().replace(/ /g, "").includes(loggedUser.prenom.toUpperCase().replace(/ /g, "")) ||
+      (loggedUser.affichageDonneesPersonnelles &&
+        (info.toUpperCase().replace(/ /g, "").includes(loggedUser.telephone.toUpperCase().replace(/ /g, "")) ||
+          info.toUpperCase().replace(/ /g, "").includes(loggedUser.email.toUpperCase().replace(/ /g, ""))))
+    ) {
+      setLoading(false)
+      openDialog(
+        "Inutile d’inclure des coordonées personnelles dans le commentaire, elles sont déjà visibles. Supprime les pour pouvoir continuer"
+      )
+      return false
+    }
+    return true
   }
 
   const checksBeforeRegister = async (loggedUser: User) => {
@@ -219,6 +243,8 @@ const PiafRow = ({ piaf, slot }: Props) => {
       openDialog(`Il n’est pas possible de s’inscrire à plus de ${MAX_PIAF_PER_DAY} PIAF par jour`)
       return false
     }
+
+    if (!checkInfoBeforeRegister(loggedUser)) return false
 
     /* if (!checkMaximumNumberOfNewChouettos(loggedUser, piaf)) {
       setLoading(false)
