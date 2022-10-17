@@ -57,7 +57,7 @@ const IconsCaption = () => {
         </Grid>
         <Grid item xs={4} component="figure">
           <PiafIcon role={RoleId.Key} />
-          <Caption>Ouverture porte</Caption>
+          <Caption>Peut ouvrir la porte</Caption>
         </Grid>
         <Grid item xs={4} component="figure">
           <PiafIcon role={RoleId.Info} />
