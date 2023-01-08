@@ -179,16 +179,11 @@ const PiafRow = ({ piaf, slot }: Props) => {
   }
 
   const checkInfoBeforeRegister = (loggedUser: User) => {
-    console.log(
-      "checkInfoBeforeRegister",
-      info.toUpperCase().replace(/ /g, ""),
-      info.toUpperCase().replace(/ /g, "").includes(loggedUser.prenom.toUpperCase().replace(/ /g, ""))
-    )
     if (
       info.toUpperCase().replace(/ /g, "").includes(loggedUser.nom.toUpperCase().replace(/ /g, "")) ||
       info.toUpperCase().replace(/ /g, "").includes(loggedUser.prenom.toUpperCase().replace(/ /g, "")) ||
       (loggedUser.affichageDonneesPersonnelles &&
-        (info.toUpperCase().replace(/ /g, "").includes(loggedUser.telephone.toUpperCase().replace(/ /g, "")) ||
+        (info.toUpperCase().replace(/ /g, "").includes(loggedUser.telephone?.toUpperCase().replace(/ /g, "")) ||
           info.toUpperCase().replace(/ /g, "").includes(loggedUser.email.toUpperCase().replace(/ /g, ""))))
     ) {
       setLoading(false)
