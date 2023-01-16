@@ -23,7 +23,7 @@ const CriticalPiafs = () => {
   const { loading, error, data } = useQuery<Result>(PIAFS, {
     variables: {
       after: queryDate(now),
-      before: queryDate(addDays(now, CRITICAL_DAYS)),
+      before: queryDate(addDays(now, CRITICAL_DAYS + 1)),
     },
   })
 
