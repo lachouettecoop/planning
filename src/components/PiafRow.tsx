@@ -19,7 +19,7 @@ import { hasRole } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
 import { isTaken, getPiafRole, isCritical } from "src/helpers/piaf"
 import { sendEmail } from "src/helpers/request"
-import { formatDateTime, formatDateShort, queryDate } from "src/helpers/date"
+import { formatDateTime, formatDateShort, formatDateLong, queryDate } from "src/helpers/date"
 import { formatName } from "src/helpers/user"
 
 const MAX_PIAF_PER_WEEK = 3
@@ -312,6 +312,18 @@ const PiafRow = ({ piaf, slot }: Props) => {
       })
 
       openDialog("Désinscription effectuée : la PIAF est désormais en recherche de remplacement !")
+      if (piaf.role?.roleUniqueId === RoleId.Caissier && formatDateLong(slot.start) === formatDateLong(new Date())) {
+        if (!process.env.REACT_APP_MAIL_EMERGENCY_CASHIER) {
+          alert("L’adresse e-mail du Zulip n’est pas configurée. Contacte l’administrateur.")
+          return
+        } else {
+          sendEmail(
+            process.env.REACT_APP_MAIL_EMERGENCY_CASHIER,
+            "Desinscription piaf caisse le jour même ",
+            `La piaf caissier de ${formatDateTime(slot.start)} (aujourd'hui) est non pourvu.`
+          )
+        }
+      }
     } catch (error) {
       handleError(error as Error)
     }
