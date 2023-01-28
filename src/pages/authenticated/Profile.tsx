@@ -145,7 +145,6 @@ const ProfilePage = () => {
           <TextField
             name="telephone"
             label="Téléphone"
-            required
             disabled={!user}
             value={values.telephone}
             onChange={handleInputChange}
