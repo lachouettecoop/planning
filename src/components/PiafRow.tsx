@@ -5,7 +5,7 @@ import { Button, TextField } from "@material-ui/core"
 import { Save } from "@material-ui/icons"
 
 import styled from "@emotion/styled/macro"
-import { startOfWeek, endOfWeek, startOfDay, endOfDay, isPast } from "date-fns"
+import { startOfWeek, endOfWeek, startOfDay, endOfDay, isPast, differenceInHours } from "date-fns"
 
 import { PIAF, User, RoleId } from "src/types/model"
 import PiafCircle from "src/components/PiafCircle"
@@ -19,7 +19,7 @@ import { hasRole } from "src/helpers/role"
 import { handleError } from "src/helpers/errors"
 import { isTaken, getPiafRole, isCritical } from "src/helpers/piaf"
 import { sendEmail } from "src/helpers/request"
-import { formatDateTime, formatDateShort, formatDateLong, queryDate } from "src/helpers/date"
+import { formatDateTime, formatDateShort, queryDate } from "src/helpers/date"
 import { formatName } from "src/helpers/user"
 
 const MAX_PIAF_PER_WEEK = 3
@@ -312,7 +312,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
       })
 
       openDialog("Désinscription effectuée : la PIAF est désormais en recherche de remplacement !")
-      if (piaf.role?.roleUniqueId === RoleId.Caissier && formatDateLong(slot.start) === formatDateLong(new Date())) {
+      if (piaf.role?.roleUniqueId === RoleId.Caissier && differenceInHours(slot.start, new Date()) <= 36) {
         if (!process.env.REACT_APP_MAIL_EMERGENCY_CASHIER) {
           alert("L’adresse e-mail du Zulip n’est pas configurée. Contacte l’administrateur.")
           return
@@ -320,7 +320,8 @@ const PiafRow = ({ piaf, slot }: Props) => {
           sendEmail(
             process.env.REACT_APP_MAIL_EMERGENCY_CASHIER,
             "Desinscription piaf caisse le jour même ",
-            `La piaf caissier de ${formatDateTime(slot.start)} (aujourd'hui) est non pourvu.`
+            `La piaf caissier de ${formatDateTime(slot.start)} est non pourvu.`,
+            true
           )
         }
       }
