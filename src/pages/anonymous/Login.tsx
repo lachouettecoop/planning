@@ -70,10 +70,19 @@ const LoginPage = () => {
           l’espace membres. Si tu réinitialises ton mot de passe, le changement sera donc valable aussi pour l’espace
           membres.
         </p>
-        <TextField type="email" name="username" label="E-mail" fullWidth variant="outlined" margin="normal" />
+        <TextField
+          type="email"
+          name="username"
+          defaultValue={window.localStorage.lcc_defaultLogin || ""}
+          label="E-mail"
+          fullWidth
+          variant="outlined"
+          margin="normal"
+        />
         <TextField
           type={showPassword ? "text" : "password"}
           name="password"
+          defaultValue={window.localStorage.lcc_defaultPassword || ""}
           label="Mot de passe"
           fullWidth
           variant="outlined"

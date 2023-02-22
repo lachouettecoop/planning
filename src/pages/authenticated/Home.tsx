@@ -19,6 +19,7 @@ import UserPiafs from "src/components/UserPiafs"
 import ReplacementPiafs from "src/components/ReplacementPiafs"
 import CriticalPiafs from "src/components/CriticalPiafs"
 import SendEmail from "src/components/SendEmail"
+import { Alert } from "@material-ui/lab"
 
 // https://style.lachouettecoop.fr/#/couleurs
 // TODO: use constants
@@ -115,6 +116,9 @@ const HomePage = () => {
     <Container>
       <Content>
         <Status>
+          {window.localStorage.lcc_defaultLogin && window.localStorage.lcc_defaultLogin !== user?.email && (
+            <Alert severity="warning">Vous n&apos;êtes pas connecté avec le compte par défaut</Alert>
+          )}
           <Typography variant="h2">Mon statut</Typography>
           <Typography variant="h3">
             {counter} <span>PIAF attendues</span>
