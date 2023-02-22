@@ -4,6 +4,15 @@
 
 Web app for [La Chouette Coop](https://lachouettecoop.fr/), bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+# Poste accueil
+
+Pour setter les valeur par défaut du login du poste accueil, sur site et sur le site, ouvrir les dev tools (F12) et taper dans la console :
+
+```
+localStorage.lcc_defaultLogin = "login_du_poste_accueil"
+localStorage.lcc_defaultPassword = "mdp_du_poste_accueil"
+```
+
 ## Requirements
 
 - [Node](https://nodejs.org/)
