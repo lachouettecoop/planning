@@ -9,6 +9,7 @@ export enum RoleId {
   AdminMag = "MAG",
   AdminBdM = "BDM",
   PosteAccueil = "PA",
+  Chouettos_Formateur = "CHF",
   // only for icons:
   PIAF = "P",
   Formateur = "F",
