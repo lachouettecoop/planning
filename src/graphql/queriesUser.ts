@@ -21,6 +21,7 @@ export const LOGGED_IN_USER = gql`
       nbPiafAttendues
       nbPiafGH
       nbPiafCaisse
+      nbDemiPiaf
       affichageDonneesPersonnelles
       absenceLongueDureeCourses
       absenceLongueDureeSansCourses

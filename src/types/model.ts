@@ -75,6 +75,7 @@ export interface User {
   nbPiafEffectuees: number
   nbPiafAttendues: number
   nbPiafGH?: number
+  nbDemiPiaf?: number
   nbPiafCaisse?: number
   affichageDonneesPersonnelles: boolean
   attenteCommissionParticipation: boolean
