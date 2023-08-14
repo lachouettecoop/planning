@@ -76,7 +76,16 @@ const HomePage = () => {
   const { openQuestion } = useDialog()
   const [openSendEmailDialog, setOpenSendEmailDialog] = useState(false)
 
-  const counter = `${user?.nbPiafEffectuees ?? "…"}/${user?.nbPiafAttendues ?? "…"}`
+  let nbPiafs
+
+  if (user?.nbPiafEffectuees) {
+    nbPiafs = user?.nbPiafEffectuees
+    if (user?.nbDemiPiaf) {
+      nbPiafs += 0.5
+    }
+  }
+
+  const counter = `${nbPiafs ?? "…"}/${user?.nbPiafAttendues ?? "…"}`
   const status = user?.statut || "…"
 
   const handleClick = async (shopping: boolean) => {
