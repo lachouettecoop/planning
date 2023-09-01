@@ -24,6 +24,7 @@ const UserInfoDialog = ({ open, handleClose, data }: Props) => {
     return null
   }
 
+  const nbPiafs = data.nbDemiPiaf ? data.nbPiafEffectuees + 0.5 : data.nbPiafEffectuees
   return (
     <Dialog
       open={open}
@@ -51,7 +52,7 @@ const UserInfoDialog = ({ open, handleClose, data }: Props) => {
               <h3>Compteur PIAF</h3>
             </Grid>
             <RightCol item xs={6}>
-              {data.nbPiafEffectuees}/{data.nbPiafAttendues}
+              {nbPiafs}/{data.nbPiafAttendues}
             </RightCol>
             <Grid item xs={6}>
               <h3>Absence longue durée sans courses</h3>
