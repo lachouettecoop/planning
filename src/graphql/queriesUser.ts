@@ -81,6 +81,7 @@ export const USERS = gql`
       nbPiafAttendues
       nbPiafGH
       nbPiafCaisse
+      nbDemiPiaf
       attenteCommissionParticipation
     }
   }
