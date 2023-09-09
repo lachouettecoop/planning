@@ -87,6 +87,7 @@ export interface Creneau {
   creneauGenerique: CreneauGenerique | null
   debut: string // ISO datetime
   fin: string // ISO datetime
+  demiPiaf: boolean
   informations: string
   horsMag: boolean
   piafs: PIAF[]

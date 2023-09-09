@@ -48,6 +48,7 @@ const CriticalPiafs = () => {
         id: piaf.creneau.id,
         title: piaf.creneau.titre,
         information: piaf.creneau.informations,
+        demiPiaf: piaf.creneau.demiPiaf,
         start: new Date(piaf.creneau.debut),
         end: new Date(piaf.creneau.fin),
         horsMag: piaf.creneau.horsMag,

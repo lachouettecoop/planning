@@ -12,9 +12,25 @@ const SELECTED_COLOR = "#FFFFAA"
 const HIGHLIGHT_COLOR = "#89C7A8"
 const HIGHLIGHTED_SLOTS = ["inventaire", "formation"]
 
-const ClickableSlot = styled.button<{ $open: boolean; $slotTitle: string }>`
+const ClickableSlot = styled.button<{ $isDemiPiaf: boolean; $open: boolean; $slotTitle: string }>`
   width: 100%;
   border: none;
+
+  background: ${({ $isDemiPiaf }) =>
+    $isDemiPiaf &&
+    `
+  linear-gradient(
+    135deg,
+      transparent 25%,
+      rgba(0, 0, 0, 0.1) 25%,
+      rgba(0, 0, 0, 0.1) 50%,
+      transparent 50%,
+      transparent 75%,
+      rgba(0, 0, 0, 0.1) 75%,
+      rgba(0, 0, 0, 0.1)
+      )
+      0 0 / 20px 20px repeat;
+      `};
   background-color: ${({ $open, $slotTitle }) =>
     $open
       ? SELECTED_COLOR
@@ -64,7 +80,7 @@ const Slot = ({ slot }: Props) => {
 
   return (
     <>
-      <ClickableSlot $open={open} $slotTitle={slot.title || ""} onClick={handleClick}>
+      <ClickableSlot $isDemiPiaf={slot.demiPiaf} $open={open} $slotTitle={slot.title || ""} onClick={handleClick}>
         <Title>
           <strong>
             {formatTime(slot.start)}–{formatTime(slot.end)}

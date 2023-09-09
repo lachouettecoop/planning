@@ -4,6 +4,7 @@ export interface ISlot {
   id: string
   title: string
   information: string
+  demiPiaf: boolean
   start: Date
   end: Date
   horsMag: boolean
