@@ -15,6 +15,23 @@ const Caption = styled.figcaption`
   word-wrap: break-word;
   padding: 0 4px;
 `
+const DemiPiaf = styled.div`
+  width: 40px;
+  height: 40px;
+  margin: auto;
+  margin-bottom: 10px;
+  background: linear-gradient(
+      135deg,
+      transparent 25%,
+      rgba(0, 0, 0, 0.1) 25%,
+      rgba(0, 0, 0, 0.1) 50%,
+      transparent 50%,
+      transparent 75%,
+      rgba(0, 0, 0, 0.1) 75%,
+      rgba(0, 0, 0, 0.1)
+    )
+    0 0 / 20px 20px repeat;
+`
 
 const IconsCaption = () => {
   return (
@@ -62,6 +79,13 @@ const IconsCaption = () => {
         <Grid item xs={4} component="figure">
           <PiafIcon role={RoleId.Info} />
           <Caption>Commentaire ajouté</Caption>
+        </Grid>
+      </Grid>
+      <br />
+      <Grid container>
+        <Grid item xs={4} component="figure">
+          <DemiPiaf />
+          <Caption>Demi piaf (1h30)</Caption>
         </Grid>
       </Grid>
     </Container>

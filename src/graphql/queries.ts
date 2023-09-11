@@ -94,6 +94,7 @@ export const PLANNING = gql`
       titre
       informations
       horsMag
+      demiPiaf
       creneauGenerique {
         frequence
       }
