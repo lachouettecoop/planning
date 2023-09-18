@@ -75,16 +75,7 @@ const HomePage = () => {
   const { user, refetchUser } = useUser<true>()
   const { openQuestion } = useDialog()
   const [openSendEmailDialog, setOpenSendEmailDialog] = useState(false)
-
-  let nbPiafs
-
-  if (user?.nbPiafEffectuees) {
-    nbPiafs = user?.nbPiafEffectuees
-    if (user?.nbDemiPiaf) {
-      nbPiafs += 0.5
-    }
-  }
-
+  const nbPiafs = user?.nbDemiPiaf ? user?.nbPiafEffectuees + 0.5 : user?.nbPiafEffectuees
   const counter = `${nbPiafs ?? "…"}/${user?.nbPiafAttendues ?? "…"}`
   const status = user?.statut || "…"
 

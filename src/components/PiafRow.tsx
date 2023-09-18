@@ -319,8 +319,8 @@ const PiafRow = ({ piaf, slot }: Props) => {
         } else {
           sendEmail(
             process.env.REACT_APP_MAIL_EMERGENCY_CASHIER,
-            "Desinscription piaf caisse le jour même ",
-            `La piaf caissier de ${formatDateTime(slot.start)} est non pourvu.`,
+            "Desinscription PIAF caisse le jour même ",
+            `La PIAF caissier de ${formatDateTime(slot.start)} est non pourvu.`,
             true
           )
         }
