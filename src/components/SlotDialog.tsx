@@ -50,7 +50,7 @@ const SlotDialog = ({ slot, show, handleClose }: Props) => {
             <span>{slot.title}</span>
           </Typography>
           {slot.demiPiaf && <Typography variant="h5">⚠️ Demi-PIAF</Typography>}
-          {slot.demiPiaf && "Cette PIAF dure 1h30 et est comptabilisée comme une demi-PIAF"}
+          {slot.demiPiaf && "Cette PIAF dure 1h30 et est comptabilisée comme la moitié d'une PIAF"}
           <div>{slot.information}</div>
         </Title>
       </DialogTitle>
