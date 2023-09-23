@@ -85,7 +85,7 @@ const IconsCaption = () => {
       <Grid container>
         <Grid item xs={4} component="figure">
           <DemiPiaf />
-          <Caption>Demi piaf (1h30)</Caption>
+          <Caption>Demi PIAF (1h30)</Caption>
         </Grid>
       </Grid>
     </Container>
