@@ -50,6 +50,7 @@ export const PIAFS = gql`
         debut
         fin
         horsMag
+        demiPiaf
       }
       piaffeur {
         id
