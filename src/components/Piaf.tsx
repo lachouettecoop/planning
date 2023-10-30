@@ -21,6 +21,24 @@ const Bordered = styled(Grid)`
   margin-bottom: 2px;
 `
 
+const ClickableSlot = styled(Grid)<{ $isDemiPiaf: boolean }>`
+  background: ${({ $isDemiPiaf }) =>
+    $isDemiPiaf &&
+    `
+linear-gradient(
+135deg,
+  transparent 25%,
+  rgba(0, 0, 0, 0.1) 25%,
+  rgba(0, 0, 0, 0.1) 50%,
+  transparent 50%,
+  transparent 75%,
+  rgba(0, 0, 0, 0.1) 75%,
+  rgba(0, 0, 0, 0.1)
+  )
+  0 0 / 20px 20px repeat;
+  `};
+`
+
 interface Result {
   creneau: Creneau
 }
@@ -112,7 +130,7 @@ const Piaf = ({ piaf, allowValidate, critical }: Props) => {
 
   return (
     <Container container>
-      <Grid item xs={8}>
+      <ClickableSlot item xs={8} $isDemiPiaf={piaf.creneau.demiPiaf}>
         <ListItem key={piaf.id} button onClick={handleClick}>
           <ListItemAvatar>
             <PiafCircle piaf={piaf} critical={critical} />
@@ -122,7 +140,7 @@ const Piaf = ({ piaf, allowValidate, critical }: Props) => {
             secondary={`de ${formatTime(slot.start)} à ${formatTime(slot.end)}`}
           />
         </ListItem>
-      </Grid>
+      </ClickableSlot>
       <Grid item xs={4}>
         {allowValidate && (
           <FormGroup>
