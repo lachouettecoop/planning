@@ -1,6 +1,6 @@
 import { FormEvent, ChangeEvent, useState } from "react"
-import { Button, Dialog, TextField, DialogContent, DialogActions, IconButton, DialogTitle } from "@material-ui/core"
-import { Close } from "@material-ui/icons"
+import { Button, Dialog, TextField, DialogContent, DialogActions, IconButton, DialogTitle } from "@mui/material"
+import { Close } from "@mui/icons-material"
 import styled from "@emotion/styled/macro"
 
 import { useDialog } from "src/providers/dialog"
@@ -68,7 +68,7 @@ const SendEmail = ({ show, handleClose, user, title, dialogContent, emailAddress
         .catch(() => {
           handleClose()
           openDialog(
-            "L'e-mail n'a pas pu être envoyé. S'il te plaît déconnecte toi puis reconnecte toi au site et essaye à nouveau"
+            "L'e-mail n'a pas pu être envoyé. S'il te plaît déconnecte toi puis reconnecte toi au site et essaye à nouveau",
           )
         })
     } catch (error) {
@@ -93,6 +93,7 @@ const SendEmail = ({ show, handleClose, user, title, dialogContent, emailAddress
             required={false}
             label="Commentaire"
             value={comment}
+            variant="standard"
             onChange={handleInputChange}
           ></TextInput>
         </DialogContent>

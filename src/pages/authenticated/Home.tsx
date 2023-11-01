@@ -1,5 +1,5 @@
 import styled from "@emotion/styled/macro"
-import { Typography, Button } from "@material-ui/core"
+import { Typography, Button } from "@mui/material"
 import { startOfToday } from "date-fns"
 import { Link } from "react-router-dom"
 import { useState } from "react"
@@ -43,7 +43,8 @@ const Container = styled.div`
 `
 const Bottom = styled.div`
   font-size: 0.85em;
-  margin-top: ${({ theme }) => theme.spacing(4)}px;
+  margin-top: ${({ theme }) => theme.spacing(4)};
+  margin-bottom: ${({ theme }) => theme.spacing(8)};
 `
 const AbsenceText = styled(Typography)`
   margin-right: 10px;
@@ -81,7 +82,7 @@ const HomePage = () => {
 
   const handleClick = async (shopping: boolean) => {
     const ok = await openQuestion(
-      "Tu souhaites revenir faire tes PIAF et tes courses ? Super ! Confirme-le ici et l’effet sera immédiat. Pense à t’inscrire à nouveau sur des créneaux de PIAF."
+      "Tu souhaites revenir faire tes PIAF et tes courses ? Super ! Confirme-le ici et l’effet sera immédiat. Pense à t’inscrire à nouveau sur des créneaux de PIAF.",
     )
     if (!ok) {
       return

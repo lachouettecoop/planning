@@ -4,7 +4,7 @@ import styled from "@emotion/styled/macro"
 
 import { RoleId } from "src/types/model"
 import { getPiafRole, isTaken } from "src/helpers/piaf"
-import { Tooltip } from "@material-ui/core"
+import { Tooltip } from "@mui/material"
 
 const KNOWN_ROLES = Object.values(RoleId)
 

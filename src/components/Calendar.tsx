@@ -1,7 +1,7 @@
 import type { Creneau, PIAF } from "src/types/model"
 import type { IWeek } from "src/types/app"
 
-import { useMediaQuery, useTheme } from "@material-ui/core"
+import { useMediaQuery, useTheme } from "@mui/material"
 import styled from "@emotion/styled/macro"
 import { addDays, differenceInWeeks, eachWeekOfInterval, getDay } from "date-fns"
 
@@ -30,7 +30,7 @@ interface Props {
 
 const Calendar = ({ start, end, list }: Props) => {
   const theme = useTheme()
-  const matches = useMediaQuery(theme.breakpoints.down("sm"))
+  const matches = useMediaQuery(theme.breakpoints.down("md"))
 
   if (!list) {
     return null
@@ -83,7 +83,7 @@ const Calendar = ({ start, end, list }: Props) => {
               <CalendarDay day={day} key={i} weekId={week.weekId} />
             ) : matches ? null : (
               <DayPlaceholder key={i} />
-            )
+            ),
           )}
         </WeekRow>
       ))}

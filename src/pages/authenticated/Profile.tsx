@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react"
-import { Prompt } from "react-router"
-import { Phone, Mail } from "@material-ui/icons"
+import { Phone, Mail } from "@mui/icons-material"
 import {
   Button,
   InputAdornment,
@@ -10,7 +9,7 @@ import {
   RadioGroup,
   Radio,
   FormControl,
-} from "@material-ui/core"
+} from "@mui/material"
 import styled from "@emotion/styled/macro"
 
 import Loader from "src/components/Loader"
@@ -134,10 +133,10 @@ const ProfilePage = () => {
 
   return (
     <>
-      <Prompt
+      {/* <Prompt
         when={unsavedChanges}
         message="Les changements n'ont pas été enregistrés, es-tu sûr·e de vouloir abandonner la page?"
-      />
+      /> */}
       <Container>
         <form onSubmit={handleSave}>
           <Typography variant="h2">{formatName(user)}</Typography>
@@ -145,6 +144,7 @@ const ProfilePage = () => {
           <TextField
             name="telephone"
             label="Téléphone"
+            variant="standard"
             disabled={!user}
             value={values.telephone}
             onChange={handleInputChange}
@@ -163,6 +163,7 @@ const ProfilePage = () => {
             required
             disabled={true}
             value={values.email}
+            variant="standard"
             onChange={handleInputChange}
             fullWidth
             InputProps={{

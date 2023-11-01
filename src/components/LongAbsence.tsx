@@ -7,12 +7,12 @@ import {
   DialogActions,
   IconButton,
   DialogTitle,
-  Select,
   MenuItem,
   InputLabel,
   FormControl,
-} from "@material-ui/core"
-import { Close } from "@material-ui/icons"
+} from "@mui/material"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
+import { Close } from "@mui/icons-material"
 import styled from "@emotion/styled/macro"
 
 import { useDialog } from "src/providers/dialog"
@@ -33,7 +33,7 @@ const Row = styled.div`
     @media (min-width: 400px) {
       flex: 1;
       &:not(:first-of-type) {
-        margin-left: ${({ theme }) => theme.spacing(3)}px;
+        margin-left: ${({ theme }) => theme.spacing(3)};
       }
     }
   }
@@ -66,7 +66,7 @@ interface Props {
 }
 
 interface State {
-  reason: keyof typeof REASONS | ""
+  reason: { name: keyof typeof REASONS; value: string }
   comment: string
   startDate: string
   endDate: string
@@ -77,7 +77,7 @@ const currentDate = new Date(Date.now())
 const LongAbsence = ({ show, handleClose, user }: Props) => {
   const { openDialog } = useDialog()
   const [values, setValues] = useState<State>({
-    reason: "",
+    reason: { name: "other", value: "" },
     comment: "",
     startDate: "",
     endDate: "",
@@ -92,7 +92,7 @@ const LongAbsence = ({ show, handleClose, user }: Props) => {
     })
   }
 
-  const handleReasonChange = ({ target }: ChangeEvent<{ name?: string; value: unknown }>) => {
+  const handleReasonChange = ({ target }: SelectChangeEvent<{ name?: string; value: unknown }>) => {
     const { name, value } = target
     setValues({
       ...values,
@@ -120,7 +120,7 @@ const LongAbsence = ({ show, handleClose, user }: Props) => {
         `Nom et prénom : ${formatName(user)}`,
         `Mail : ${user.email} `,
         `Téléphone : ${user.telephone} `,
-        `Raison de l'absence : ${REASONS[values.reason]}`,
+        `Raison de l'absence : ${REASONS[values.reason.name || ""]}`,
         `Date début : ${formatDateLong(values.startDate)}`,
       ]
       if (values.comment) {
@@ -131,13 +131,13 @@ const LongAbsence = ({ show, handleClose, user }: Props) => {
         .then(() => {
           handleClose()
           openDialog(
-            "Un e-mail a été envoyé au BdM qui te recontactera si besoin. Pense bien a les recontacter lorsque tu pourras reprendre les PIAF."
+            "Un e-mail a été envoyé au BdM qui te recontactera si besoin. Pense bien a les recontacter lorsque tu pourras reprendre les PIAF.",
           )
         })
         .catch(() => {
           handleClose()
           openDialog(
-            "L'e-mail n'a pas pu être envoyé. S'il te plaît déconnecte toi puis reconnecte toi au site et essaye à nouveau"
+            "L'e-mail n'a pas pu être envoyé. S'il te plaît déconnecte toi puis reconnecte toi au site et essaye à nouveau",
           )
         })
     } catch (error) {
@@ -161,6 +161,7 @@ const LongAbsence = ({ show, handleClose, user }: Props) => {
               label="Date de début"
               name="startDate"
               type="date"
+              variant="standard"
               fullWidth
               required
               value={values.startDate}
@@ -186,7 +187,7 @@ const LongAbsence = ({ show, handleClose, user }: Props) => {
             /> */}
           </Row>
           <Row>
-            <FormControl fullWidth>
+            <FormControl fullWidth variant="standard">
               <InputLabel>Type de changement</InputLabel>
               <Select
                 value={values.reason}
@@ -207,9 +208,10 @@ const LongAbsence = ({ show, handleClose, user }: Props) => {
             <TextInput
               name="comment"
               multiline
-              required={values.reason === "other"}
+              required={values.reason.name === "other"}
               label="Commentaire additionnel"
               value={values.comment}
+              variant="standard"
               onChange={handleInputChange}
             ></TextInput>
           </Row>

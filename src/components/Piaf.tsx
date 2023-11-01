@@ -2,7 +2,7 @@ import type { Creneau, PIAF } from "src/types/model"
 import { ISlot } from "src/types/app"
 
 import { useState } from "react"
-import { ListItem, ListItemAvatar, ListItemText, Checkbox, FormControlLabel, Grid, FormGroup } from "@material-ui/core"
+import { ListItem, ListItemAvatar, ListItemText, Checkbox, FormControlLabel, Grid, FormGroup } from "@mui/material"
 import styled from "@emotion/styled/macro"
 import { useLazyQuery } from "@apollo/client"
 

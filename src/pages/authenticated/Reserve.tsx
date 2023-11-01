@@ -2,8 +2,7 @@ import { CreneauGenerique, Reserve } from "src/types/model"
 import { IReserve } from "src/types/app"
 
 import { useEffect, useState } from "react"
-import { Prompt } from "react-router"
-import { Button, FormGroup, FormControlLabel, Checkbox, Typography } from "@material-ui/core"
+import { Button, FormGroup, FormControlLabel, Checkbox, Typography } from "@mui/material"
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled/macro"
 
@@ -47,10 +46,16 @@ const ReservePage = () => {
   const [slots, setSlots] = useState<string[]>([])
   const [unsavedChanges, setUnsavedChanges] = useState(false)
 
-  const { data: dataCreneauxList, loading: loadingCL, error: errorCreneauxList } = useQuery<ResultCG>(
-    CRENEAUX_GENERIQUES
-  )
-  const { data: dataCreneauxUser, loading: loadingCU, error: errorReserve } = useQuery<ResultRU>(RESERVE_USER, {
+  const {
+    data: dataCreneauxList,
+    loading: loadingCL,
+    error: errorCreneauxList,
+  } = useQuery<ResultCG>(CRENEAUX_GENERIQUES)
+  const {
+    data: dataCreneauxUser,
+    loading: loadingCU,
+    error: errorReserve,
+  } = useQuery<ResultRU>(RESERVE_USER, {
     skip: !user,
     variables: { idUser: user?.id },
   })
@@ -183,10 +188,11 @@ const ReservePage = () => {
 
   return (
     <>
-      <Prompt
+      {/*<Prompt
         when={unsavedChanges}
         message="Les changements n'ont pas été enregistrés, es-tu sûr·e de vouloir abandonner la page?"
-      />
+      /> */}
+
       <Typography variant="h2">Réserve</Typography>
       {loading ? (
         <Loading>
@@ -226,6 +232,7 @@ const ReservePage = () => {
               disabled={loading}
               label="Informations supplémentaires (optionnel)"
               value={information}
+              variant="standard" 
               onChange={handleInfoChange}
               fullWidth
             />

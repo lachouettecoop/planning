@@ -1,5 +1,5 @@
 import React from "react"
-import ReactDOM from "react-dom"
+import { createRoot } from "react-dom/client"
 import { ApolloProvider } from "@apollo/client"
 
 import { ErrorBoundary } from "src/helpers/errors"
@@ -9,7 +9,10 @@ import ThemeProvider from "src/providers/theme"
 import { RolesProvider } from "src/providers/roles"
 import App from "src/App"
 
-ReactDOM.render(
+const container = document.getElementById("root")
+const root = createRoot(container!)
+
+root.render(
   <ErrorBoundary>
     <React.StrictMode>
       <ThemeProvider>
@@ -23,5 +26,4 @@ ReactDOM.render(
       </ThemeProvider>
     </React.StrictMode>
   </ErrorBoundary>,
-  document.getElementById("root")
 )

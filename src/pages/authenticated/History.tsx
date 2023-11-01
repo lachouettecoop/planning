@@ -1,5 +1,5 @@
 import { addMonths } from "date-fns"
-import { TextField, Typography } from "@material-ui/core"
+import { TextField, Typography } from "@mui/material"
 import styled from "@emotion/styled/macro"
 import { useState } from "react"
 
@@ -9,7 +9,7 @@ import { queryDate } from "src/helpers/date"
 import UserPiafHistory from "src/components/UserPiafHistory"
 
 const DateField = styled(TextField)`
-  margin: ${({ theme }) => theme.spacing(1)}px;
+  margin: ${({ theme }) => theme.spacing(1)};
 `
 
 const currentDate = new Date(Date.now())

@@ -1,7 +1,7 @@
 import type { PIAF } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
-import { List } from "@material-ui/core"
+import { List } from "@mui/material"
 
 import { PIAFS } from "src/graphql/queries"
 import { ErrorMessage } from "src/helpers/errors"

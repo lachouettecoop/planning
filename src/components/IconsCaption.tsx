@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import styled from "@emotion/styled/macro"
-import { Grid, Dialog, DialogContent, DialogActions, Button } from "@material-ui/core"
+import { Grid, Dialog, DialogContent, DialogActions, Button } from "@mui/material"
 
 import { RoleId } from "src/types/model"
 import { PiafIcon } from "src/components/PiafCircle"

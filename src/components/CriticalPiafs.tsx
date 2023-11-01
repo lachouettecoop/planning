@@ -3,7 +3,7 @@ import type { ISlot } from "src/types/app"
 
 import { useQuery } from "@apollo/client"
 import { addDays } from "date-fns"
-import { List } from "@material-ui/core"
+import { List } from "@mui/material"
 
 import Loader from "src/components/Loader"
 import Piaf from "src/components/Piaf"

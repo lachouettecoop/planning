@@ -1,8 +1,8 @@
 import type { ISlot } from "src/types/app"
 
 import { useState } from "react"
-import { Button, TextField } from "@material-ui/core"
-import { Save } from "@material-ui/icons"
+import { Button, TextField } from "@mui/material"
+import { Save } from "@mui/icons-material"
 
 import styled from "@emotion/styled/macro"
 import { startOfWeek, endOfWeek, startOfDay, endOfDay, isPast, differenceInHours } from "date-fns"
@@ -99,7 +99,7 @@ const checkMaximumNumberOfNewChouettos = (user: User, piaf: PIAF) => {
 }*/
 const getRegistrationPiaf = (slot: ISlot, piaf: PIAF) => {
   const replacementPiaf = slot.piafs?.find(
-    ({ statut, role }) => statut === "remplacement" && role?.id === piaf.role?.id
+    ({ statut, role }) => statut === "remplacement" && role?.id === piaf.role?.id,
   )
   if (replacementPiaf) {
     // If there is a PIAF with status "remplacement" and the same role,
@@ -120,7 +120,7 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
     sendEmail(
       replacedUserMail,
       "PIAF remplacée",
-      `Ta PIAF du ${formatDateTime(slot.start)} a été pourvue. Tu n’es plus en charge de cette PIAF.`
+      `Ta PIAF du ${formatDateTime(slot.start)} a été pourvue. Tu n’es plus en charge de cette PIAF.`,
     )
   }
 
@@ -131,7 +131,7 @@ const sendEmailReplacedPiaf = (piaf: PIAF, slot: ISlot, user: User) => {
         ghEmail,
         "PIAF remplacée",
         `La PIAF du ${formatDateTime(slot.start)} a été pourvue.
-        ${formatName(user)} est maintenant inscrit pour cette PIAF.`
+        ${formatName(user)} est maintenant inscrit pour cette PIAF.`,
       )
     }
   }
@@ -183,12 +183,15 @@ const PiafRow = ({ piaf, slot }: Props) => {
       info.toUpperCase().replace(/ /g, "").includes(loggedUser.nom.toUpperCase().replace(/ /g, "")) ||
       info.toUpperCase().replace(/ /g, "").includes(loggedUser.prenom.toUpperCase().replace(/ /g, "")) ||
       (loggedUser.affichageDonneesPersonnelles &&
-        (info.toUpperCase().replace(/ /g, "").includes(loggedUser.telephone?.toUpperCase().replace(/ /g, "")) ||
+        (info
+          .toUpperCase()
+          .replace(/ /g, "")
+          .includes(loggedUser.telephone?.toUpperCase().replace(/ /g, "")) ||
           info.toUpperCase().replace(/ /g, "").includes(loggedUser.email.toUpperCase().replace(/ /g, ""))))
     ) {
       setLoading(false)
       openDialog(
-        "Inutile d’inclure des coordonées personnelles dans le commentaire, elles sont déjà visibles. Supprime les pour pouvoir continuer"
+        "Inutile d’inclure des coordonées personnelles dans le commentaire, elles sont déjà visibles. Supprime les pour pouvoir continuer",
       )
       return false
     }
@@ -198,7 +201,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
   const checksBeforeRegister = async (loggedUser: User) => {
     if (loggedUser.absenceLongueDureeCourses || loggedUser.absenceLongueDureeSansCourses) {
       openDialog(
-        "Ta participation aux PIAF du magasin est actuellement en pause. Tu peux la reprendre depuis la page d'accueil pour pouvoir t’inscrire à nouveau sur le planning"
+        "Ta participation aux PIAF du magasin est actuellement en pause. Tu peux la reprendre depuis la page d'accueil pour pouvoir t’inscrire à nouveau sur le planning",
       )
       return false
     }
@@ -256,9 +259,8 @@ const PiafRow = ({ piaf, slot }: Props) => {
 
     try {
       const ok = await openQuestion(
-        `Es-tu sûr·e de vouloir t’inscrire à cette PIAF du ${formatDateShort(slot.start)} en tant que ${
-          piaf.role?.libelle
-        }?`
+        `Es-tu sûr·e de vouloir t’inscrire à cette PIAF du ${formatDateShort(slot.start)} en tant que ${piaf.role
+          ?.libelle}?`,
       )
 
       if (!ok) {
@@ -292,7 +294,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
 
   const unregister = async () => {
     const ok = await openQuestion(
-      `N’oublie pas de chercher un·e remplaçant·e sur Facebook, Zulip, appel aux autres Chouettos… Plus ton créneau est proche, plus c’est important! Es-tu sûr·e de vouloir te désinscrire ?`
+      `N’oublie pas de chercher un·e remplaçant·e sur Facebook, Zulip, appel aux autres Chouettos… Plus ton créneau est proche, plus c’est important! Es-tu sûr·e de vouloir te désinscrire ?`,
     )
 
     if (!ok) {
@@ -321,7 +323,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
             process.env.REACT_APP_MAIL_EMERGENCY_CASHIER,
             "Desinscription PIAF caisse le jour même ",
             `La PIAF caissier de ${formatDateTime(slot.start)} est non pourvu.`,
-            true
+            true,
           )
         }
       }
@@ -376,6 +378,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
                   label="Commentaire (optionnel)"
                   value={info}
                   onChange={handleInputChange}
+                  variant="standard"
                 />
                 <ButtonSave>
                   <Button
@@ -406,6 +409,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
             label="Commentaire (optionnel)"
             value={info}
             onChange={handleInputChange}
+            variant="standard"
           />
           <Button disabled={loading} color="primary" variant="contained" onClick={register}>
             S’inscrire

@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { useLocation } from "react-router"
 import clsx from "clsx"
-import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@mui/styles"
+import { Theme, useTheme, CSSObject } from "@mui/material/styles"
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar"
+import MuiDrawer from "@mui/material/Drawer"
 import {
   styled,
   useMediaQuery,
-  Drawer,
-  AppBar,
   Toolbar,
   List,
   Typography,
@@ -18,7 +19,7 @@ import {
   Box,
   Chip,
   Tooltip,
-} from "@material-ui/core"
+} from "@mui/material"
 import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
@@ -32,7 +33,7 @@ import {
   Storefront as StorefrontIcon,
   CardMembership as CardMembershipIcon,
   History as HistoryIcon,
-} from "@material-ui/icons"
+} from "@mui/icons-material"
 
 import Link from "src/components/Link"
 import { useUser } from "src/providers/user"
@@ -47,66 +48,13 @@ const Spacer = styled(Box)({
   flexGrow: 1,
 })
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: "flex",
-    },
-    appBar: {
-      zIndex: theme.zIndex.drawer + 1,
-      transition: theme.transitions.create(["width", "margin"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-    },
-    appBarShift: {
-      marginLeft: DRAWER_WIDTH,
-      width: `calc(100% - ${DRAWER_WIDTH}px)`,
-      transition: theme.transitions.create(["width", "margin"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    },
     menuButton: {
       marginRight: 36,
     },
     hide: {
       display: "none",
-    },
-    drawer: {
-      width: DRAWER_WIDTH,
-      flexShrink: 0,
-      whiteSpace: "nowrap",
-    },
-    drawerOpen: {
-      width: DRAWER_WIDTH,
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    },
-    drawerClose: {
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      overflowX: "hidden",
-      width: theme.spacing(7) + 1,
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9) + 1,
-      },
-    },
-    toolbar: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "flex-end",
-      padding: theme.spacing(0, 1),
-      // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
-    },
-    content: {
-      flexGrow: 1,
-      padding: theme.spacing(3),
     },
     menuItem: {
       textDecoration: "none",
@@ -116,7 +64,7 @@ const useStyles = makeStyles((theme) =>
       textDecoration: "none",
       color: theme.palette.primary.main,
     },
-  })
+  }),
 )
 
 const ITEMS = [
@@ -141,6 +89,73 @@ const ITEMS = [
   },
 ]
 
+const openedMixin = (theme: Theme): CSSObject => ({
+  width: DRAWER_WIDTH,
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: "hidden",
+})
+
+const closedMixin = (theme: Theme): CSSObject => ({
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: "hidden",
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up("sm")]: {
+    width: `calc(${theme.spacing(8)} + 1px)`,
+  },
+})
+
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+}))
+
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean
+}
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open",
+})<AppBarProps>(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(["width", "margin"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: DRAWER_WIDTH,
+    width: `calc(100% - ${DRAWER_WIDTH}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}))
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
+  width: DRAWER_WIDTH,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  ...(open && {
+    ...openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
+  }),
+  ...(!open && {
+    ...closedMixin(theme),
+    "& .MuiDrawer-paper": closedMixin(theme),
+  }),
+}))
+
 const Menu = () => {
   const classes = useStyles()
   const { user, logout } = useUser<true>()
@@ -164,13 +179,8 @@ const Menu = () => {
   const userRoles = user?.rolesChouette || []
 
   return (
-    <div className={classes.root}>
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
+    <Box sx={{ display: "flex" }}>
+      <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -180,6 +190,11 @@ const Menu = () => {
             className={clsx(classes.menuButton, {
               [classes.hide]: open,
             })}
+            size="large"
+            sx={{
+              marginRight: 5,
+              ...(open && { display: "none" }),
+            }}
           >
             <MenuIcon />
           </IconButton>
@@ -196,24 +211,12 @@ const Menu = () => {
         </Toolbar>
       </AppBar>
       <Toolbar />
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
+      <Drawer variant="permanent" open={open}>
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose} size="large">
             {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
-        </div>
+        </DrawerHeader>
         <List>
           {ITEMS.filter(({ roles }) => hasAtLeastOneRole(roles, userRoles)).map(({ href, title, Icon }) => {
             const active = pathname === href
@@ -232,7 +235,7 @@ const Menu = () => {
           })}
         </List>
       </Drawer>
-    </div>
+    </Box>
   )
 }
 

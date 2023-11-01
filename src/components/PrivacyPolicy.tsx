@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Dialog, DialogContent, Button } from "@material-ui/core"
+import { Dialog, DialogContent, Button } from "@mui/material"
 
 import { useUser } from "src/providers/user"
 import apollo from "src/helpers/apollo"

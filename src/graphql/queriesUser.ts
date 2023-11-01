@@ -88,7 +88,7 @@ export const USERS = gql`
 `
 
 export const USER_UPDATE_STOP_ABSENCE_WITHOUT_SHOPPING = gql`
-  mutation($id: ID!) {
+  mutation ($id: ID!) {
     updateUser(input: { id: $id, absenceLongueDureeSansCourses: false }) {
       user {
         id
@@ -102,7 +102,7 @@ export const USER_UPDATE_STOP_ABSENCE_WITHOUT_SHOPPING = gql`
   }
 `
 export const USER_UPDATE_STOP_ABSENCE_WITH_SHOPPING = gql`
-  mutation($id: ID!) {
+  mutation ($id: ID!) {
     updateUser(input: { id: $id, absenceLongueDureeCourses: false }) {
       user {
         id
@@ -117,7 +117,7 @@ export const USER_UPDATE_STOP_ABSENCE_WITH_SHOPPING = gql`
 `
 
 export const USER_SET_AWAITING_PARTICIPATION_GROUP = gql`
-  mutation($id: ID!) {
+  mutation ($id: ID!) {
     updateUser(input: { id: $id, attenteCommissionParticipation: true }) {
       user {
         id

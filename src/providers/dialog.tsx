@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, FC } from "react"
+import { createContext, useContext, useState } from "react"
+import { ReactFCWithChildren } from "src/types/react"
 
 import Dialog from "src/components/Dialog"
 
@@ -12,7 +13,7 @@ interface IDialogContext {
 
 const DialogContext = createContext({} as IDialogContext)
 
-export const DialogProvider: FC = ({ children }) => {
+export const DialogProvider: ReactFCWithChildren = ({ children }) => {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [message, setMessage] = useState("")

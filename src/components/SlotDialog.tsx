@@ -1,7 +1,7 @@
 import type { ISlot } from "src/types/app"
 
-import { capitalize, Dialog, DialogContent, DialogTitle, IconButton, Typography } from "@material-ui/core"
-import { Close } from "@material-ui/icons"
+import { capitalize, Dialog, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material"
+import { Close } from "@mui/icons-material"
 import styled from "@emotion/styled/macro"
 
 import Loader from "src/components/Loader"
@@ -40,7 +40,7 @@ const SlotDialog = ({ slot, show, handleClose }: Props) => {
       <CloseButton onClick={handleClose}>
         <Close />
       </CloseButton>
-      <DialogTitle disableTypography>
+      <DialogTitle>
         <Title>
           <Typography variant="h3">{capitalize(formatDateLong(slot.start))}</Typography>
           <Typography variant="h4">

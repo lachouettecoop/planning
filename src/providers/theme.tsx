@@ -1,13 +1,12 @@
-import type { FC } from "react"
-
-import { createMuiTheme, ThemeProvider as MUIThemeProvider, Theme as MUITheme } from "@material-ui/core/styles"
-import { frFR as dataGridLocale } from "@material-ui/data-grid"
-import { CssBaseline } from "@material-ui/core"
+import { createTheme, ThemeProvider as MUIThemeProvider, Theme as MUITheme } from "@mui/material/styles"
+import { frFR as dataGridLocale } from "@mui/x-data-grid"
+import { CssBaseline } from "@mui/material"
 import { ThemeProvider as EmotionThemeProvider } from "@emotion/react/macro"
-import { frFR as coreLocale } from "@material-ui/core/locale"
-import { grey } from "@material-ui/core/colors"
+import { frFR as coreLocale } from "@mui/material/locale"
+import { grey } from "@mui/material/colors"
 
 import { ReactComponent as Icons } from "src/images/icons.svg"
+import { ReactFCWithChildren } from "src/types/react"
 
 // see public/index.html
 const TITLE_FONT = "Montserrat, sans-serif" // https://style.lachouettecoop.fr/#/typographie?a=titres-et-sous-titres
@@ -21,7 +20,7 @@ declare module "@emotion/react" {
   export interface Theme extends MUITheme {}
 }
 
-const THEME = createMuiTheme(
+const THEME = createTheme(
   {
     typography: {
       fontFamily: TEXT_FONT,
@@ -82,26 +81,35 @@ const THEME = createMuiTheme(
       // E.g., shift from Red 500 to Red 300 or Red 700.
       tonalOffset: 0.2,
     },
-    overrides: {
-      MuiTooltip: {
-        tooltip: {
-          fontSize: "1rem",
-        },
-      },
+    components: {
       MuiCssBaseline: {
-        "@global": {
+        styleOverrides: {
           a: {
             color: MAIN_COLOR,
+          },
+        },
+      },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: {
+            fontSize: "1rem",
+          },
+        },
+      },
+      MuiFormControl: {
+        styleOverrides: {
+          root: {
+            marginBottom: "1rem",
           },
         },
       },
     },
   },
   coreLocale,
-  dataGridLocale
+  dataGridLocale,
 )
 
-const ThemeProvider: FC = ({ children }) => (
+const ThemeProvider: ReactFCWithChildren = ({ children }) => (
   <EmotionThemeProvider theme={THEME}>
     <MUIThemeProvider theme={THEME}>
       <CssBaseline />

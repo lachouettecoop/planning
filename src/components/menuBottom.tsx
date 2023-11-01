@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { createStyles, useTheme, makeStyles } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@mui/styles"
+import { Theme, useTheme } from "@mui/material/styles"
 import {
   useMediaQuery,
   Menu,
@@ -11,19 +12,15 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-} from "@material-ui/core"
-import { MoreVert as MoreIcon, Group as GroupIcon, Event as EventIcon, Home as HomeIcon } from "@material-ui/icons"
+} from "@mui/material"
+import { MoreVert as MoreIcon, Group as GroupIcon, Event as EventIcon, Home as HomeIcon } from "@mui/icons-material"
 
 import { RoleId } from "src/types/model"
 import { hasAtLeastOneRole } from "src/helpers/role"
 import { useUser } from "src/providers/user"
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    appBar: {
-      top: "auto",
-      bottom: 0,
-    },
     toolbar: {
       justifyContent: "space-between",
     },
@@ -66,7 +63,7 @@ const useStyles = makeStyles((theme) =>
         fill: "white",
       },
     },
-  })
+  }),
 )
 
 const MAIN_ITEMS = [
@@ -89,7 +86,7 @@ export default function BottomAppBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
   const { pathname } = useLocation()
-  const matches = useMediaQuery(theme.breakpoints.down("xs"))
+  const matches = useMediaQuery(theme.breakpoints.down("sm"))
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -107,7 +104,7 @@ export default function BottomAppBar() {
 
   return (
     <>
-      <AppBar position="fixed" color="primary" className={classes.appBar}>
+      <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
         <Toolbar className={classes.toolbar}>
           {MAIN_ITEMS.filter(({ roles }) => hasAtLeastOneRole(roles, userRoles)).map(({ href, title, Icon }) => {
             const active = pathname === href
@@ -147,7 +144,14 @@ export default function BottomAppBar() {
               Déconnexion
             </MenuItem>
           </Menu>
-          <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} edge="end" color="inherit">
+          <IconButton
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            onClick={handleClick}
+            edge="end"
+            color="inherit"
+            size="large"
+          >
             <MoreIcon />
           </IconButton>
         </Toolbar>

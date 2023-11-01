@@ -2,7 +2,7 @@ import type { PIAF } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
 import { addWeeks } from "date-fns"
-import { List } from "@material-ui/core"
+import { List } from "@mui/material"
 
 import Loader from "src/components/Loader"
 import Piaf from "src/components/Piaf"

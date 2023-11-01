@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react"
-import { Container, TextField, Button, Typography, IconButton, Tooltip } from "@material-ui/core"
+import { Container, TextField, Button, Typography, IconButton, Tooltip } from "@mui/material"
 import styled from "@emotion/styled/macro"
-import { VisibilityOff, Visibility } from "@material-ui/icons"
+import { VisibilityOff, Visibility } from "@mui/icons-material"
 
 import { useUser, Auth } from "src/providers/user"
 import { post } from "src/helpers/request"

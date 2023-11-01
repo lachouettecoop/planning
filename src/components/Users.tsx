@@ -1,7 +1,7 @@
 import type { Role, User } from "src/types/model"
 
 import { useState } from "react"
-import { DataGrid, GridColumns, GridRowData, GridValueFormatterParams } from "@material-ui/data-grid"
+import { DataGrid, GridColDef, GridRowParams, GridValueFormatterParams } from "@mui/x-data-grid"
 import { useQuery } from "@apollo/client"
 import styled from "@emotion/styled/macro"
 
@@ -23,7 +23,7 @@ const booleanFormatter = ({ value }: GridValueFormatterParams) => (value ? "oui"
 
 type Result = { users: User[] }
 
-const COLUMNS: GridColumns = [
+const COLUMNS: GridColDef[] = [
   { field: "nom", headerName: "Nom", flex: 1 },
   { field: "prenom", headerName: "Prenom", flex: 1 },
   { field: "statut", headerName: "Statut", flex: 1 },
@@ -66,7 +66,7 @@ const Users = () => {
 
   const rows = data.users.slice().sort((left, right) => (left.nom > right.nom ? 1 : -1))
 
-  const onRowClick = ({ row }: GridRowData) => {
+  const onRowClick = ({ row }: GridRowParams) => {
     setSelectedRow(row)
     setOpenDialog(true)
   }

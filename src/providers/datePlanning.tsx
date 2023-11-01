@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, FC } from "react"
+import { createContext, useContext, useState } from "react"
 import { startOfMonth, endOfMonth, subMonths, addMonths } from "date-fns"
 import { ApolloError, ApolloQueryResult, OperationVariables, useQuery } from "@apollo/client"
 
 import { PLANNING } from "src/graphql/queries"
 import { Creneau } from "src/types/model"
+import { ReactFCWithChildren } from "src/types/react"
 
 export interface IDatePlanningContext {
   start: Date
@@ -24,7 +25,7 @@ const DatePlanningContext = createContext<IDatePlanningContext>({} as IDatePlann
 const getInitialStart = () => startOfMonth(new Date())
 const getInitialEnd = () => endOfMonth(new Date())
 
-export const DatePlanningProvider: FC = ({ children }) => {
+export const DatePlanningProvider: ReactFCWithChildren = ({ children }) => {
   const [start, setStart] = useState<Date>(getInitialStart)
   const [end, setEnd] = useState<Date>(getInitialEnd)
 

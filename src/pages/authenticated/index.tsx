@@ -1,4 +1,4 @@
-import { Redirect, Route, Switch, useLocation } from "react-router-dom"
+import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import styled from "@emotion/styled/macro"
 
 import { DatePlanningProvider } from "src/providers/datePlanning"
@@ -19,54 +19,83 @@ import RestrictedRoute from "src/pages/authenticated/RestrictedRoute"
 import LegalPage from "src/pages/Legal"
 
 const Content = styled.div`
-  margin: ${({ theme }) => theme.spacing(3)}px;
+  margin: ${({ theme }) => theme.spacing(3)};
   ${({ theme }) => theme.breakpoints.down("xs")} {
-    margin-bottom: ${({ theme }) => theme.spacing(12)}px;
+    margin-bottom: ${({ theme }) => theme.spacing(12)};
   }
   ${({ theme }) => theme.breakpoints.up("sm")} {
-    margin-left: ${({ theme }) => theme.spacing(12)}px;
+    margin-left: ${({ theme }) => theme.spacing(12)};
   }
 `
 
 const Authenticated = () => {
   const { search } = useLocation()
   const { next } = getParams(search)
+  console.log(next)
 
   return (
     <DatePlanningProvider>
       <Menu />
       <Content>
-        <Switch>
-          <RestrictedRoute path="/home" component={HomePage} roleIds={[RoleId.Chouettos]} redirectionPath="/planning" />
-          <Route path="/planning" component={PlanningPage} />
-          <RestrictedRoute
+        <Routes>
+          <Route
+            path="/home"
+            element={
+              <RestrictedRoute roleIds={[RoleId.Chouettos]} redirectionPath="/planning">
+                {" "}
+                <HomePage />{" "}
+              </RestrictedRoute>
+            }
+          />
+          <Route path="/planning" element={<PlanningPage />} />
+          <Route
             path="/profile"
-            component={ProfilePage}
-            roleIds={[RoleId.Chouettos]}
-            redirectionPath="/planning"
+            element={
+              <RestrictedRoute roleIds={[RoleId.Chouettos]} redirectionPath="/planning">
+                {" "}
+                <ProfilePage />{" "}
+              </RestrictedRoute>
+            }
           />
-          <RestrictedRoute
+          <Route
             path="/reserve"
-            component={ReservePage}
-            roleIds={[RoleId.Chouettos]}
-            redirectionPath="/planning"
+            element={
+              <RestrictedRoute roleIds={[RoleId.Chouettos]} redirectionPath="/planning">
+                {" "}
+                <ReservePage />{" "}
+              </RestrictedRoute>
+            }
           />
-          <RestrictedRoute path="/bdm" component={BdMPage} roleIds={[RoleId.AdminBdM]} redirectionPath="/planning" />
-          <RestrictedRoute
+          <Route
+            path="/bdm"
+            element={
+              <RestrictedRoute roleIds={[RoleId.AdminBdM]} redirectionPath="/planning">
+                {" "}
+                <BdMPage />{" "}
+              </RestrictedRoute>
+            }
+          />
+          <Route
             path="/magasin"
-            component={MagasinPage}
-            roleIds={[RoleId.AdminMag]}
-            redirectionPath="/planning"
+            element={
+              <RestrictedRoute roleIds={[RoleId.AdminMag]} redirectionPath="/planning">
+                {" "}
+                <MagasinPage />{" "}
+              </RestrictedRoute>
+            }
           />
-          <RestrictedRoute
+          <Route
             path="/history"
-            component={HistoryPage}
-            roleIds={[RoleId.Chouettos]}
-            redirectionPath="/planning"
+            element={
+              <RestrictedRoute roleIds={[RoleId.Chouettos]} redirectionPath="/planning">
+                {" "}
+                <HistoryPage />{" "}
+              </RestrictedRoute>
+            }
           />
-          <Route path="/legal" component={LegalPage} />
-          <Redirect to={next || "/home"} />
-        </Switch>
+          <Route path="/legal" element={<LegalPage />} />
+          <Route path="*" element={<Navigate to={next || "/home"} replace />} />
+        </Routes>
         <MenuBottom />
       </Content>
     </DatePlanningProvider>

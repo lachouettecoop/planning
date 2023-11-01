@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 
 import type { Creneau } from "src/types/model"
 
-import { Button, Typography } from "@material-ui/core"
-import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@material-ui/icons"
+import { Button, Typography } from "@mui/material"
+import { ArrowBackIos, ArrowForwardIos, CalendarToday } from "@mui/icons-material"
 import styled from "@emotion/styled/macro"
 import { isSameMonth } from "date-fns"
 

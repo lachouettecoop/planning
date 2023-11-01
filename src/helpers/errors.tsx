@@ -1,8 +1,10 @@
-import React, { ErrorInfo, FC } from "react"
+import React, { ErrorInfo } from "react"
 import Bugsnag from "@bugsnag/js"
 import BugsnagPluginReact from "@bugsnag/plugin-react"
 import styled from "@emotion/styled/macro"
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
+
+import { ReactFCWithChildren } from "src/types/react"
 
 const apiKey = process.env.REACT_APP_BUGSNAG_KEY
 
@@ -73,5 +75,5 @@ interface MessageProps {
 
 export const ErrorMessage = ({ error }: MessageProps) => <Text>Erreur : {error.message}</Text>
 
-export const ErrorBoundary: FC = ({ children }) =>
+export const ErrorBoundary: ReactFCWithChildren = ({ children }) =>
   Boundary ? <Boundary FallbackComponent={ErrorBlock}>{children}</Boundary> : <>{children}</>

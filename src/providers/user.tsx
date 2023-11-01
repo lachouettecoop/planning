@@ -1,11 +1,12 @@
 import type { User } from "src/types/model"
 
-import { createContext, useContext, useState, FC, useEffect } from "react"
+import { createContext, useContext, useState, useEffect } from "react"
 import Bugsnag from "@bugsnag/js"
 
 import { LOGGED_IN_USER } from "src/graphql/queriesUser"
 import apollo from "src/helpers/apollo"
 import { formatName } from "src/helpers/user"
+import { ReactFCWithChildren } from "src/types/react"
 
 export interface Auth {
   email: string
@@ -33,7 +34,7 @@ export const getStoredUser = () => {
   return JSON.parse(stored) as Auth
 }
 
-export const UserProvider: FC = ({ children }) => {
+export const UserProvider: ReactFCWithChildren = ({ children }) => {
   const [auth, setAuth] = useState<Auth | null>(getStoredUser)
   const [user, setUser] = useState<User | null>(null)
 

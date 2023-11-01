@@ -2,7 +2,7 @@ import type { IDay, IWeekId } from "src/types/app"
 
 import styled from "@emotion/styled/macro"
 import { isPast, isToday } from "date-fns"
-import { capitalize, Typography } from "@material-ui/core"
+import { capitalize, Typography } from "@mui/material"
 
 import Slot from "src/components/Slot"
 import { formatDateShort } from "src/helpers/date"

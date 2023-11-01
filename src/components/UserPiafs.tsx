@@ -1,7 +1,7 @@
 import type { PIAF } from "src/types/model"
 
 import { useQuery } from "@apollo/client"
-import { List } from "@material-ui/core"
+import { List } from "@mui/material"
 import { Link } from "react-router-dom"
 
 import Loader from "src/components/Loader"
@@ -43,7 +43,7 @@ const UserPiafs = ({ userId, after, validated = false, allowValidate = false }: 
         statut !== "remplacement" &&
         nonPourvu == false &&
         ((allowValidate && new Date(creneau.fin) < currentDate) ||
-          (!allowValidate && new Date(creneau.fin) > currentDate))
+          (!allowValidate && new Date(creneau.fin) > currentDate)),
     )
     .sort(orderPiafsByDate)
 
