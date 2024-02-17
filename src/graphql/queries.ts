@@ -288,6 +288,7 @@ export const PIAF_GET = gql`
       role {
         id
       }
+      statut
     }
   }
 `
