@@ -21,13 +21,7 @@ export const isTaken = (piaf: PIAF) => {
 }
 
 export const isCritical = (slot: ISlot, piaf: PIAF) => {
-  if (isTaken(piaf)) {
-    return false
-  }
-  if (!slot.piafs) {
-    return false
-  }
-  if (slot.horsMag) {
+  if (isTaken(piaf) || !slot.piafs || slot.horsMag || slot.demiPiaf) {
     return false
   }
   if (differenceInDays(slot.start, new Date()) >= CRITICAL_DAYS) {
