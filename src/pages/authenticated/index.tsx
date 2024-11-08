@@ -9,7 +9,8 @@ import Menu from "src/components/menu"
 import MenuBottom from "src/components/menuBottom"
 
 import HomePage from "src/pages/authenticated/Home"
-import PlanningPage from "src/pages/authenticated/Planning"
+import PlanningChouettosPage from "src/pages/authenticated/PlanningChouettos"
+import PlanningBdmPage from "src/pages/authenticated/PlanningBdm"
 import ProfilePage from "src/pages/authenticated/Profile"
 import ReservePage from "src/pages/authenticated/Reserve"
 import MagasinPage from "src/pages/authenticated/Magasin"
@@ -38,7 +39,8 @@ const Authenticated = () => {
       <Content>
         <Switch>
           <RestrictedRoute path="/home" component={HomePage} roleIds={[RoleId.Chouettos]} redirectionPath="/planning" />
-          <Route path="/planning" component={PlanningPage} />
+          <Route path="/planning" component={PlanningChouettosPage} />
+          <Route path="/planning-bdm" component={PlanningBdmPage} />
           <RestrictedRoute
             path="/profile"
             component={ProfilePage}

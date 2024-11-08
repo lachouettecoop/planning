@@ -10,10 +10,10 @@ import { formatDateShort } from "src/helpers/date"
 type TimeStatus = "past" | "present" | "future"
 
 const WEEK_COLORS: Record<IWeekId, string> = {
-  A: "#89C7A8",
-  B: "#638F79",
-  C: "#3A5447",
-  D: "#27382F",
+  A: "#638F79",
+  B: "#89C7A8",
+  C: "#27382F",
+  D: "#3A5447",
 }
 
 const Header = styled.div<{ $weekId?: IWeekId }>`
@@ -49,7 +49,6 @@ interface Props {
 const CalendarDay = ({ day, weekId }: Props) => {
   const { start, slots } = day
   const today = isToday(start)
-  const monday = start.getDay() === 1 || start.getDate() === 1
 
   return (
     <Container
@@ -60,7 +59,7 @@ const CalendarDay = ({ day, weekId }: Props) => {
         }
       }}
     >
-      <Header $weekId={weekId}>{monday && weekId && `Semaine ${weekId}`}</Header>
+      <Header $weekId={weekId}></Header>
       <Typography variant="h3">{capitalize(formatDateShort(start))}</Typography>
       <List>
         {slots.map((slot) => (
