@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+
+  nginx:
+    build: .
+    networks:
+      default:
+      traefik_web:
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "traefik_web"
+      traefik.http.routers.planning.entrypoints: "web,websecure"
+      traefik.http.routers.planning.rule: "Host(`planningtest.lachouettecoop.fr`)"
+      traefik.http.routers.planning.tls: "true"
+      traefik.http.routers.planning.tls.certresolver: "myresolver"
+      traefik.http.services.planning.loadbalancer.server.port: "3000"
+
+networks:
+    default:
+      internal: true
+      driver_opts:
+        encrypted: 1
+    traefik_web:
+      external: true
+
