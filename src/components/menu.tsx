@@ -29,6 +29,7 @@ import {
   ArrowBack as ArrowBackIcon,
   Home as HomeIcon,
   Event as EventIcon,
+  EventNote as EventNoteIcon,
   Storefront as StorefrontIcon,
   CardMembership as CardMembershipIcon,
   History as HistoryIcon,
@@ -133,6 +134,7 @@ const ITEMS = [
   { title: "Historique des PIAF", href: "/history", Icon: HistoryIcon, roles: [RoleId.Chouettos] },
   { title: "Groupe MAG", href: "/magasin", Icon: StorefrontIcon, roles: [RoleId.AdminMag] },
   { title: "Groupe BdM", href: "/bdm", Icon: CardMembershipIcon, roles: [RoleId.AdminBdM] },
+  { title: "Planning BdM", href: "/planning-bdm", Icon: EventNoteIcon, roles: [RoleId.AdminBdM] },
   {
     title: "Espace membre",
     href: "https://espace-membres.lachouettecoop.fr/page/homepage",

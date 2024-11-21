@@ -81,21 +81,19 @@ const BottomCaption = styled.div`
   padding: 20px 10px;
 `
 
-const orderSlotsByDate = (left: Creneau, right: Creneau) => (left.debut > right.debut ? 1 : -1)
-
-const PlanningPage = () => {
+const Planning = ({ slots }: { slots: Creneau[] | undefined }) => {
   const { user } = useUser<true>()
   const [displayPrivacyPolicyDialog, setDisplayPrivacyPolicyDialog] = useState(false)
   useEffect(() => {
     if (user) setDisplayPrivacyPolicyDialog(!user.affichageDonneesPersonnelles)
   }, [user])
 
-  const { goBack, goForward, goToday, start, end, data, error, loading } = useDatePlanning()
+  const { goBack, goForward, goToday, start, end, error, loading } = useDatePlanning()
   if (error) {
     return <ErrorBlock error={error} />
   }
 
-  const slots = data?.creneaus.filter(({ horsMag }) => !horsMag).sort(orderSlotsByDate)
+  // const slots = data?.creneaus.filter(({ horsMag }) => !horsMag).sort(orderSlotsByDate)
 
   return (
     <>
@@ -166,4 +164,4 @@ const PlanningPage = () => {
   )
 }
 
-export default PlanningPage
+export default Planning

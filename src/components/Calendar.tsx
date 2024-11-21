@@ -71,6 +71,8 @@ const Calendar = ({ start, end, list }: Props) => {
 
     if (node.creneauGenerique) {
       week.weekId = getWeekId(node.creneauGenerique.frequence)
+    } else {
+      week.weekId = "A"
     }
   })
 
