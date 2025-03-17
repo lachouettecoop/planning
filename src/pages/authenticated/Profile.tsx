@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { Prompt } from "react-router"
-import { Phone, Mail } from "@material-ui/icons"
+import { Phone, Mail, Code } from "@material-ui/icons"
 import {
   Button,
   InputAdornment,
@@ -56,6 +56,7 @@ const ProfilePage = () => {
     email: user?.email || "",
     telephone: user?.telephone || "",
     affichageDonneesPersonnelles: user?.affichageDonneesPersonnelles,
+    codeBarre: user?.codeBarre || "",
   })
 
   useEffect(() => {
@@ -64,6 +65,7 @@ const ProfilePage = () => {
         email: user.email,
         telephone: user.telephone,
         affichageDonneesPersonnelles: user.affichageDonneesPersonnelles,
+        codeBarre: user.codeBarre,
       })
     }
   }, [user])
@@ -173,6 +175,25 @@ const ProfilePage = () => {
               ),
             }}
           />
+          <TextField
+            name="codebarre"
+            label="votre code barre"
+            disabled={true}
+            value={values.codeBarre}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Code />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <a href={`${process.env.REACT_APP_METABASE_API}${values.codeBarre}`} target="_blank" rel="noreferrer">
+            <Button color="primary" variant="contained" disabled={saving}>
+              Accédez à vos indicateurs
+            </Button>
+          </a>
           <UserDataShare>
             <p>
               {" "}
