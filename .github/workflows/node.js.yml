@@ -55,6 +55,7 @@ jobs:
           github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
           repository: ${{ github.repository }}
           REACT_APP_API: https://adminchouettos.lachouettecoop.fr
+          REACT_APP_METABASE_API: https://prerapports.lachouettecoop.fr/public/dashboard/0eee5d66-f0ec-4c79-b506-d0d4a82b9e11?code-barres_%28sur_votre_carte%29=
           REACT_APP_MAIL_BDM: bureau-des-membres@lachouettecoop.fr
           REACT_APP_MAIL_COMMISSION_PARTICIPATION: commission_participation_lcc@framalistes.org
           REACT_APP_MAIL_SUPPORT: supportparticipation@lachouettecoop.fr
