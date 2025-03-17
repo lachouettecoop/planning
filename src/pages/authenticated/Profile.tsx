@@ -177,7 +177,7 @@ const ProfilePage = () => {
           />
           <TextField
             name="codebarre"
-            label="votre code barre"
+            label="Votre code barre"
             disabled={true}
             value={values.codeBarre}
             fullWidth
