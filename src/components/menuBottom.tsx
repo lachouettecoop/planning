@@ -78,7 +78,7 @@ const EXTRA_ITEMS = [
   //{ title: "Auto", href: "/auto", roles: [RoleId.Chouettos] },
   { title: "Mon profil", href: "/profile", roles: [RoleId.Chouettos] },
   { title: "Historique des PIAF", href: "/history", roles: [RoleId.Chouettos] },
-  { title: "Espace membre", href: "/member", roles: [RoleId.Chouettos] },
+  { title: "Espace membre", href: "https://espace-membres.lachouettecoop.fr/page/homepage", roles: [RoleId.Chouettos] },
   { title: "Groupe MAG", href: "/magasin", roles: [RoleId.AdminMag] },
   { title: "Groupe BdM", href: "/bdm", roles: [RoleId.AdminBdM] },
 ]
@@ -130,17 +130,35 @@ export default function BottomAppBar() {
           >
             {EXTRA_ITEMS.filter(({ roles }) => hasAtLeastOneRole(roles, userRoles)).map(({ href, title }) => {
               const active = pathname === href
-              return (
-                <MenuItem
-                  key={title}
-                  className={active ? classes.activeItem : classes.menuItem}
-                  onClick={handleClose}
-                  component={Link}
-                  to={href}
-                >
-                  {title}
-                </MenuItem>
-              )
+              const isExternalLink = href.startsWith("http")
+
+              if (isExternalLink) {
+                return (
+                  <MenuItem
+                    key={title}
+                    className={classes.menuItem}
+                    onClick={handleClose}
+                    component="a"
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {title}
+                  </MenuItem>
+                )
+              } else {
+                return (
+                  <MenuItem
+                    key={title}
+                    className={active ? classes.activeItem : classes.menuItem}
+                    onClick={handleClose}
+                    component={Link}
+                    to={href}
+                  >
+                    {title}
+                  </MenuItem>
+                )
+              }
             })}
 
             <MenuItem onClick={logout} key="Logout" className={classes.menuItem} color="inherit">
