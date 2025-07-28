@@ -1,7 +1,7 @@
 import type { ISlot } from "src/types/app"
 
 import { useState } from "react"
-import { Button, TextField } from "@material-ui/core"
+import { Button, Checkbox, FormControlLabel, TextField } from "@material-ui/core"
 import { Save } from "@material-ui/icons"
 
 import styled from "@emotion/styled/macro"
@@ -31,6 +31,7 @@ const Row = styled.div`
   margin: 0 0 1rem 0;
   display: flex;
   align-items: center;
+
   justify-content: center;
   flex-wrap: wrap;
   button {
@@ -68,6 +69,13 @@ const ButtonSave = styled.div`
     margin-left: -4px;
   }
 `
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  fontSize: "12px",
+  "& .MuiFormControlLabel-label": {
+    fontSize: "14px",
+  },
+})
 
 type ResultPiafsCount = { piafs: PIAF[] }
 type ResultGetPiaf = { piaf: PIAF }
@@ -145,6 +153,7 @@ interface Props {
 const PiafRow = ({ piaf, slot }: Props) => {
   const [loading, setLoading] = useState(false)
   const [info, setInfo] = useState(piaf?.informations || "")
+  const [isBeginner, setIsBeginner] = useState(piaf?.isBeginner || false)
   const { openDialog, openQuestion } = useDialog()
   const { user } = useUser<true>()
   const roles = useRoles()
@@ -278,6 +287,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
           userId: loggedUser.id,
           statut: "occupe",
           informations: info,
+          isBeginner: isBeginner,
           registrationDate: queryDate(new Date()),
         },
       })
@@ -352,7 +362,7 @@ const PiafRow = ({ piaf, slot }: Props) => {
       <Status>
         {taken && piaffeur ? formatName(piaffeur) : "Place disponible"}
         <br />
-        <span> {piafRole?.libelle}</span>
+        {piaf.isBeginner ? <span>Chouettos débutant·e</span> : <span>{piafRole?.libelle}</span>}
         {piaf.description ? <span> - {piaf.description}</span> : ""}
       </Status>
       {taken && (
@@ -400,13 +410,24 @@ const PiafRow = ({ piaf, slot }: Props) => {
 
       {!taken && !currentUserInSlot && isFuture && !hasRole(RoleId.PosteAccueil, currentUser.rolesChouette) && (
         <>
-          <InfoTextField
-            name="informations"
-            multiline
-            label="Commentaire (optionnel)"
-            value={info}
-            onChange={handleInputChange}
-          />
+          <div style={{ display: "flex", flexDirection: "column", flex: "1", margin: "0 8px" }}>
+            <InfoTextField
+              name="informations"
+              multiline
+              label="Commentaire (optionnel)"
+              value={info}
+              onChange={handleInputChange}
+            />
+            {piafRole?.libelle === "Chouettos" && (
+              <StyledFormControlLabel
+                value={isBeginner}
+                control={<Checkbox />}
+                onChange={(_, checked: boolean) => setIsBeginner(checked)}
+                label="Chouettos débutant·e"
+              />
+            )}
+          </div>
+
           <Button disabled={loading} color="primary" variant="contained" onClick={register}>
             S’inscrire
           </Button>
