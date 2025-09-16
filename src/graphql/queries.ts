@@ -16,6 +16,7 @@ export const SLOTS = gql`
         statut
         informations
         description
+        isBeginner
         role {
           id
           roleUniqueId
@@ -43,6 +44,7 @@ export const PIAFS = gql`
       pourvu
       nonPourvu
       informations
+      isBeginner
       description
       creneau {
         id
@@ -103,6 +105,7 @@ export const PLANNING = gql`
         id
         statut
         informations
+        isBeginner
         description
         role {
           id
@@ -131,6 +134,7 @@ export const REGISTRATION_UPDATE = gql`
     $userId: String!
     $statut: String!
     $informations: String
+    $isBeginner: Boolean
     $registrationDate: String
   ) {
     updatePiaf(
@@ -139,6 +143,7 @@ export const REGISTRATION_UPDATE = gql`
         piaffeur: $userId
         statut: $statut
         informations: $informations
+        isBeginner: $isBeginner
         dateReservation: $registrationDate
       }
     ) {
@@ -149,6 +154,7 @@ export const REGISTRATION_UPDATE = gql`
         }
         statut
         informations
+        isBeginner
       }
     }
   }
