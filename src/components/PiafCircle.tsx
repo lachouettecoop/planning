@@ -30,9 +30,10 @@ interface RoleProps {
   critical?: boolean
   info?: string
   displayKey?: boolean
+  isCaSkill?: boolean
 }
 
-export const PiafIcon = ({ role, taken, critical, info, displayKey }: RoleProps) => {
+export const PiafIcon = ({ role, taken, critical, info, displayKey, isCaSkill }: RoleProps) => {
   if (!role || !KNOWN_ROLES.includes(role)) {
     role = RoleId.Chouettos
   }
@@ -40,7 +41,11 @@ export const PiafIcon = ({ role, taken, critical, info, displayKey }: RoleProps)
     <Tooltip title={info ? info : ""}>
       <ImageContainer>
         <Svg $taken={taken} $critical={critical}>
-          <use xlinkHref={"#" + role + (displayKey ? "_KEY" : "") + (info ? "_INF" : "")} width="100%" height="100%" />
+          <use
+            xlinkHref={"#" + role + (displayKey ? "_KEY" : "") + (info ? "_INF" : "") + (isCaSkill ? "_CA" : "")}
+            width="100%"
+            height="100%"
+          />
         </Svg>
       </ImageContainer>
     </Tooltip>
@@ -53,16 +58,19 @@ interface Props {
   displayTooltip?: boolean | false
 }
 
-const PiafCircle = ({ piaf, critical, displayTooltip }: Props) => (
-  <>
-    <PiafIcon
-      role={getPiafRole(piaf)}
-      taken={isTaken(piaf)}
-      critical={critical}
-      info={displayTooltip ? piaf.informations || "" : ""}
-      displayKey={isTaken(piaf) && piaf.piaffeur?.gh}
-    />
-  </>
-)
+const PiafCircle = ({ piaf, critical, displayTooltip }: Props) => {
+  return (
+    <>
+      <PiafIcon
+        role={getPiafRole(piaf)}
+        taken={isTaken(piaf)}
+        critical={critical}
+        info={displayTooltip ? piaf.informations || "" : ""}
+        displayKey={isTaken(piaf) && piaf.piaffeur?.gh}
+        isCaSkill={isTaken(piaf) && piaf.piaffeur?.rolesChouette?.map((r) => r.roleUniqueId).includes(RoleId.Caissier)}
+      />
+    </>
+  )
+}
 
 export default PiafCircle
