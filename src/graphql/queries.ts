@@ -30,6 +30,9 @@ export const SLOTS = gql`
           telephone
           nbPiafGH
           nbPiafCaisse
+          rolesChouette {
+            roleUniqueId
+          }
         }
       }
     }
@@ -64,6 +67,9 @@ export const PIAFS = gql`
         nbPiafCaisse
         affichageDonneesPersonnelles
         gh
+        rolesChouette {
+          roleUniqueId
+        }
       }
       role {
         id
@@ -122,6 +128,9 @@ export const PLANNING = gql`
           nbPiafCaisse
           affichageDonneesPersonnelles
           gh
+          rolesChouette {
+            roleUniqueId
+          }
         }
       }
     }

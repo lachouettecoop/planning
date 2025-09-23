@@ -15,6 +15,7 @@ export enum RoleId {
   Formateur = "F",
   Key = "KEY",
   Info = "INF",
+  Caissier_skill = "C_SMALL",
 }
 
 export interface Role {
