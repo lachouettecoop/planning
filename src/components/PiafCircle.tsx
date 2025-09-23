@@ -67,7 +67,11 @@ const PiafCircle = ({ piaf, critical, displayTooltip }: Props) => {
         critical={critical}
         info={displayTooltip ? piaf.informations || "" : ""}
         displayKey={isTaken(piaf) && piaf.piaffeur?.gh}
-        isCaSkill={isTaken(piaf) && piaf.piaffeur?.rolesChouette?.map((r) => r.roleUniqueId).includes(RoleId.Caissier)}
+        isCaSkill={
+          isTaken(piaf) &&
+          getPiafRole(piaf) !== RoleId.Caissier &&
+          piaf.piaffeur?.rolesChouette?.map((r) => r.roleUniqueId).includes(RoleId.Caissier)
+        }
       />
     </>
   )
