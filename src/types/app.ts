@@ -1,4 +1,4 @@
-import { CreneauGenerique, PIAF } from "src/types/model"
+import { CreneauGenerique, PIAF, Task } from "src/types/model"
 
 export interface ISlot {
   id: string
@@ -9,6 +9,7 @@ export interface ISlot {
   end: Date
   horsMag: boolean
   piafs?: PIAF[] // undefined = loading
+  tasks?: Task[]
 }
 
 export interface IDay {

@@ -10,6 +10,11 @@ export const SLOTS = gql`
       horsMag
       creneauGenerique {
         frequence
+        tasks {
+          title
+          description
+          link
+        }
       }
       piafs {
         id
@@ -56,6 +61,13 @@ export const PIAFS = gql`
         fin
         horsMag
         demiPiaf
+        creneauGenerique {
+          tasks {
+            title
+            description
+            link
+          }
+        }
       }
       piaffeur {
         id
@@ -106,6 +118,11 @@ export const PLANNING = gql`
       demiPiaf
       creneauGenerique {
         frequence
+        tasks {
+          title
+          description
+          link
+        }
       }
       piafs {
         id

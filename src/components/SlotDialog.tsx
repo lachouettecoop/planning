@@ -1,8 +1,19 @@
 import type { ISlot } from "src/types/app"
 
-import { capitalize, Dialog, DialogContent, DialogTitle, IconButton, Typography } from "@material-ui/core"
+import {
+  capitalize,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Typography,
+  AccordionSummary,
+  Accordion,
+} from "@material-ui/core"
+
 import { Close } from "@material-ui/icons"
 import styled from "@emotion/styled/macro"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 
 import Loader from "src/components/Loader"
 import PiafRow from "src/components/PiafRow"
@@ -28,6 +39,11 @@ const Title = styled.div`
   }
 `
 
+const AccordionStyled = styled(Accordion)`
+  margin-bottom: 16px;
+  background-color: ${({ theme }) => theme.palette.grey[200]};
+`
+
 interface Props {
   slot: ISlot
   show: boolean
@@ -35,6 +51,7 @@ interface Props {
 }
 
 const SlotDialog = ({ slot, show, handleClose }: Props) => {
+  console.log("slot", slot)
   return (
     <Dialog open={show} onClose={handleClose} fullWidth>
       <CloseButton onClick={handleClose}>
@@ -55,7 +72,34 @@ const SlotDialog = ({ slot, show, handleClose }: Props) => {
         </Title>
       </DialogTitle>
       <DialogContent>
-        {slot.piafs ? slot.piafs.map((piaf) => <PiafRow key={piaf.id} piaf={piaf} slot={slot} />) : <Loader />}
+        <>
+          {slot.tasks && slot.tasks.length > 0 && (
+            <AccordionStyled>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                <Title>Liste des taches</Title>
+              </AccordionSummary>
+              <ul style={{ marginTop: "0" }}>
+                {slot.tasks?.map((task) => {
+                  return (
+                    <li style={{ paddingBottom: "8px" }} key={task.id}>
+                      <div style={{ fontSize: "18px" }}>
+                        {task.link ? (
+                          <a target="_blank" href={task.link} rel="noreferrer">
+                            {task.title}
+                          </a>
+                        ) : (
+                          task.title
+                        )}
+                      </div>
+                      <div style={{ fontSize: "14px", color: "rgb(117, 117, 117)" }}>{task.description}</div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </AccordionStyled>
+          )}
+          {slot.piafs ? slot.piafs.map((piaf) => <PiafRow key={piaf.id} piaf={piaf} slot={slot} />) : <Loader />}
+        </>
       </DialogContent>
     </Dialog>
   )

@@ -66,6 +66,7 @@ const Calendar = ({ start, end, list }: Props) => {
       demiPiaf: node.demiPiaf,
       end: new Date(node.fin),
       horsMag: node.horsMag,
+      tasks: node.creneauGenerique?.tasks ?? [],
       piafs,
     })
 

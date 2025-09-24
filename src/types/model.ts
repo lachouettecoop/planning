@@ -24,6 +24,13 @@ export interface Role {
   roleUniqueId: RoleId
 }
 
+export interface Task {
+  id: ID
+  title: string
+  description: string
+  link: string
+}
+
 export interface CreneauGenerique {
   id: ID
   titre: string
@@ -33,6 +40,7 @@ export interface CreneauGenerique {
   heureFin: string // ISO datetime
   actif: boolean
   horsMag: boolean
+  tasks?: Task[]
 }
 
 export interface Poste {
