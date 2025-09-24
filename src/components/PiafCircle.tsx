@@ -70,6 +70,7 @@ const PiafCircle = ({ piaf, critical, displayTooltip }: Props) => {
         isCaSkill={
           isTaken(piaf) &&
           getPiafRole(piaf) !== RoleId.Caissier &&
+          getPiafRole(piaf) !== RoleId.Caissier_Formateur &&
           piaf.piaffeur?.rolesChouette?.map((r) => r.roleUniqueId).includes(RoleId.Caissier)
         }
       />
