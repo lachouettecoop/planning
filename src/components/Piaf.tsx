@@ -124,6 +124,7 @@ const Piaf = ({ piaf, allowValidate, critical }: Props) => {
     end: new Date(creneau.fin),
     horsMag: creneau.horsMag,
     piafs: data?.creneau.piafs,
+    tasks: creneau.creneauGenerique?.tasks,
   }
 
   const Container = allowValidate ? Bordered : Grid
